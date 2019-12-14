@@ -1,0 +1,18 @@
+
+
+@import 'helpers';
+@import url('https://fonts.googleapis.com/css?family=Rubik:400,700&display=swap');
+
+*{
+    padding: 0.01px;
+    margin: 0;
+}
+
+body{
+    background-color: colors(dark-blue);
+    color: white;
+    font-family: Rubik;
+}
+
+.App{
+}

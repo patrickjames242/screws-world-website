@@ -1,0 +1,28 @@
+
+$nav-bar-height: 80px;
+
+$theme-colors: (
+    dark-blue: rgb(21, 32, 43),
+    light-dark-blue: rgb(25, 39, 52),
+    light-gray-bg: rgb(37, 51, 65),
+    light-blue: rgb(29, 161, 242),
+);
+
+@function colors($colorName){    
+    @return map-get($map: $theme-colors, $key:$colorName);
+}
+
+
+/// returns a gray color according to the value given. EXPECTS A DECIMAL!!!
+@function gray($levelOfGrayness){
+    $v: $levelOfGrayness * 255;
+    @return rgb($v, $v, $v);
+}
+
+@mixin setProps($properties, $value){
+    @each $property in $properties{
+        #{$property}: $value;
+    }
+}
+
+

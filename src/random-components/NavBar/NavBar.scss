@@ -1,0 +1,136 @@
+
+@import 'helpers';
+
+@mixin linkTransitionConfig($seconds){
+    transition: {
+        duration: $seconds;
+        property: color fill background-color;
+    }    
+}
+
+@mixin blueBGOnHover($height){
+
+    $seconds: 0.2s;
+    @include linkTransitionConfig($seconds);
+
+    position: relative;
+    cursor: pointer;
+
+    &::before{
+        content: '';
+        position: absolute;
+        background-color: rgba(colors(light-blue), 0.2);
+        @include setProps(left right, 0);
+        height: $height;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: $height / 2;
+        opacity: 0;
+        @include linkTransitionConfig($seconds);
+    }
+
+    svg{
+        @include linkTransitionConfig($seconds);
+    }
+    
+    &:hover{
+        color: colors(light-blue);
+        svg{
+            fill: colors(light-blue);
+        }
+    }
+    &:hover::before{
+        opacity: 1;
+        color: colors(light-blue);
+    }
+    
+}
+
+.NavBar {
+
+    border-radius: 20px;
+    background-color: colors(light-gray-bg);
+    height: $nav-bar-height;
+    position: sticky;
+    
+    $insets: 15px;
+    top: 15px;
+    @include setProps(margin-left margin-right margin-top, $insets);
+    @include setProps(padding-left padding-right, 25px);
+    
+    display: grid;
+    justify-content: space-between;
+    grid-auto-flow: column;
+
+    > .title-box{
+        align-self: center;
+        display: grid;
+        gap: 18px;
+        grid-auto-flow: column;
+        align-items: center;
+        
+        > .screw-logo-holder{            
+            @include setProps(height width, 40px);
+            position: relative;
+            top: -2px;
+            > svg {
+                fill: colors(light-blue); 
+            }
+        }
+
+        > .text{
+            display: grid;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            line-height: 1;
+            font-weight: bold;
+
+            & > :first-child{
+                font-size: 28px;   
+            }
+            
+            & > :last-child{
+                color: colors(light-blue);
+                font-size: 20px;
+            }
+        }
+    }
+
+    > .links-box{
+        display: grid;
+        grid-auto-flow: column;
+        gap: 30px;
+        align-items: center;
+        
+        > *{
+            @include blueBGOnHover(40px);
+            @include setProps(padding-left padding-right, 15px);
+
+            display: grid;
+            align-items: center;
+            grid-auto-flow: column;
+            gap: 10px;
+
+            svg {
+                @include setProps(height width, 23px);
+                fill: white;
+            }
+
+            > .text-box{
+                font: {
+                    size: 20px;
+                    weight: bold;
+                }
+            }
+        }
+    }
+    
+}
+
+
+// because about-us icon is unusually larger than the other icons
+.NavBar > .links-box > :first-child svg{
+    @include setProps(height width, 30px);
+    margin-right: 5px;
+}
+
