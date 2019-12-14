@@ -1,11 +1,14 @@
 
 $nav-bar-height: 80px;
+$nav-bar-insets: 15px;
+$nav-bar-height-from-top: $nav-bar-height + $nav-bar-insets;
 
 $theme-colors: (
     dark-blue: rgb(21, 32, 43),
     light-dark-blue: rgb(25, 39, 52),
     light-gray-bg: rgb(37, 51, 65),
     light-blue: rgb(29, 161, 242),
+    white-dimmed-blue: rgb(207, 235, 252),
 );
 
 @function colors($colorName){    
@@ -24,5 +27,68 @@ $theme-colors: (
         #{$property}: $value;
     }
 }
+
+@mixin centerContent{
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+
+@mixin bounceOnHover($bounce-scale: 1.1) {
+    transition-duration: 0.3s;
+    transition-property: transform;
+    &:hover{
+        transform: scale($bounce-scale);
+    }
+    cursor: pointer;
+}
+
+@mixin roundedBGOnHoverAnimConfig($properties){
+    transition: {
+        duration: 0.2s;
+        property: $properties;
+    }    
+}
+
+@mixin roundedBGOnHover($height, $rounded-BG-color, $hover-text-color){
+    $seconds: 0.2s;
+    @include roundedBGOnHoverAnimConfig(color);
+
+    position: relative;
+    cursor: pointer;
+
+    &::before{
+        content: '';
+        position: absolute;
+        background-color: $rounded-BG-color;
+        @include setProps(left right, 0);
+        height: $height;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: $height / 2;
+        opacity: 0;
+        @include roundedBGOnHoverAnimConfig(opacity);
+    }
+
+    svg{
+        @include roundedBGOnHoverAnimConfig(fill);
+    }
+    
+    &:hover{
+        color: $hover-text-color;
+        svg{
+            fill: $hover-text-color;
+        }
+    }
+    &:hover::before{
+        opacity: 1;
+    }
+}
+
+@mixin blueBGOnHover($height){
+    @include roundedBGOnHover($height, rgba(colors(light-blue), 0.2), colors(light-blue)); 
+}
+
+
 
 
