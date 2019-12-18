@@ -3,33 +3,35 @@
 
 
 .NavBar {
-
+    
     position: sticky;
     top: 0;
     z-index: 100;
 
     > .content{
-        box-shadow: 0px 0px 52px 10px colors(dark-blue);
+        box-shadow: 0px 0px 3.3rem 1rem rgba(colors(dark-blue), 0.9);
         $insets: $nav-bar-insets;
         border-radius: 20px;
         background-color: colors(light-gray-bg);    
         height: $nav-bar-height;
         @include setProps(margin-left margin-right margin-top, $insets);
-        @include setProps(padding-left padding-right, 25px);
+        @include setProps(padding-left padding-right, 1.5625rem);
 
         display: grid;
         justify-content: space-between;
         grid-auto-flow: column;
+        
+        align-items: center;
 
         > .title-box{
-            align-self: center;
             display: grid;
-            gap: 18px;
+            gap: 1.125rem;
             grid-auto-flow: column;
             align-items: center;
             
+            
             > .screw-logo-holder{            
-                @include setProps(height width, 40px);
+                @include setProps(height width, 2.5rem);
                 position: relative;
                 top: -2px;
                 > svg {
@@ -45,21 +47,27 @@
                 font-weight: bold;
     
                 & > :first-child{
-                    font-size: 28px;   
+                    font-size: 1.75rem;   
                 }
                 
                 & > :last-child{
                     color: colors(light-blue);
-                    font-size: 20px;
+                    font-size: 1.25rem;
                 }
             }
         }
+
+        $nav-bar-links-cut-off-point: 976px;
     
         > .links-box{
+
+            @media(max-width: $nav-bar-links-cut-off-point){
+                display: none;
+            }
+
             display: grid;
             grid-auto-flow: column;
             gap: 30px;
-            align-items: center;
             
             > *{
                 @include blueBGOnHover(40px);
@@ -76,8 +84,9 @@
                 }
     
                 > .text-box{
+                    text-transform: capitalize;
                     font: {
-                        size: 20px;
+                        size: 18px;
                         weight: bold;
                     }
                 }
@@ -89,11 +98,26 @@
                 }
             }
         }
+
+        .menu-icon-holder{
+            $size: 2.8rem;
+            height: $size;
+            width: $size;
+            display: none;
+            @include bounceOnHover(1.2);
+            @media(max-width: $nav-bar-links-cut-off-point){
+                display: initial;
+            }
+
+            > svg{
+                fill: white;
+            }
+        }
+
     }
     
     
-    
-    
+
 }
 
 

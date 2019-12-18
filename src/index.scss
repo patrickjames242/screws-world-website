@@ -2,17 +2,24 @@
 @import 'helpers';
 @import url('https://fonts.googleapis.com/css?family=Rubik:400,700&display=swap');
 
-
+:root{
+    font-size: 16px;
+    @include respondToNarrowWidth{
+        font-size: 12px;
+    }
+}
 
 *{
     padding: 0.02px;
     margin: 0;
+    -webkit-text-size-adjust: none;
 }
 
 body{
     background-color: colors(dark-blue);
     color: white;
     font-family: Rubik;
+    // min-width: 400px;
 }
 
 a{
@@ -21,5 +28,5 @@ a{
 }
 
 .App{
-    
+    height: 3000px;
 }

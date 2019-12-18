@@ -1,10 +1,11 @@
 
-$nav-bar-height: 80px;
-$nav-bar-insets: 15px;
+$nav-bar-height: 5rem;
+$nav-bar-insets: 0.9375rem;
 $nav-bar-height-from-top: $nav-bar-height + $nav-bar-insets;
+$max-narrow-width: 775px;
 
 $theme-colors: (
-    dark-blue: rgb(21, 32, 43),
+    dark-blue: rgb(22, 33, 44),
     light-dark-blue: rgb(25, 39, 52),
     light-gray-bg: rgb(37, 51, 65),
     light-blue: rgb(29, 161, 242),
@@ -15,11 +16,24 @@ $theme-colors: (
     @return map-get($map: $theme-colors, $key:$colorName);
 }
 
+@mixin applyTextGradient($linear-gradient){
+    background: $linear-gradient;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 
 /// returns a gray color according to the value given. EXPECTS A DECIMAL!!!
 @function gray($levelOfGrayness){
     $v: $levelOfGrayness * 255;
     @return rgb($v, $v, $v);
+}
+
+@mixin respondToNarrowWidth{
+    @media(max-width: $max-narrow-width){
+        @content;
+    }
 }
 
 @mixin setProps($properties, $value){
@@ -28,18 +42,22 @@ $theme-colors: (
     }
 }
 
-@mixin centerContent{
+@mixin centerContentInGrid{
     display: grid;
     justify-content: center;
     align-content: center;
 }
 
 @mixin bounceOnHover($bounce-scale: 1.1) {
-    transition-duration: 0.3s;
-    transition-property: transform;
-    &:hover{
-        transform: scale($bounce-scale);
+    
+    @media (hover: hover){
+        transition-duration: 0.2s;
+        transition-property: transform;
+        &:hover{
+            transform: scale($bounce-scale);
+        }
     }
+    
     cursor: pointer;
 }
 
@@ -51,7 +69,7 @@ $theme-colors: (
 }
 
 @mixin roundedBGOnHover($height, $rounded-BG-color, $hover-text-color){
-    $seconds: 0.2s;
+    
     @include roundedBGOnHoverAnimConfig(color);
 
     position: relative;
@@ -73,16 +91,19 @@ $theme-colors: (
     svg{
         @include roundedBGOnHoverAnimConfig(fill);
     }
-    
-    &:hover{
-        color: $hover-text-color;
-        svg{
-            fill: $hover-text-color;
+
+    @media(hover: hover){
+        &:hover{
+            color: $hover-text-color;
+            svg{
+                fill: $hover-text-color;
+            }
+        }
+        &:hover::before{
+            opacity: 1;
         }
     }
-    &:hover::before{
-        opacity: 1;
-    }
+
 }
 
 @mixin blueBGOnHover($height){

@@ -10,6 +10,7 @@ import productsIcon from 'assets/nav-bar-icons/products.js';
 import contactIcon from 'assets/nav-bar-icons/contact.js';
 import aboutUsIcon from 'assets/nav-bar-icons/about-us.js';
 
+import menuIcon from 'assets/nav-bar-icons/menu-icon.js';
 
 export const SelectionType = {
 
@@ -29,7 +30,7 @@ export const SelectionType = {
             case this.aboutUs: return 'about us';
             case this.services: return 'services';
             case this.products: return 'products';
-            case this.contactUs: return 'contact us';
+            case this.contactUs: return 'contact Us';
             default: throw new Error("invalid item sent to 'getTextValueFor'");
         }
     },
@@ -77,16 +78,18 @@ export default class NavBar extends React.Component {
                 </Link>
                 <div className="links-box">
                     {
-                        [{ name: "About Us", image: aboutUsIcon, item: S.aboutUs},
-                        { name: "Services", image: servicesIcon, item: S.services},
-                        { name: "Products", image: productsIcon, item: S.products},
-                        { name: "Contact Us", image: contactIcon, item: S.contactUs }]
+                        [{ image: aboutUsIcon, item: S.aboutUs },
+                        { image: servicesIcon, item: S.services },
+                        { image: productsIcon, item: S.products },
+                        { image: contactIcon, item: S.contactUs }]
                             .map((x, i) => {
+                                const name = SelectionType.getTextValueFor(x.item);
                                 const isSelected = this.props.selectedItem === x.item;
-                                return <NavBarLink text={x.name} image={x.image} item={x.item} isSelected={isSelected} key={i} />
+                                return <NavBarLink text={name} image={x.image} item={x.item} isSelected={isSelected} key={i} />
                             })
                     }
                 </div>
+                <div className="menu-icon-holder">{menuIcon}</div>
             </div>
         </div>
     }
@@ -106,3 +109,4 @@ NavBarLink.propTypes = {
     isSelected: PropTypes.bool.isRequired,
     item: PropTypes.oneOf(SelectionType.getAll()).isRequired
 }
+
