@@ -1,6 +1,6 @@
 
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { SelectionType as NavBarSelection } from 'random-components/NavBar/NavBar';
@@ -10,6 +10,9 @@ import customerServiceIcon from 'assets/home-screen-images/icon-people.png';
 import priceIcon from 'assets/home-screen-images/price.png';
 import toolsIcon from 'assets/home-screen-images/tools.png';
 
+import mapboxgl from 'mapbox-gl';
+mapboxgl.accessToken = 'pk.eyJ1IjoicGF0cmlja2hhbm5hMjQyIiwiYSI6ImNqcnh2eWVrczBydGo0OWx2dDUyYjhvNnMifQ.SGbGDXppFmFkdUnBxIyoqA';
+
 
 export default class Home extends React.Component {
     render() {
@@ -17,6 +20,7 @@ export default class Home extends React.Component {
             <ShowCase />
             <FeaturesBox />
             <AdditionalInfoBox />
+            <MapSection />
         </div>
     }
 }
@@ -135,3 +139,37 @@ function AdditionalInfoBox() {
 }
 
 
+
+
+
+function MapSection() {
+
+    const mapDivID = "Home-Page-MapSection-map-view";
+
+    useEffect(() => {
+        const center = { lon: -77.339006, lat: 25.052057 };
+        const map = new mapboxgl.Map({
+            container: mapDivID,
+            style: 'mapbox://styles/patrickhanna242/cjs0x6hqx0co31fmqmxjluf1w',
+            center: center,
+            zoom: 14.5,
+            tap: false,
+        });
+        new mapboxgl.Marker({ color: "#0470d9" }).setLngLat(center).addTo(map);
+    }, []);
+
+    return <div className="MapSection">
+        <div className="content">
+            <div className="map-holder">
+                <div id={mapDivID} className="map"></div>
+            </div>
+            
+            <div className="text-content">
+                <div className="title">Come and pay us a visit!</div>
+                {/* <div className="line-separator"></div> */}
+                <div className="description">We are located at the junction of Balfour Avenue and Palm Beach Street, and we are open 7AM to 5:30PM, Monday to Friday</div>
+            </div>
+        </div>
+    </div>
+
+}

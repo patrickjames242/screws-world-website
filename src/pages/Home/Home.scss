@@ -1,4 +1,9 @@
 
+
+@mixin applyBlueThemeTextGradient{
+    @include applyTextGradient(linear-gradient(90deg, rgba(28,214,242,1) 0%, rgba(0,76,199,1) 100%));
+}
+
 @import 'helpers';
 .Home{
     > .ShowCase{
@@ -186,7 +191,7 @@
                     font-size: 2.5rem;
                     font-weight: bold;
                     
-                    @include applyTextGradient(linear-gradient(90deg, rgba(28,214,242,1) 0%, rgba(0,76,199,1) 100%));
+                    @include applyBlueThemeTextGradient;
                     color: colors(light-blue);
                 }
 
@@ -232,6 +237,87 @@
             }
         }
 
+    }
+
+    > .MapSection{
+        margin-top: 6.25rem;
+        > .content{
+
+
+            display: grid;
+            
+            
+            grid-template-columns: 1.5fr 1fr;
+            margin: auto;
+            $map-section-max-width: 1200px;
+            max-width: $map-section-max-width;
+
+            @include respondToNarrowWidth{
+                grid-template-columns: initial;
+                grid-template-rows: auto auto;
+            }
+            
+            > .map-holder{
+
+                > .map{
+                    height: 500px;
+
+                    --border-radius: 40px;
+                    $border-config: 0.625rem solid colors(light-gray-bg);
+                    @include setProps(border-bottom-right-radius border-top-right-radius, var(--border-radius));
+                    @include setProps(border-right border-top border-bottom, $border-config);
+
+                    @media(min-width: $map-section-max-width + 1){
+                        @include setProps(border-bottom-left-radius border-top-left-radius, var(--border-radius));
+                        @include setProps(border-left, $border-config);
+                    }
+
+                    @include respondToNarrowWidth{
+                        border-right: initial;
+                        --border-radius: 0;
+                        height: 60vw;
+                    }
+
+                }
+            }      
+            > .text-content{
+                $padding: 3.125rem;
+                @include setProps(padding-left padding-right, $padding);
+                
+                @include centerContentInGrid;
+                @include respondToNarrowWidth{
+                    grid-row: 1;
+                    text-align: center;
+                    max-width: 400px;
+                    margin: auto;
+                    padding-bottom: $padding;
+                }
+                
+                gap: 1.7rem;
+
+                > .title{
+                    font-size: 2.5rem;
+                    font-weight: bold;  
+                    @include applyBlueThemeTextGradient;   
+                }
+
+                > .line-separator{
+                    $height: 0.4rem;
+                    border-radius: $height / 2;
+                    background-color: colors(light-blue);
+                    width: 5rem;
+                    height: $height;
+                }
+
+                > .description{
+                    font-size: 1.25rem;
+                    line-height: 1.5;
+                    
+                }
+            }
+
+        }
+        
     }
 
 }
