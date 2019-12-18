@@ -259,25 +259,29 @@
             
             > .map-holder{
 
+                height: 500px;
+                overflow:hidden;
+                --border-radius: 40px;
+                
+                $border-config: 0.625rem solid colors(light-gray-bg);
+                @include setProps(border-bottom-right-radius border-top-right-radius, var(--border-radius));
+                @include setProps(border-right border-top border-bottom, $border-config);
+                z-index: 1;
+                
+                @media(min-width: $map-section-max-width + 1){
+                    @include setProps(border-bottom-left-radius border-top-left-radius, var(--border-radius));
+                    @include setProps(border-left, $border-config);
+                }
+
+                @include respondToNarrowWidth{
+                    border-right: initial;
+                    --border-radius: 0;
+                    height: 60vw;
+                }
+
                 > .map{
-                    height: 500px;
-
-                    --border-radius: 40px;
-                    $border-config: 0.625rem solid colors(light-gray-bg);
-                    @include setProps(border-bottom-right-radius border-top-right-radius, var(--border-radius));
-                    @include setProps(border-right border-top border-bottom, $border-config);
-
-                    @media(min-width: $map-section-max-width + 1){
-                        @include setProps(border-bottom-left-radius border-top-left-radius, var(--border-radius));
-                        @include setProps(border-left, $border-config);
-                    }
-
-                    @include respondToNarrowWidth{
-                        border-right: initial;
-                        --border-radius: 0;
-                        height: 60vw;
-                    }
-
+                    width: 100%;
+                    height: 100%;
                 }
             }      
             > .text-content{
