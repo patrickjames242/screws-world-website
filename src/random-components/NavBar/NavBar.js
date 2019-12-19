@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
 import './NavBar.scss';
@@ -59,40 +59,48 @@ SelectionType.routePaths = (() => {
 })();
 
 
-export default class NavBar extends React.Component {
+export default function NavBar(props) {
 
-    static propTypes = {
-        selectedItem: PropTypes.oneOf(SelectionType.getAll()).isRequired
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    function respondToMenuButtonTapped(){
+        setIsExpanded((isExpanded) => !isExpanded);
     }
 
-    render() {
-        const S = SelectionType;
-        return <div className="NavBar">
-            <div className="content">
-                <Link to="/" className="title-box">
-                    <div className="screw-logo-holder">{screwLogo}</div>
-                    <div className="text">
-                        <span>Screws</span>
-                        <span>World</span>
-                    </div>
-                </Link>
-                <div className="links-box">
-                    {
-                        [{ image: aboutUsIcon, item: S.aboutUs },
-                        { image: servicesIcon, item: S.services },
-                        { image: productsIcon, item: S.products },
-                        { image: contactIcon, item: S.contactUs }]
-                            .map((x, i) => {
-                                const name = SelectionType.getTextValueFor(x.item);
-                                const isSelected = this.props.selectedItem === x.item;
-                                return <NavBarLink text={name} image={x.image} item={x.item} isSelected={isSelected} key={i} />
-                            })
-                    }
+    const S = SelectionType;
+
+    const navBarClassName = "NavBar" + (isExpanded ? " expanded" : "");
+
+    return <div className={navBarClassName}>
+        <div className="nav-bar-content">
+            <Link to="/" className="title-box">
+                <div className="screw-logo-holder">{screwLogo}</div>
+                <div className="text">
+                    <span>Screws</span>
+                    <span>World</span>
                 </div>
-                <div className="menu-icon-holder">{menuIcon}</div>
+            </Link>
+            <div className="links-box">
+                {
+                    [{ image: aboutUsIcon, item: S.aboutUs },
+                    { image: servicesIcon, item: S.services },
+                    { image: productsIcon, item: S.products },
+                    { image: contactIcon, item: S.contactUs }]
+                        .map((x, i) => {
+                            const name = SelectionType.getTextValueFor(x.item);
+                            const isSelected = props.selectedItem === x.item;
+                            return <NavBarLink text={name} image={x.image} item={x.item} isSelected={isSelected} key={i} />
+                        })
+                }
             </div>
+            <button className="menu-icon-holder" onClick={respondToMenuButtonTapped}>{menuIcon}</button>
         </div>
-    }
+    </div>
+
+}
+
+NavBar.propTypes = {
+    selectedItem: PropTypes.oneOf(SelectionType.getAll()).isRequired
 }
 
 function NavBarLink(props) {

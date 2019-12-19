@@ -4,17 +4,42 @@
 
 .NavBar {
     
-    position: sticky;
+    position: fixed;
     top: 0;
     z-index: 100;
 
-    > .content{
-        box-shadow: 0px 0px 3.3rem 1rem rgba(colors(dark-blue), 0.9);
-        $insets: $nav-bar-insets;
-        border-radius: 20px;
-        background-color: colors(light-gray-bg);    
+    border-radius: 20px;
+    background-color: colors(light-gray-bg);    
+    box-shadow: 0px 0px 3.3rem 1rem rgba(colors(dark-blue), 0.9);
+
+
+    height: $nav-bar-height;
+    transition-duration: 0.4s;
+    transition-property: height;
+    // transition-timing-function: cubic-bezier(0.32, 0.08, 0.24, 1), cubic-bezier(0.52, 0.16, 0.24, 1);;
+
+    &.expanded{
+        height: 40rem;
+    }
+
+    
+    &::before{
+        content: '';
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right:0;
+        background-color: orange;
+        z-index: -100;
+    }
+
+    @include setProps(left right top, $nav-bar-insets);
+
+    .nav-bar-content{
+    
         height: $nav-bar-height;
-        @include setProps(margin-left margin-right margin-top, $insets);
+        
         @include setProps(padding-left padding-right, 1.5625rem);
 
         display: grid;
@@ -104,6 +129,7 @@
             height: $size;
             width: $size;
             display: none;
+            
             @include bounceOnHover(1.2);
             @media(max-width: $nav-bar-links-cut-off-point){
                 display: initial;
@@ -121,9 +147,4 @@
 }
 
 
-// because about-us icon is unusually larger than the other icons
-.NavBar > .links-box > :first-child svg{
-    @include setProps(height width, 30px);
-    margin-right: 5px;
-}
 

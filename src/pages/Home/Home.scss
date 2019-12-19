@@ -10,13 +10,24 @@
 
         $inset: 0.4375rem;
 
-        margin-top: -($nav-bar-height-from-top) + $inset;
+        margin-top: $nav-bar-height-from-top + $inset;
         @include setProps(margin-left margin-right, $inset);
-        padding-top: $nav-bar-height-from-top;
-        border-radius: 25px;
         
-        background: linear-gradient(310deg, rgba(20,37,94,1) 0%, rgba(29,161,242,1) 100%);
+        
+        
+        
         @include centerContentInGrid;
+
+        position: relative;
+
+        > .background-view{
+            position: absolute;
+            @include setProps(left right bottom, 0);
+            top: -(($inset * 2) + $nav-bar-height);
+            z-index: -1;
+            background: linear-gradient(310deg, rgba(20,37,94,1) 0%, rgba(29,161,242,1) 100%);
+            border-radius: 25px;
+        }
 
         > .center-content{
             max-width: 780px;

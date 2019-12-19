@@ -32,6 +32,7 @@ function ShowCase() {
     const productsPath = S.getRoutePathFor(S.products);
 
     return <div className="ShowCase">
+        <div className="background-view"></div>
         <div className="center-content">
             <h1 className="motto-title">Come, Let's Screw Your World!</h1>
             <p className="description-text">Screws and Fasteners World has screws, bolts and repair parts. We open for emergencies and sometimes on holidays.</p>
@@ -167,7 +168,7 @@ function MapSection() {
             <div className="text-content">
                 <div className="title">Come and pay us a visit!</div>
                 {/* <div className="line-separator"></div> */}
-                <div className="description">We are located at the junction of Balfour Avenue and Palm Beach Street, and we are open 7AM to 5:30PM, Monday to Friday</div>
+                <div className="description">We are located at the junction of Balfour Avenue and Palm Beach Street, and we are open 7AM to 5:30PM, Monday to Friday.</div>
             </div>
         </div>
     </div>

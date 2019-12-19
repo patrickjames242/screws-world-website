@@ -27,6 +27,15 @@ a{
     text-decoration: none;
 }
 
+button{
+    background-color: transparent;
+    border: none;
+}
+
+button:focus{
+    outline: none;
+}
+
 .App{
     height: 3000px;
 }
