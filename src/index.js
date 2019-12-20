@@ -22,9 +22,13 @@ function App() {
 
     const currentItem = NavBarSelection.getItemForRoutePath(history.location.pathname);
 
+    function respondToNavBarExpansionStateChange(isExpanded){
+        console.log("expansion state did change to", isExpanded);
+    }
+
     return <div className="App">
         <Router history={history}>
-            <NavBar selectedItem={currentItem} />
+            <NavBar selectedItem={currentItem} onExpansionStateChange={respondToNavBarExpansionStateChange}/>
             <PageComponentForCurrentRoute />
         </Router>
     </div>

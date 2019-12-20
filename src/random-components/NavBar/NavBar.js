@@ -11,6 +11,7 @@ import contactIcon from 'assets/nav-bar-icons/contact.js';
 import aboutUsIcon from 'assets/nav-bar-icons/about-us.js';
 
 import menuIcon from 'assets/nav-bar-icons/menu-icon.js';
+import { useUpdateEffect } from 'jshelpers';
 
 export const SelectionType = {
 
@@ -63,6 +64,11 @@ export default function NavBar(props) {
 
     const [isExpanded, setIsExpanded] = useState(false);
 
+    useUpdateEffect(() => {
+        let func = props.onExpansionStateChange;
+        if (func !== undefined){ func(isExpanded); }
+    }, [isExpanded])
+
     function respondToMenuButtonTapped(){
         setIsExpanded((isExpanded) => !isExpanded);
     }
@@ -100,7 +106,8 @@ export default function NavBar(props) {
 }
 
 NavBar.propTypes = {
-    selectedItem: PropTypes.oneOf(SelectionType.getAll()).isRequired
+    selectedItem: PropTypes.oneOf(SelectionType.getAll()).isRequired,
+    onExpansionStateChange: PropTypes.func
 }
 
 function NavBarLink(props) {

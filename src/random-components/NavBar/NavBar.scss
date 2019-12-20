@@ -23,16 +23,6 @@
     }
 
     
-    &::before{
-        content: '';
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right:0;
-        background-color: orange;
-        z-index: -100;
-    }
 
     @include setProps(left right top, $nav-bar-insets);
 
