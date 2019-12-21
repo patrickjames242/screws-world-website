@@ -14,8 +14,6 @@
         @include setProps(margin-left margin-right, $inset);
         
         
-        
-        
         @include centerContentInGrid;
 
         position: relative;
@@ -26,7 +24,7 @@
             top: -(($inset * 2) + $nav-bar-height);
             z-index: -1;
             background: linear-gradient(310deg, rgba(20,37,94,1) 0%, rgba(29,161,242,1) 100%);
-            border-radius: 25px;
+            border-radius: $nav-bar-border-radius + ($nav-bar-insets - $inset);
         }
 
         > .center-content{

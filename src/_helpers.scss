@@ -2,7 +2,18 @@
 $nav-bar-height: 5rem;
 $nav-bar-insets: 0.9375rem;
 $nav-bar-height-from-top: $nav-bar-height + $nav-bar-insets;
+$nav-bar-border-radius: 1.25rem;
 $max-narrow-width: 775px;
+$narrow-nav-cell-height: 5rem;
+$wide-nav-bar-links-cut-off-point: 976px;
+
+
+:export{
+    navBarHeight: $nav-bar-height;
+    totalNavBarHeightWhenExpanded: ($narrow-nav-cell-height * 4) + $nav-bar-height ;
+    maxNarrowWidth: $max-narrow-width;
+    wideNavBarLinksCutOffPoint: $wide-nav-bar-links-cut-off-point;
+}
 
 $theme-colors: (
     dark-blue: rgb(22, 33, 44),

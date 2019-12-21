@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
 import './NavBar.scss';
@@ -12,6 +12,8 @@ import aboutUsIcon from 'assets/nav-bar-icons/about-us.js';
 
 import menuIcon from 'assets/nav-bar-icons/menu-icon.js';
 import { useUpdateEffect } from 'jshelpers';
+import { animated, useSpring, config } from 'react-spring';
+import scssVariables from '_helpers.scss';
 
 export const SelectionType = {
 
@@ -60,24 +62,20 @@ SelectionType.routePaths = (() => {
 })();
 
 
+
+
+
+
+
+
+
+
 export default function NavBar(props) {
 
-    const [isExpanded, setIsExpanded] = useState(false);
+    const { toggleIsExpanded, springStyle } = useExpandCollapseFunctionality(props);
 
-    useUpdateEffect(() => {
-        let func = props.onExpansionStateChange;
-        if (func !== undefined){ func(isExpanded); }
-    }, [isExpanded])
 
-    function respondToMenuButtonTapped(){
-        setIsExpanded((isExpanded) => !isExpanded);
-    }
-
-    const S = SelectionType;
-
-    const navBarClassName = "NavBar" + (isExpanded ? " expanded" : "");
-
-    return <div className={navBarClassName}>
+    return <animated.div style={springStyle} className="NavBar">
         <div className="nav-bar-content">
             <Link to="/" className="title-box">
                 <div className="screw-logo-holder">{screwLogo}</div>
@@ -87,32 +85,82 @@ export default function NavBar(props) {
                 </div>
             </Link>
             <div className="links-box">
-                {
-                    [{ image: aboutUsIcon, item: S.aboutUs },
-                    { image: servicesIcon, item: S.services },
-                    { image: productsIcon, item: S.products },
-                    { image: contactIcon, item: S.contactUs }]
-                        .map((x, i) => {
-                            const name = SelectionType.getTextValueFor(x.item);
-                            const isSelected = props.selectedItem === x.item;
-                            return <NavBarLink text={name} image={x.image} item={x.item} isSelected={isSelected} key={i} />
-                        })
-                }
+                {getAllNavBarLinks(props.selectedItem)}
             </div>
-            <button className="menu-icon-holder" onClick={respondToMenuButtonTapped}>{menuIcon}</button>
+            <button className="menu-icon-holder" onClick={toggleIsExpanded}>{menuIcon}</button>
         </div>
-    </div>
+
+        <div className="narrow-links" >
+            {getAllNavBarLinks()}
+        </div>
+
+    </animated.div>
 
 }
 
 NavBar.propTypes = {
     selectedItem: PropTypes.oneOf(SelectionType.getAll()).isRequired,
-    onExpansionStateChange: PropTypes.func
+    onExpansionStateChange: PropTypes.func.isRequired,
+    delegateRef: PropTypes.object.isRequired
 }
+
+function useExpandCollapseFunctionality(props) {
+
+    const navBarHeight = scssVariables.navBarHeight;
+    const expandedNarrowNavBoxHeight = scssVariables.totalNavBarHeightWhenExpanded;
+
+    const [isExpanded, setIsExpanded] = useState(false);
+    const shouldAnimateNextExpandRef = useRef(true);
+
+
+    function toggleIsExpanded(){
+        setIsExpanded((prevState) => {
+            shouldAnimateNextExpandRef.current = true;
+            return !prevState;
+        })
+    }
+
+    props.delegateRef.setNavBarExpanded = function({ isExpanded, isAnimated = true}){
+        shouldAnimateNextExpandRef.current = isAnimated;
+        setIsExpanded(isExpanded);
+    };
+
+    const springStyle = useSpring({
+        to: { height: isExpanded ? expandedNarrowNavBoxHeight : navBarHeight },
+        config: {
+            tension: 275, 
+            friction: 30,
+            duration: shouldAnimateNextExpandRef.current ? undefined : 0,
+        }
+    });
+
+    useUpdateEffect(() => {
+        let func = props.onExpansionStateChange;
+        if (func !== undefined) { func(isExpanded); }
+    }, [isExpanded])
+
+
+    return { isExpanded, setIsExpanded, toggleIsExpanded, springStyle }
+}
+
+
+function getAllNavBarLinks(selectedItem){
+    const S = SelectionType;
+    return [{ image: aboutUsIcon, item: S.aboutUs },
+        { image: servicesIcon, item: S.services },
+        { image: productsIcon, item: S.products },
+        { image: contactIcon, item: S.contactUs }]
+            .map((x, i) => {
+                const name = SelectionType.getTextValueFor(x.item);
+                const isSelected = selectedItem === x.item;
+                return <NavBarLink text={name} image={x.image} item={x.item} isSelected={isSelected} key={i} />
+            });
+}
+
 
 function NavBarLink(props) {
     const path = SelectionType.getRoutePathFor(props.item);
-    return <NavLink exact to={path} activeClassName="selected">
+    return <NavLink className="NavBarLink" exact to={path} activeClassName="selected">
         <div className="icon-container">{props.image}</div>
         <div className="text-box">{props.text}</div>
     </NavLink>

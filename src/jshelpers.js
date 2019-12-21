@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react';
 
+import { useRef, useEffect } from 'react';
 
 export function useUpdateEffect(effect, dependencies) {
 
@@ -14,4 +14,5 @@ export function useUpdateEffect(effect, dependencies) {
         // eslint-disable-next-line
     }, dependencies);
 }
+
 

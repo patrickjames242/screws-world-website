@@ -148,15 +148,18 @@ function MapSection() {
     const mapDivID = "Home-Page-MapSection-map-view";
 
     useEffect(() => {
-        const center = { lon: -77.339006, lat: 25.052057 };
-        const map = new mapboxgl.Map({
-            container: mapDivID,
-            style: 'mapbox://styles/patrickhanna242/cjs0x6hqx0co31fmqmxjluf1w',
-            center: center,
-            zoom: 14.5,
-            tap: false,
-        });
-        new mapboxgl.Marker({ color: "#0470d9" }).setLngLat(center).addTo(map);
+        const timeOutID = setTimeout(() => {
+            const center = { lon: -77.339006, lat: 25.052057 };
+            const map = new mapboxgl.Map({
+                container: mapDivID,
+                style: 'mapbox://styles/patrickhanna242/cjs0x6hqx0co31fmqmxjluf1w',
+                center: center,
+                zoom: 14.5,
+                tap: false,
+            });
+            new mapboxgl.Marker({ color: "#0470d9" }).setLngLat(center).addTo(map);
+        }, 1000);
+        return () => clearTimeout(timeOutID);
     }, []);
 
     return <div className="MapSection">
@@ -164,7 +167,7 @@ function MapSection() {
             <div className="map-holder">
                 <div id={mapDivID} className="map"></div>
             </div>
-            
+
             <div className="text-content">
                 <div className="title">Come and pay us a visit!</div>
                 {/* <div className="line-separator"></div> */}
