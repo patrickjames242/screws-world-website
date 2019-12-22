@@ -202,6 +202,7 @@
                     
                     @include applyBlueThemeTextGradient;
                     color: colors(light-blue);
+                    
                 }
 
                 > .description{
@@ -245,16 +246,14 @@
                 }
             }
         }
-
     }
 
     > .MapSection{
         margin-top: 6.25rem;
+        margin-bottom: 10rem;
         > .content{
 
-
             display: grid;
-            
             
             grid-template-columns: 1.5fr 1fr;
             margin: auto;

@@ -12,7 +12,7 @@ import aboutUsIcon from 'assets/nav-bar-icons/about-us.js';
 
 import menuIcon from 'assets/nav-bar-icons/menu-icon.js';
 import { useUpdateEffect } from 'jshelpers';
-import { animated, useSpring, config } from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 import scssVariables from '_helpers.scss';
 
 export const SelectionType = {
@@ -128,8 +128,8 @@ function useExpandCollapseFunctionality(props) {
     const springStyle = useSpring({
         to: { height: isExpanded ? expandedNarrowNavBoxHeight : navBarHeight },
         config: {
-            tension: 275, 
-            friction: 30,
+            tension: 375, 
+            friction: isExpanded ? 28: 34,
             duration: shouldAnimateNextExpandRef.current ? undefined : 0,
         }
     });

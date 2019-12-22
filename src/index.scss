@@ -19,7 +19,6 @@ body{
     background-color: colors(dark-blue);
     color: white;
     font-family: Rubik;
-    // min-width: 400px;
 }
 
 a{
@@ -37,5 +36,7 @@ button:focus{
 }
 
 .App{
-    height: 3000px;
+    min-height: 100vh;
 }
+
+
