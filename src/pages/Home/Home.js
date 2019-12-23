@@ -11,12 +11,16 @@ import priceIcon from 'assets/home-screen-images/price.png';
 import toolsIcon from 'assets/home-screen-images/tools.png';
 
 import mapboxgl from 'mapbox-gl';
+
 mapboxgl.accessToken = 'pk.eyJ1IjoicGF0cmlja2hhbm5hMjQyIiwiYSI6ImNqcnh2eWVrczBydGo0OWx2dDUyYjhvNnMifQ.SGbGDXppFmFkdUnBxIyoqA';
+
 
 
 export default class Home extends React.Component {
     render() {
-        return <div className="Home">
+
+        
+        return <div className="Home">          
             <ShowCase />
             <FeaturesBox />
             <AdditionalInfoBox />
@@ -170,7 +174,6 @@ function MapSection() {
 
             <div className="text-content">
                 <div className="title">Come and pay us a visit!</div>
-                {/* <div className="line-separator"></div> */}
                 <div className="description">We are located at the junction of Balfour Avenue and Palm Beach Street, and we are open 7AM to 5:30PM, Monday to Friday.</div>
             </div>
         </div>

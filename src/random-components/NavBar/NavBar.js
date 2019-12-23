@@ -130,8 +130,8 @@ function useExpandCollapseFunctionality(props) {
         config: {
             tension: 375, 
             friction: isExpanded ? 28: 34,
-            duration: shouldAnimateNextExpandRef.current ? undefined : 0,
-        }
+        },
+        immediate: !shouldAnimateNextExpandRef.current
     });
 
     useUpdateEffect(() => {
