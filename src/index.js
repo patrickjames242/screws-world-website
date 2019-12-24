@@ -15,22 +15,61 @@ import Services from './pages/Services/Services';
 import Products from './pages/Products/Products';
 import ContactUs from './pages/ContactUs/ContactUs'
 
+{
+
+    const scrollPositionKey = "scroll-position";
+    const cachedScrollPosition = Number(sessionStorage.getItem(scrollPositionKey)) || 0;
+    {
+        const timeout = 150;
+        let iterations = 0;
+        const interval = 5;
+
+        const intervalID = setInterval(() => {
+            iterations += 1;
+            const currentTime = iterations * interval;
+
+            if (document.documentElement.scrollTop !== cachedScrollPosition) {
+                document.documentElement.scrollTop = cachedScrollPosition;
+            }
+
+            if (currentTime >= timeout) {
+                clearInterval(intervalID);
+            }
+
+        }, interval);
+    }
+
+    {
+        let timer;
+        window.addEventListener('scroll', () => {
+            timer && clearTimeout(timer);
+            timer = setTimeout(() => {
+                const scrollPosition = document.documentElement.scrollTop;
+                sessionStorage.setItem(scrollPositionKey, scrollPosition);
+            }, 100);
+        });
+    }
+
+}
+
+
 
 
 const wideNavBarLinksCutOffPoint = window.matchMedia(`(max-width: ${scssVariables.wideNavBarLinksCutOffPoint})`);
 
 
 function App() {
-
-
     const { navBarElement, backgroundDimmerElement } = useNavBarExpandCollapseFunctionality();
-    const currentPageElement = usePageTransitionFunctionality(backgroundDimmerElement);
+    const currentPageElement = usePageTransitionFunctionality();
 
-    return <div className="App" style={{ position: "relative", minHeight: "100vh"}}>
+    return <div className="App" style={{ position: "relative" }}>
         {navBarElement}
+        {backgroundDimmerElement}
         {currentPageElement}
     </div>
 }
+
+
 
 function useNavBarExpandCollapseFunctionality() {
 
@@ -50,17 +89,22 @@ function useNavBarExpandCollapseFunctionality() {
         }
 
         useEffect(() => {
-            history.listen(() => {
+            const unlisten = history.listen(() => {
                 navBarDelegateRef.setNavBarExpanded({ isExpanded: false });
             });
+            return unlisten;
         }, []);
 
         useEffect(() => {
-            wideNavBarLinksCutOffPoint.addListener((media) => {
+            const listener = (media) => {
                 if (media.matches === false) {
                     navBarDelegateRef.setNavBarExpanded({ isExpanded: false, isAnimated: false });
                 }
-            })
+            }
+            wideNavBarLinksCutOffPoint.addListener(listener);
+            return () => {
+                wideNavBarLinksCutOffPoint.removeListener(listener)
+            }
         }, []);
 
         const currentItem = NavBarSelection.getItemForRoutePath(history.location.pathname);
@@ -95,8 +139,7 @@ function useNavBarExpandCollapseFunctionality() {
 }
 
 
-
-function usePageTransitionFunctionality(backgroundDimmerElement) {
+function usePageTransitionFunctionality() {
 
     const animatedDivRefs = useRef({}).current;
 
@@ -112,45 +155,43 @@ function usePageTransitionFunctionality(backgroundDimmerElement) {
     const history = useHistory();
 
     function respondToOnStart(location, event) {
-        if (event !== "leave") { return; }
-        const divAboutToLeave = animatedDivRefs[location.pathname].current;
-        const scrollVal = document.documentElement.scrollTop;
-        if (divAboutToLeave.scrollTopWasAlreadySet || scrollVal === 0) { return; }
-
-        
-        divAboutToLeave.style.overflow = "hidden";
-        divAboutToLeave.style.bottom = "0";
-        divAboutToLeave.scrollTop = scrollVal;
-        divAboutToLeave.scrollTopWasAlreadySet = true;
+        if (event === "leave") {
+            const ref = animatedDivRefs[location.pathname];
+            if (!ref) { return; }
+            const divAboutToLeave = ref.current;
+            const scrollVal = document.documentElement.scrollTop;
+            if (divAboutToLeave.scrollTopWasAlreadySet || scrollVal === 0) { return; }
+            divAboutToLeave.style.overflow = "hidden";
+            divAboutToLeave.style.bottom = "0";
+            divAboutToLeave.scrollTop = scrollVal;
+            divAboutToLeave.scrollTopWasAlreadySet = true;
+        }
     }
 
     function respondToOnRest(location, event) {
         Object.values(animatedDivRefs).forEach(ref => {
-            if (!ref.current){return;}
+            if (!ref.current) { return; }
             ref.current.style.transform = "initial"
         });
-        
+
         if (event !== "leave") { return; }
         delete animatedDivRefs[location.pathname];
-        
     }
 
     const pageTransition = useTransition(history.location, l => l.pathname, {
-        from: { opacity: 0, transform: "translateY(20px) scale(0.95, 0.95)" },
-        enter: { opacity: 1, transform: "translateY(0) scale(1, 1)" },
+        from: { opacity: 0, transform: "translateY(1.25rem) scale(0.95, 0.95)" },
+        enter: { opacity: 1, transform: "translateY(0rem) scale(1, 1)" },
         leave: { opacity: 0 },
-        
         onStart: respondToOnStart,
         onRest: respondToOnRest,
     });
-
     return pageTransition.map(({ item, key, props }) => {
-        return <animated.div ref={animatedDivRefForPath(item.pathname)} key={key} style={{
+        return <animated.div className="the-class" ref={animatedDivRefForPath(item.pathname)} key={key} style={{
             position: "absolute",
             left: "0", right: "0", top: "0",
+            minHeight: "100vh",
             ...props
         }}>
-
             <Switch location={item}>
                 {NavBarSelection.getAll().map((x, i) => {
                     const Component = componentForSelection(x);
@@ -158,7 +199,6 @@ function usePageTransitionFunctionality(backgroundDimmerElement) {
                     return <Route key={i} exact path={path} component={Component} />
                 })}
             </Switch>
-            {backgroundDimmerElement}
         </animated.div>
     });
 }
@@ -182,13 +222,16 @@ function componentForSelection(selection) {
 function ScreenDimmer(props) {
     return <animated.div onClick={props.onClick} style={{
         backgroundColor: "rgba(0, 0, 0, 0.6)",
-        position: "absolute",
-        top: "0", left: "0", width: "100%", height: "100%",
-        // zIndex: "5",
+        position: "fixed",
+        top: "0", left: "0", bottom: "0", right: "0",
+        zIndex: "5",
         ...props.style,
     }} />
 }
 
 
+
+
 ReactDom.render(<Router><App /></Router>, document.getElementById('root'));
+
 
