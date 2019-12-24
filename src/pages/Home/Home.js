@@ -19,7 +19,6 @@ mapboxgl.accessToken = 'pk.eyJ1IjoicGF0cmlja2hhbm5hMjQyIiwiYSI6ImNqcnh2eWVrczByd
 export default class Home extends React.Component {
     render() {
 
-        
         return <div className="Home">          
             <ShowCase />
             <FeaturesBox />

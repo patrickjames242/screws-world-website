@@ -7,7 +7,6 @@ $max-narrow-width: 775px;
 $narrow-nav-cell-height: 5rem;
 $wide-nav-bar-links-cut-off-point: 976px;
 
-
 :export{
     navBarHeight: $nav-bar-height;
     totalNavBarHeightWhenExpanded: ($narrow-nav-cell-height * 4) + $nav-bar-height ;
@@ -26,6 +25,10 @@ $theme-colors: (
 @function colors($colorName){    
     @return map-get($map: $theme-colors, $key:$colorName);
 }
+
+
+
+
 
 @mixin applyTextGradient($linear-gradient){
     background: $linear-gradient;
