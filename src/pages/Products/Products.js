@@ -3,11 +3,6 @@ import './Products.scss';
 
 export default class Products extends React.Component{
     render(){
-        return <div style={{
-            marginTop: "200px",
-            fontSize: "40px",
-            fontWeight: "bold",
-            textAlign: "center",
-        }}>Products Page<br/>Coming Soon</div>
+        return <div className="page-comming-soon">Products Page Coming Soon</div>
     }
 }

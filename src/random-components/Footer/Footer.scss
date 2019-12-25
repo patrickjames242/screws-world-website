@@ -1,0 +1,74 @@
+
+@import 'helpers';
+
+.Footer{
+    
+    
+
+    margin: 0 auto;
+    @include setProps(padding-right padding-left, 3rem);
+    max-width: 70rem;
+    > .top-line{
+        $height: 0.5rem;
+        height: $height;
+        border-radius: $height / 2;
+        background: $blue-theme-gradient;
+    }
+
+    > .text-box{
+        
+        text-align: center;
+        margin-top: 3rem;
+        display: grid;
+        gap: 1rem;
+
+        > .title{
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: rgb(213, 224, 231);
+        }
+        > .description{
+            font-size: 1.1rem;
+            color: rgb(153, 168, 182);
+            justify-self: center;
+            max-width: 30rem;
+        }
+    }
+
+    > .contact-method-boxes{
+        margin-top: 2rem;
+        margin-bottom: 3rem;
+        display: grid;
+        grid-auto-flow: column;
+        justify-content: center;
+        gap: 3rem;
+
+        @media (max-width: 450px){
+            grid-auto-flow: row;
+            gap: 1.5rem;
+        }
+
+        > .ContactMethod{
+            display: grid;
+            gap: 0.4rem;
+            justify-items: center;
+            text-align: center;
+            line-height: 1.5;
+            > .platform{
+                font-size: 1.2rem;
+                font-weight: bold;
+                @include applyBlueThemeTextGradient;
+            }
+
+            > .info{
+                font-size: 1rem;
+                color: rgb(153, 168, 182);
+                     
+            }
+        }
+
+    }
+   
+}
+
+

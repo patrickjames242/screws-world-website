@@ -14,6 +14,8 @@ import AboutUs from './pages/AboutUs/AboutUs';
 import Services from './pages/Services/Services';
 import Products from './pages/Products/Products';
 import ContactUs from './pages/ContactUs/ContactUs'
+
+import Footer from './random-components/Footer/Footer';
 import { fixScrollingIssueBecauseOfTransitionAnimation } from 'jshelpers';
 
 
@@ -151,6 +153,7 @@ function usePageTransitionFunctionality() {
         onStart: respondToOnStart,
         onRest: respondToOnRest,
     });
+    
     return pageTransition.map(({ item, key, props }) => {
         return <animated.div ref={animatedDivRefForPath(item.pathname)} key={key} style={{
             position: "absolute",
@@ -165,6 +168,7 @@ function usePageTransitionFunctionality() {
                     return <Route key={i} exact path={path} component={Component} />
                 })}
             </Switch>
+            <Footer/>
         </animated.div>
     });
 }

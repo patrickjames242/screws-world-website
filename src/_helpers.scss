@@ -7,6 +7,8 @@ $max-narrow-width: 775px;
 $narrow-nav-cell-height: 5rem;
 $wide-nav-bar-links-cut-off-point: 976px;
 
+$blue-theme-gradient: linear-gradient(90deg, rgba(28,214,242,1) 0%, rgba(0,76,199,1) 100%);
+
 :export{
     navBarHeight: $nav-bar-height;
     totalNavBarHeightWhenExpanded: ($narrow-nav-cell-height * 4) + $nav-bar-height ;
@@ -35,6 +37,10 @@ $theme-colors: (
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+@mixin applyBlueThemeTextGradient{
+    @include applyTextGradient($blue-theme-gradient);
 }
 
 
