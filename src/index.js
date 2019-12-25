@@ -152,7 +152,7 @@ function usePageTransitionFunctionality() {
         onRest: respondToOnRest,
     });
     return pageTransition.map(({ item, key, props }) => {
-        return <animated.div className="the-class" ref={animatedDivRefForPath(item.pathname)} key={key} style={{
+        return <animated.div ref={animatedDivRefForPath(item.pathname)} key={key} style={{
             position: "absolute",
             left: "0", right: "0", top: "0",
             minHeight: "100vh",
@@ -199,5 +199,6 @@ function ScreenDimmer(props) {
 
 
 ReactDom.render(<Router><App /></Router>, document.getElementById('root'));
+
 
 
