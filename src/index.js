@@ -14,46 +14,10 @@ import AboutUs from './pages/AboutUs/AboutUs';
 import Services from './pages/Services/Services';
 import Products from './pages/Products/Products';
 import ContactUs from './pages/ContactUs/ContactUs'
-
-{
-
-    const scrollPositionKey = "scroll-position";
-    const cachedScrollPosition = Number(sessionStorage.getItem(scrollPositionKey)) || 0;
-    {
-        const timeout = 150;
-        let iterations = 0;
-        const interval = 5;
-
-        const intervalID = setInterval(() => {
-            iterations += 1;
-            const currentTime = iterations * interval;
-
-            if (document.documentElement.scrollTop !== cachedScrollPosition) {
-                document.documentElement.scrollTop = cachedScrollPosition;
-            }
-
-            if (currentTime >= timeout) {
-                clearInterval(intervalID);
-            }
-
-        }, interval);
-    }
-
-    {
-        let timer;
-        window.addEventListener('scroll', () => {
-            timer && clearTimeout(timer);
-            timer = setTimeout(() => {
-                const scrollPosition = document.documentElement.scrollTop;
-                sessionStorage.setItem(scrollPositionKey, scrollPosition);
-            }, 100);
-        });
-    }
-
-}
+import { fixScrollingIssueBecauseOfTransitionAnimation } from 'jshelpers';
 
 
-
+fixScrollingIssueBecauseOfTransitionAnimation();
 
 const wideNavBarLinksCutOffPoint = window.matchMedia(`(max-width: ${scssVariables.wideNavBarLinksCutOffPoint})`);
 
@@ -146,7 +110,7 @@ function usePageTransitionFunctionality() {
     function animatedDivRefForPath(pathname) {
         const divRef = animatedDivRefs[pathname];
         if (divRef) {
-            return divRef
+            return divRef;
         } else {
             return animatedDivRefs[pathname] = React.createRef();
         }
@@ -182,6 +146,8 @@ function usePageTransitionFunctionality() {
         from: { opacity: 0, transform: "translateY(1.25rem) scale(0.95, 0.95)" },
         enter: { opacity: 1, transform: "translateY(0rem) scale(1, 1)" },
         leave: { opacity: 0 },
+        config: {tension: 300, friction: 22.5},
+        
         onStart: respondToOnStart,
         onRest: respondToOnRest,
     });

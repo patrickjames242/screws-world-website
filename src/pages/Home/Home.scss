@@ -248,8 +248,109 @@
         }
     }
 
+
+
+    > .ReviewsSection{
+        $compress-width: 530px;
+        
+        margin-top: 6rem;
+        margin-bottom: 8rem;
+        display: grid;
+        
+        justify-content: center;
+        justify-items: center;
+        gap: 5rem;
+        .quotes-icon-holder{
+            svg{
+                fill: colors(light-blue);
+                $size: 6rem;
+                height: $size;
+                width: $size * 1.05;
+            }
+        }
+
+        @media(max-width: $compress-width){
+            margin-bottom: 6rem; 
+        }
+
+        $reviews-grid-side-padding: 2rem;
+
+        > .reviews-grid-container{
+            
+            max-width: 100%;
+            overflow: scroll;
+            
+            @include setProps(padding-left padding-right, $reviews-grid-side-padding);
+            @media(max-width: $compress-width){
+                padding: 0.2px;
+                padding-bottom: 2rem;
+            }
+        }   
+
+        > .reviews-grid-container > .reviews-grid{
+            
+            display: inline-grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            
+            
+            
+            @media(max-width: $compress-width){
+                @include setProps(margin-left margin-right, $reviews-grid-side-padding);
+                grid-template-columns: auto;
+                grid-auto-rows: auto;
+                grid-auto-flow: column;
+            }
+
+            > .Review {
+                $max-width: 22rem;
+                max-width: $max-width;
+                
+                padding: 1.7rem;
+                background-color: colors(light-dark-blue);
+                border-radius: 1rem;
+                display: grid;
+                gap: 1.5rem;
+                
+                font-size: 1.2rem;
+
+                @media(max-width: $compress-width){
+                    width: calc(70vw - 1rem);
+                }
+
+                
+
+                > .review-text{
+                    line-height: 1.5;
+                    font-size: 1.2rem;
+                    color: lightgray;
+                }
+                
+                > .author-box{
+                    text-align: right;
+                    display: grid;
+                    gap: 0.4rem;
+                    
+                    > .title{
+                        font-size: 1.1rem;
+                        font-weight: bold;
+                    }
+                    
+                    > .profession{
+                        text-transform: uppercase;
+                        font-size: 0.8rem;
+                        font-weight: bold;
+                        color: colors(light-blue);
+                    } 
+                }
+            }
+        }
+
+        
+    }
+
+
     > .MapSection{
-        margin-top: 6.25rem;
         margin-bottom: 10rem;
         > .content{
 

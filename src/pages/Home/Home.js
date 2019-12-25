@@ -9,7 +9,7 @@ import './Home.scss';
 import customerServiceIcon from 'assets/home-screen-images/icon-people.png';
 import priceIcon from 'assets/home-screen-images/price.png';
 import toolsIcon from 'assets/home-screen-images/tools.png';
-
+import quotesIcon from './quotes-icon.js';
 import mapboxgl from 'mapbox-gl';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoicGF0cmlja2hhbm5hMjQyIiwiYSI6ImNqcnh2eWVrczBydGo0OWx2dDUyYjhvNnMifQ.SGbGDXppFmFkdUnBxIyoqA';
@@ -18,11 +18,11 @@ mapboxgl.accessToken = 'pk.eyJ1IjoicGF0cmlja2hhbm5hMjQyIiwiYSI6ImNqcnh2eWVrczByd
 
 export default class Home extends React.Component {
     render() {
-
-        return <div className="Home">          
+        return <div className="Home">
             <ShowCase />
             <FeaturesBox />
             <AdditionalInfoBox />
+            <ReviewsSection />
             <MapSection />
         </div>
     }
@@ -143,6 +143,48 @@ function AdditionalInfoBox() {
 }
 
 
+function ReviewsSection() {
+
+
+
+    function Review({ text, author, authorTitle }) {
+        return <div className="Review">
+            <div className="review-text">{text}</div>
+
+            <div className="author-box">
+                <div className="title">{"- " + author}</div>
+                <div className="profession">{authorTitle}</div>
+            </div>
+
+        </div>
+    }
+
+    return <div className="ReviewsSection">
+        <div className="quotes-icon-holder">{quotesIcon}</div>
+        <div className="reviews-grid-container">
+            <div className="reviews-grid">
+                {reviews.map((x, i) => {
+                    return <Review key={i} text={x.text} author={x.author} authorTitle={x.authorTitle} />
+                })}
+            </div>
+        </div>
+
+    </div>
+}
+
+const reviews = (() => {
+    let x = [];
+    for (let i = 1; i <= 4; i++) {
+        x.push({
+            text: "Lorem ipsum dolor sit amet consect adipisi elit. Harum, vel!",
+            author: "Charles Sawyer",
+            authorTitle: "Local Carpenter",
+
+        })
+    }
+    return x;
+})();
+
 
 
 
@@ -179,3 +221,5 @@ function MapSection() {
     </div>
 
 }
+
+
