@@ -6,7 +6,7 @@
     
 
     margin: 0 auto;
-    @include setProps(padding-right padding-left, 3rem);
+    @include setProps(padding-right padding-left, 2rem);
     max-width: 70rem;
     > .top-line{
         $height: 0.5rem;
@@ -16,7 +16,7 @@
     }
 
     > .text-box{
-        
+        @include setProps(padding-left padding-right, 1.5rem);
         text-align: center;
         margin-top: 3rem;
         display: grid;
