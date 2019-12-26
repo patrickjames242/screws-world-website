@@ -43,7 +43,7 @@
         justify-content: center;
         gap: 3rem;
 
-        @media (max-width: 450px){
+        @media (max-width: 560px){
             grid-auto-flow: row;
             gap: 1.5rem;
         }
