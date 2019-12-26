@@ -131,6 +131,7 @@ function usePageTransitionFunctionality() {
             divAboutToLeave.style.bottom = "0";
             divAboutToLeave.scrollTop = scrollVal;
             divAboutToLeave.scrollTopWasAlreadySet = true;
+            document.documentElement.scrollTop = 0;
         }
     }
 
@@ -153,7 +154,7 @@ function usePageTransitionFunctionality() {
         onStart: respondToOnStart,
         onRest: respondToOnRest,
     });
-    
+
     return pageTransition.map(({ item, key, props }) => {
         return <animated.div ref={animatedDivRefForPath(item.pathname)} key={key} style={{
             position: "absolute",
@@ -172,8 +173,6 @@ function usePageTransitionFunctionality() {
         </animated.div>
     });
 }
-
-
 
 function componentForSelection(selection) {
     const S = NavBarSelection;
