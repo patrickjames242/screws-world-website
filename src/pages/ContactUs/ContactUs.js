@@ -1,9 +1,8 @@
 
 import React, { useRef } from 'react';
-import PropTypes from 'prop-types';
 import './ContactUs.scss';
 import { SCREWS_WORLD_EMAIL, SCREWS_WORLD_NUMBER } from 'jshelpers';
-
+import PageHeader from 'random-components/PageHeader/PageHeader';
 
 export default function ContactUs() {
 
@@ -124,19 +123,4 @@ TextField.Type = {
 
 
 
-
-function PageHeader({ title, subtitle, className = "" }) {
-    return <div className={"PageHeader " + className}>
-        <div className="text-content">
-            <div className="title">{title}</div>
-            <div className="subtitle">{subtitle}</div>
-        </div>
-    </div>
-}
-
-PageHeader.propTypes = {
-    className: PropTypes.string,
-    title: PropTypes.string.isRequired,
-    subtitle: PropTypes.string.isRequired,
-}
 
