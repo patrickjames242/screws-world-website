@@ -15,9 +15,7 @@
         > .PageHeader{
             --top-and-bottom-margins: 8rem;
             @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
-            @media(max-width: 520px){
-                --top-and-bottom-margins: 6rem;
-            }
+            
         }
 
         > .body-content-holder{
@@ -98,7 +96,14 @@
             }
         }
     }
-    margin-bottom: 8rem;
+    margin-bottom: 7.1rem;
+
+    @media(max-width: 520px){
+        > .content > .PageHeader{
+            --top-and-bottom-margins: 6rem;
+        }
+        margin-bottom: 6rem;
+    }
 }
 
 .ContactUs .TextField{
