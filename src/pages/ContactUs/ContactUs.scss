@@ -6,9 +6,12 @@
     > .content{
         margin-top: $nav-bar-height-from-top;
         max-width: 60rem;
+        --content-padding: 2.5rem;
         @include setProps(margin-left margin-right, auto);
-        @include setProps(padding-left padding-right, 2.5rem);
-
+        @include setProps(padding-left padding-right, var(--content-padding));
+        @include respondToNarrowWidth{
+            --content-padding: 2rem;
+        }
         > .PageHeader{
             --top-and-bottom-margins: 8rem;
             @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
@@ -59,6 +62,7 @@
                     @include bounceOnHover;
                 }
             }
+
             > .contact-methods-holder{
                 margin-top: 2rem;
                 display: grid;
@@ -104,7 +108,7 @@
 
     > .top-text{
         margin-left: $text-input-padding;
-        font-size: 0.9rem;    
+        font-size: 1rem;    
         font-weight: bold;
     }
 
@@ -118,7 +122,7 @@
         border-radius: 0.7rem;
         padding: $text-input-padding;
         color: white;
-        font-size: 1.2rem;
+        font-size: 16px;
         &::placeholder{
             color: rgb(136, 153, 166);
         }
@@ -133,8 +137,6 @@
         background-color: transparent;
     }
 
-    
-    
 }
 
 
