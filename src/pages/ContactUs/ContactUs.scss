@@ -10,8 +10,9 @@
         @include setProps(margin-left margin-right, auto);
         @include setProps(padding-left padding-right, var(--content-padding));
         @include respondToNarrowWidth{
-            --content-padding: 2rem;
+            --content-padding: 1.8rem;
         }
+
         > .PageHeader{
             --top-and-bottom-margins: 8rem;
             @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
@@ -111,10 +112,16 @@
     gap: 1rem;
     $text-input-padding: 1.2rem;
 
+    @mixin configureTransition($transition-properties){
+        transition-property: $transition-properties;
+        transition-duration: 0.3s;
+    }
+
     > .top-text{
         margin-left: $text-input-padding;
         font-size: 1rem;    
         font-weight: bold;
+        @include configureTransition(color);
     }
 
     &.active > .top-text{
@@ -127,7 +134,11 @@
         border-radius: 0.7rem;
         padding: $text-input-padding;
         color: white;
-        font-size: 16px;
+        font-size: 1.2rem;
+        @include configureTransition(border background-color);
+        @include respondToNarrowWidth{
+            font-size: 16px;
+        }
         &::placeholder{
             color: rgb(136, 153, 166);
         }
