@@ -1,1 +1,185 @@
 @import 'helpers';
+
+
+
+.ContactUs{
+    > .content{
+        margin-top: $nav-bar-height-from-top;
+        max-width: 60rem;
+        @include setProps(margin-left margin-right, auto);
+        @include setProps(padding-left padding-right, 2.5rem);
+
+        > .PageHeader{
+            --top-and-bottom-margins: 8rem;
+            @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
+            @media(max-width: 520px){
+                --top-and-bottom-margins: 6rem;
+            }
+        }
+
+        > .body-content-holder{
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            align-items: start;
+            gap: 4rem;
+
+            @mixin respondToNarrowDesktopSnapPoint{
+                @media(max-width: 920px){
+                    @content;
+                }
+            }
+
+            @include respondToNarrowDesktopSnapPoint{
+                grid-template-columns: 3fr 1fr;
+                gap: 2.5rem;
+            }
+
+            @include respondToNarrowWidth{
+                grid-template-columns: initial;
+            }
+
+            > .text-fields{
+                display: grid;
+                gap: 2rem;
+                > .submit-button{
+                    $font-size: 1rem;
+                    $top-and-bottom-padding: 1rem;
+                    $height: ($top-and-bottom-padding * 2) + $font-size;
+
+                    background-color: rgb(13, 137, 218);
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    
+                    font-size: $font-size;
+                    justify-self: end;
+                    height: $height;
+                    @include setProps(padding-left padding-right, 1.6rem);
+                    border-radius: $height / 2;
+                    
+                    @include bounceOnHover;
+                }
+            }
+            > .contact-methods-holder{
+                margin-top: 2rem;
+                display: grid;
+                justify-items: start;
+                gap: 2rem;
+
+                @include respondToNarrowWidth{
+                    display: none;
+                }
+                > .contact-method{
+                    display: grid;
+                    gap: 0.8rem;
+                    justify-items: start;
+                    
+                    > .title{
+                        @include applyBlueThemeTextGradient;
+                        font-weight: bold;
+                        font-size: 1.7rem;
+                        @include respondToNarrowDesktopSnapPoint{
+                            font-size: 1.4rem;
+                        }
+                    }
+
+                    > .info{
+                        font-size: 1.2rem;
+                        color: colors(grayish-blue-text);
+
+                        @include respondToNarrowDesktopSnapPoint{
+                            font-size: 1rem;    
+                        }
+                    }
+                }
+            }
+        }
+    }
+    margin-bottom: 8rem;
+}
+
+.ContactUs .TextField{
+    display: grid;
+    gap: 1rem;
+    $text-input-padding: 1.2rem;
+
+    > .top-text{
+        margin-left: $text-input-padding;
+        font-size: 0.9rem;    
+        font-weight: bold;
+    }
+
+    &.active > .top-text{
+        color: colors(light-blue);
+    }
+
+    > .text-input{
+        background-color: colors(light-gray-bg);
+        border: 2px solid transparent;
+        border-radius: 0.7rem;
+        padding: $text-input-padding;
+        color: white;
+        font-size: 1.2rem;
+        &::placeholder{
+            color: rgb(136, 153, 166);
+        }
+    }
+
+    > textarea{
+        height: 9rem;
+    }
+
+    &.active > .text-input{
+        border: 2px solid colors(light-blue);
+        background-color: transparent;
+    }
+
+    
+    
+}
+
+
+.PageHeader{
+
+    $line-width: 0.5rem;
+    $line-text-spacing: 2.5rem;
+
+    @mixin respondToSmallSnapPoint{
+        @media (max-width: 520px){
+            @content;
+        }
+    }
+
+    .text-content{
+        display: grid;
+        gap: 1.5rem;        
+        max-width: 50rem;
+        margin-left: $line-width + $line-text-spacing;
+        > .title{
+            font-weight: bold;
+            font-size: 4rem;
+
+            @include respondToSmallSnapPoint{
+                font-size: 3rem;
+            }
+        }
+
+        > .subtitle{
+            font-size: 1.5rem;
+            color: colors(grayish-blue-text);
+            @include respondToSmallSnapPoint{
+                font-size: 1.2rem;
+            }
+        }
+
+        position: relative;
+        &::before{
+            content: '';
+            position: absolute;
+            background: blueThemeGradient(vertical);
+            width: $line-width;
+            border-radius: $line-width / 2;
+            @include setProps(top bottom, -1rem);
+            left: -($line-width + $line-text-spacing);
+        }
+    }
+}

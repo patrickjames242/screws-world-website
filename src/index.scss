@@ -29,12 +29,20 @@ a{
 button{
     background-color: transparent;
     border: none;
+    color: inherit;
+    font-size: inherit;
+    cursor: pointer;
 }
 
-button:focus{
+
+button:focus, input:focus, textarea:focus{
     outline: none;
-}
+}   
 
+textarea{
+    resize: none;
+    font-family: inherit;
+}
 
 
 
@@ -52,3 +60,12 @@ button:focus{
 
     max-width: 15rem;
 }
+
+
+
+
+
+
+
+
+

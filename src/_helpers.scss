@@ -7,7 +7,22 @@ $max-narrow-width: 775px;
 $narrow-nav-cell-height: 5rem;
 $wide-nav-bar-links-cut-off-point: 976px;
 
-$blue-theme-gradient: linear-gradient(90deg, rgba(28,214,242,1) 0%, rgba(0,76,199,1) 100%);
+
+// direction accepts either "horizontal" or "vertical"
+@function blueThemeGradient($direction){
+    $deg: 0;
+    @if $direction == "horizontal"{
+        $deg: 90deg;
+    } @else if $direction == "vertical"{
+        $deg: 180deg;
+    } @else {
+        @error "invalid direction string sent to blueThemeGradient function";
+    }
+    @return linear-gradient($deg, rgba(28,214,242,1) 0%, rgba(0,76,199,1) 100%);
+    
+}
+
+
 
 :export{
     navBarHeight: $nav-bar-height;
@@ -22,6 +37,7 @@ $theme-colors: (
     light-gray-bg: rgb(37, 51, 65),
     light-blue: #1da1f2,
     white-dimmed-blue: rgb(207, 235, 252),
+    grayish-blue-text: rgb(153, 168, 182),
 );
 
 @function colors($colorName){    
@@ -39,10 +55,9 @@ $theme-colors: (
     -webkit-text-fill-color: transparent;
 }
 
-@mixin applyBlueThemeTextGradient{
-    @include applyTextGradient($blue-theme-gradient);
+@mixin applyBlueThemeTextGradient($gradient-direction: horizontal){
+    @include applyTextGradient(blueThemeGradient($gradient-direction));
 }
-
 
 /// returns a gray color according to the value given. EXPECTS A DECIMAL!!!
 @function gray($levelOfGrayness){
@@ -133,3 +148,16 @@ $theme-colors: (
 
 
 
+
+
+
+@mixin setCustomScrollBarStyle{
+    $scroll-bar-size: 0.8rem;
+    &::-webkit-scrollbar {
+        @include setProps(width height, $scroll-bar-size);
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: $scroll-bar-size / 2;
+        background-color: colors(light-gray-bg);
+    }
+}

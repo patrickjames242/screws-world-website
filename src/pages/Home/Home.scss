@@ -263,7 +263,7 @@
                 fill: colors(light-blue);
                 $size: 5rem;
                 height: $size;
-                width: $size * 1.05;
+                width: $size * 1.5;
             }
         }
 
@@ -279,6 +279,7 @@
             
             
             @include setProps(padding-left padding-right, $reviews-grid-side-padding);
+            @include setCustomScrollBarStyle;
             @media(max-width: $compress-width){
                 overflow-x: scroll;
                 padding: 0.2px;
@@ -291,8 +292,6 @@
             display: inline-grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
-            
-            
             
             @media(max-width: $compress-width){
                 @include setProps(margin-left margin-right, $reviews-grid-side-padding);

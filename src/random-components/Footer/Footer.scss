@@ -3,16 +3,15 @@
 
 .Footer{
     
-    
-
     margin: 0 auto;
     @include setProps(padding-right padding-left, 2rem);
     max-width: 70rem;
+
     > .top-line{
         $height: 0.5rem;
         height: $height;
         border-radius: $height / 2;
-        background: $blue-theme-gradient;
+        background: blueThemeGradient(horizontal);
     }
 
     > .text-box{
@@ -27,9 +26,10 @@
             font-weight: bold;
             color: rgb(213, 224, 231);
         }
+        
         > .description{
             font-size: 1.2rem;
-            color: rgb(153, 168, 182);
+            color: colors(grayish-blue-text);
             justify-self: center;
             max-width: 30rem;
         }
@@ -62,7 +62,7 @@
 
             > .info{
                 font-size: 1.1rem;
-                color: rgb(153, 168, 182);
+                color: colors(grayish-blue-text);
                      
             }
         }
