@@ -1,6 +1,5 @@
 
 import React, { useState, useRef } from 'react';
-import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
 import './NavBar.scss';
 
@@ -15,65 +14,24 @@ import { useUpdateEffect } from 'jshelpers';
 import { animated, useSpring } from 'react-spring';
 import scssVariables from '_helpers.scss';
 
-export const SelectionType = {
+import {SelectionType, getInfoForSelection} from './SelectionType';
 
-    home: Symbol('home'),
-    aboutUs: Symbol('aboutUs'),
-    services: Symbol('services'),
-    products: Symbol('products'),
-    contactUs: Symbol('contactUs'),
 
-    getAll() {
-        return [this.home, this.aboutUs, this.services, this.products, this.contactUs];
-    },
-
-    getTextValueFor(item) {
-        switch (item) {
-            case this.home: return 'home';
-            case this.aboutUs: return 'about us';
-            case this.services: return 'services';
-            case this.products: return 'products';
-            case this.contactUs: return 'contact Us';
-            default: throw new Error("invalid item sent to 'getTextValueFor'");
-        }
-    },
-
-    getRoutePathFor(item) {
-        return this.routePaths[item];
-    },
-
-    getItemForRoutePath(routePath) {
-        const result = Object
-            .getOwnPropertySymbols(this.routePaths)
-            .find(x => this.routePaths[x] === routePath);
-        return result;
-    }
+export interface NavBarDelegateRef{
+    setNavBarExpanded?: (options: {isExpanded: boolean, isAnimated?: boolean})  => void;
 }
 
-SelectionType.routePaths = (() => {
-    const s = SelectionType;
-    return {
-        [s.home]: '/',
-        [s.aboutUs]: '/about-us',
-        [s.services]: '/services',
-        [s.products]: '/products',
-        [s.contactUs]: '/contact-us'
-    }
-})();
+
+export interface NavBarProps{
+    selectedItem: SelectionType;
+    delegateRef: NavBarDelegateRef;
+    onExpansionStateChange?: (isExpanded: boolean) => void;
+}
 
 
-
-
-
-
-
-
-
-
-export default function NavBar(props) {
+export default function NavBar(props: NavBarProps) {
 
     const { toggleIsExpanded, springStyle } = useExpandCollapseFunctionality(props);
-
 
     return <animated.div style={springStyle} className="NavBar">
         <div className="nav-bar-content">
@@ -85,26 +43,21 @@ export default function NavBar(props) {
                 </div>
             </Link>
             <div className="links-box">
-                {getAllNavBarLinks(props.selectedItem)}
+                {getAllNavBarLinks()}
             </div>
             <button className="menu-icon-holder" onClick={toggleIsExpanded}>{menuIcon}</button>
         </div>
 
-        <div className="narrow-links" >
+        <div className="narrow-links">
             {getAllNavBarLinks()}
         </div>
 
     </animated.div>
-
 }
 
-NavBar.propTypes = {
-    selectedItem: PropTypes.oneOf(SelectionType.getAll()).isRequired,
-    onExpansionStateChange: PropTypes.func.isRequired,
-    delegateRef: PropTypes.object.isRequired
-}
 
-function useExpandCollapseFunctionality(props) {
+
+function useExpandCollapseFunctionality(props: NavBarProps) {
 
     const navBarHeight = scssVariables.navBarHeight;
     const expandedNarrowNavBoxHeight = scssVariables.totalNavBarHeightWhenExpanded;
@@ -135,41 +88,36 @@ function useExpandCollapseFunctionality(props) {
     });
 
     useUpdateEffect(() => {
-        let func = props.onExpansionStateChange;
-        if (func !== undefined) { func(isExpanded); }
+        if (props.onExpansionStateChange){
+            props.onExpansionStateChange(isExpanded);
+        }
     }, [isExpanded])
-
 
     return { isExpanded, setIsExpanded, toggleIsExpanded, springStyle }
 }
 
 
-function getAllNavBarLinks(selectedItem){
+function getAllNavBarLinks(){
     const S = SelectionType;
-    return [{ image: aboutUsIcon, item: S.aboutUs },
-        { image: servicesIcon, item: S.services },
-        { image: productsIcon, item: S.products },
-        { image: contactIcon, item: S.contactUs }]
+    
+    return [{ image: aboutUsIcon, item: S.AboutUs },
+        { image: servicesIcon, item: S.Services },
+        { image: productsIcon, item: S.Products },
+        { image: contactIcon, item: S.ContactUs }]
             .map((x, i) => {
-                const name = SelectionType.getTextValueFor(x.item);
-                const isSelected = selectedItem === x.item;
-                return <NavBarLink text={name} image={x.image} item={x.item} isSelected={isSelected} key={i} />
+                const name = getInfoForSelection(x.item).textValue;
+                return <NavBarLink text={name} image={x.image} item={x.item} key={i} />
             });
 }
 
 
-function NavBarLink(props) {
-    const path = SelectionType.getRoutePathFor(props.item);
+function NavBarLink(props: {item: SelectionType, image: React.ReactElement<any, any>, text: string}) {
+    const path = getInfoForSelection(props.item).routePath;
     return <NavLink className="NavBarLink" exact to={path} activeClassName="selected">
         <div className="icon-container">{props.image}</div>
         <div className="text-box">{props.text}</div>
     </NavLink>
 }
 
-NavBarLink.propTypes = {
-    text: PropTypes.string.isRequired,
-    image: PropTypes.element.isRequired,
-    isSelected: PropTypes.bool.isRequired,
-    item: PropTypes.oneOf(SelectionType.getAll()).isRequired
-}
+
 

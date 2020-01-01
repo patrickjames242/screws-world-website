@@ -7,8 +7,8 @@ import { animated, useTransition } from 'react-spring';
 
 import './index.scss';
 import scssVariables from './_helpers.scss';
-
-import NavBar, { SelectionType as NavBarSelection } from './random-components/NavBar/NavBar';
+import {SelectionType as NavBarSelection, getAllSelections, getSelectionItemForRoutePath, getInfoForSelection} from './random-components/NavBar/SelectionType';
+import NavBar, { NavBarDelegateRef } from './random-components/NavBar/NavBar';
 import Home from './pages/Home/Home';
 import AboutUs from './pages/AboutUs/AboutUs';
 import Services from './pages/Services/Services';
@@ -41,7 +41,7 @@ function useNavBarExpandCollapseFunctionality() {
 
 
     const [shouldDisplayDimmer, setShouldDisplayDimmer] = useState(false);
-    const navBarDelegateRef = {};
+    const navBarDelegateRef: NavBarDelegateRef = {};
     const history = useHistory();
 
 
@@ -49,22 +49,26 @@ function useNavBarExpandCollapseFunctionality() {
 
     const navBarElement = (() => {
 
-        function respondToNavBarExpansionStateChange(isExpanded) {
+        function respondToNavBarExpansionStateChange(isExpanded: boolean) {
             document.body.style.overflow = isExpanded ? "hidden" : "initial";
             setShouldDisplayDimmer(isExpanded);
         }
 
         useEffect(() => {
             const unlisten = history.listen(() => {
-                navBarDelegateRef.setNavBarExpanded({ isExpanded: false });
+                if (navBarDelegateRef.setNavBarExpanded){
+                    navBarDelegateRef.setNavBarExpanded({ isExpanded: false });
+                }
             });
             return unlisten;
         }, []);
 
         useEffect(() => {
-            const listener = (media) => {
+            const listener = (media: MediaQueryListEvent) => {
                 if (media.matches === false) {
-                    navBarDelegateRef.setNavBarExpanded({ isExpanded: false, isAnimated: false });
+                    if (navBarDelegateRef.setNavBarExpanded){
+                        navBarDelegateRef.setNavBarExpanded({ isExpanded: false, isAnimated: false });
+                    }
                 }
             }
             wideNavBarLinksCutOffPoint.addListener(listener);
@@ -73,7 +77,8 @@ function useNavBarExpandCollapseFunctionality() {
             }
         }, []);
 
-        const currentItem = NavBarSelection.getItemForRoutePath(history.location.pathname);
+        
+        const currentItem = getSelectionItemForRoutePath(history.location.pathname)!;
 
         return <NavBar selectedItem={currentItem} onExpansionStateChange={respondToNavBarExpansionStateChange} delegateRef={navBarDelegateRef} />
 
@@ -89,7 +94,10 @@ function useNavBarExpandCollapseFunctionality() {
         });
 
         function respondToScreenDimmerClick() {
-            navBarDelegateRef.setNavBarExpanded({ isExpanded: false });
+            if (navBarDelegateRef.setNavBarExpanded){
+                navBarDelegateRef.setNavBarExpanded({ isExpanded: false });
+            }
+            
         }
 
         return backgroundDimmerTransition.map(({ item, key, props }) => {
@@ -104,12 +112,20 @@ function useNavBarExpandCollapseFunctionality() {
 
 }
 
+interface IndexableObject<ResultType>{
+    [i: string]: ResultType; 
+}
 
 function usePageTransitionFunctionality() {
 
-    const animatedDivRefs = useRef({}).current;
 
-    function animatedDivRefForPath(pathname) {
+
+    type DivRefType = React.RefObject<HTMLDivElement & {scrollTopWasAlreadySet?: boolean}>;
+        
+    
+    const animatedDivRefs = useRef<IndexableObject<DivRefType>>({}).current;
+
+    function animatedDivRefForPath(pathname: string): DivRefType {
         const divRef = animatedDivRefs[pathname];
         if (divRef) {
             return divRef;
@@ -120,22 +136,21 @@ function usePageTransitionFunctionality() {
 
     const history = useHistory();
 
-    function respondToOnStart(location, event) {
+    function respondToOnStart(location: Location, event: string) {
         if (event === "leave") {
-            const ref = animatedDivRefs[location.pathname];
-            if (!ref) { return; }
-            const divAboutToLeave = ref.current;
+            const ref = animatedDivRefs[location.pathname]?.current;
+            if (!ref){return}
             const scrollVal = document.documentElement.scrollTop;
-            if (divAboutToLeave.scrollTopWasAlreadySet || scrollVal === 0) { return; }
-            divAboutToLeave.style.overflow = "hidden";
-            divAboutToLeave.style.bottom = "0";
-            divAboutToLeave.scrollTop = scrollVal;
-            divAboutToLeave.scrollTopWasAlreadySet = true;
+            if (ref.scrollTopWasAlreadySet || scrollVal === 0) { return; }
+            ref.style.overflow = "hidden";
+            ref.style.bottom = "0";
+            ref.scrollTop = scrollVal;
+            ref.scrollTopWasAlreadySet = true;
             document.documentElement.scrollTop = 0;
         }
     }
 
-    function respondToOnRest(location, event) {
+    function respondToOnRest(location: Location, event: string) {
         Object.values(animatedDivRefs).forEach(ref => {
             if (!ref.current) { return; }
             ref.current.style.transform = "initial"
@@ -145,15 +160,20 @@ function usePageTransitionFunctionality() {
         delete animatedDivRefs[location.pathname];
     }
 
+    
+
     const pageTransition = useTransition(history.location, l => l.pathname, {
         from: { opacity: 0, transform: "translateY(1.25rem) scale(0.95, 0.95)" },
         enter: { opacity: 1, transform: "translateY(0rem) scale(1, 1)" },
         leave: { opacity: 0 },
         config: {tension: 300, friction: 22.5},
         
-        onStart: respondToOnStart,
-        onRest: respondToOnRest,
+        onStart: respondToOnStart as any,
+        
     });
+    console.warn("used casting below to forcebly add the function to the object. Fix it!");
+
+    (pageTransition as any).onRest = respondToOnRest;
 
     return pageTransition.map(({ item, key, props }) => {
         return <animated.div ref={animatedDivRefForPath(item.pathname)} key={key} style={{
@@ -163,9 +183,9 @@ function usePageTransitionFunctionality() {
             ...props
         }}>
             <Switch location={item}>
-                {NavBarSelection.getAll().map((x, i) => {
+                {getAllSelections().map((x, i) => {
                     const Component = componentForSelection(x);
-                    const path = NavBarSelection.getRoutePathFor(x);
+                    const path = getInfoForSelection(x).routePath;
                     return <Route key={i} exact path={path} component={Component} />
                 })}
             </Switch>
@@ -174,34 +194,29 @@ function usePageTransitionFunctionality() {
     });
 }
 
-function componentForSelection(selection) {
+function componentForSelection(selection: NavBarSelection): any {
     const S = NavBarSelection;
     switch (selection) {
-        case S.home: return Home;
-        case S.aboutUs: return AboutUs;
-        case S.services: return Services;
-        case S.products: return Products;
-        case S.contactUs: return ContactUs;
+        case S.Home: return Home;
+        case S.AboutUs: return AboutUs;
+        case S.Services: return Services;
+        case S.Products: return Products;
+        case S.ContactUs: return ContactUs;
         default: break;
     }
+
+    throw new Error("invalid value sent to selection parameter");
 }
 
 
-
-function ScreenDimmer(props) {
+function ScreenDimmer(props: {onClick: React.MouseEventHandler, style: React.CSSProperties}) {
     return <animated.div onClick={props.onClick} style={{
         backgroundColor: "rgba(0, 0, 0, 0.6)",
         position: "fixed",
         top: "0", left: "0", bottom: "0", right: "0",
-        zIndex: "5",
+        zIndex: 5,
         ...props.style,
     }} />
 }
 
-
-
-
 ReactDom.render(<Router><App /></Router>, document.getElementById('root'));
-
-
-

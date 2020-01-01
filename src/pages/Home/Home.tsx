@@ -1,9 +1,9 @@
 
 
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { SelectionType as NavBarSelection } from 'random-components/NavBar/NavBar';
+import {SelectionType as NavBarSelection, getInfoForSelection} from 'random-components/NavBar/SelectionType';
+
 import './Home.scss';
 
 import customerServiceIcon from 'assets/home-screen-images/icon-people.png';
@@ -31,8 +31,8 @@ export default class Home extends React.Component {
 
 function ShowCase() {
     const S = NavBarSelection;
-    const aboutUsPath = S.getRoutePathFor(S.aboutUs);
-    const productsPath = S.getRoutePathFor(S.products);
+    const aboutUsPath = getInfoForSelection(S.AboutUs).routePath;
+    const productsPath = getInfoForSelection(S.Products).routePath;
 
     return <div className="ShowCase">
         <div className="background-view"></div>
@@ -55,7 +55,7 @@ function ShowCase() {
 
 function FeaturesBox() {
 
-    function Feature(props) {
+    function Feature(props: {image: string, title: string, description: string}) {
         return <div className="Feature">
             <div className="image-holder">
                 <img src={props.image} alt="" />
@@ -65,11 +65,7 @@ function FeaturesBox() {
         </div>
     }
 
-    Feature.propTypes = {
-        title: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        image: PropTypes.string.isRequired
-    }
+    
 
     const features = featuresDict.map((x, i) => {
         return <Feature title={x.title} description={x.description} image={x.image} key={i} />
@@ -106,9 +102,9 @@ const featuresDict = [
 
 function AdditionalInfoBox() {
 
-    function List({ children }) {
+    function List(props: { children: ReactNode[] }) {
         return <ul className="List">
-            {children.map((x, i) => {
+            {props.children.map((x, i) => {
                 return <li className="item" key={i}>{x}</li>
             })}
         </ul>
@@ -147,13 +143,13 @@ function ReviewsSection() {
 
 
 
-    function Review({ text, author, authorTitle }) {
+    function Review(props: { text: string, author: string, authorTitle: string }) {
         return <div className="Review">
-            <div className="review-text">{text}</div>
+            <div className="review-text">{props.text}</div>
 
             <div className="author-box">
-                <div className="title">{"- " + author}</div>
-                <div className="profession">{authorTitle}</div>
+                <div className="title">{"- " + props.author}</div>
+                <div className="profession">{props.authorTitle}</div>
             </div>
 
         </div>
@@ -200,7 +196,6 @@ function MapSection() {
                 style: 'mapbox://styles/patrickhanna242/cjs0x6hqx0co31fmqmxjluf1w',
                 center: center,
                 zoom: 14.5,
-                tap: false,
             });
             new mapboxgl.Marker({ color: "#0470d9" }).setLngLat(center).addTo(map);
         }, 1000);
