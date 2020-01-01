@@ -4,6 +4,14 @@ import './ContactUs.scss';
 import { SCREWS_WORLD_EMAIL, SCREWS_WORLD_NUMBER } from 'jshelpers';
 import PageHeader from 'random-components/PageHeader/PageHeader';
 
+
+
+enum TextFieldType{
+    SingleLine,
+    MultipleLine,
+}
+
+
 export default function ContactUs() {
 
     const textFieldsInfo = [
@@ -22,11 +30,9 @@ export default function ContactUs() {
         {
             topText: "Full description",
             placeholderText: "Please include as much information as possible.",
-            type: TextField.Type.multipleLine,
+            type: TextFieldType.MultipleLine,
         },
     ];
-
-
 
     return <div className="ContactUs">
         <div className="content">
@@ -36,7 +42,7 @@ export default function ContactUs() {
             <div className="body-content-holder">
                 <div className="text-fields">
                     {textFieldsInfo.map((x, i) => {
-                        return <TextField type={x.type} topText={x.topText} placeholderText={x.placeholderText} className={x.className} key={i} />
+                        return <TextField type={x.type} topText={x.topText} placeholderText={x.placeholderText} key={i} />
                     })}
                     <button className="submit-button">Submit</button>
                 </div>
@@ -69,54 +75,49 @@ export default function ContactUs() {
 }
 
 
-function TextField({
-    type = TextField.Type.singleLine,
-    topText,
-    placeholderText,
-    className = "" }) {
+function TextField(props: {
+    type?: TextFieldType,
+    topText: string,
+    placeholderText: string,
+    className?: string}) {
 
-    const textFieldRef = useRef();
+    const textFieldRef = useRef<HTMLDivElement>(null);
 
     const activeClassName = "active";
 
     function respondToOnFocus() {
-        textFieldRef.current.classList.add(activeClassName);
+        textFieldRef.current?.classList.add(activeClassName);
     }
 
     function respondToOnBlur() {
-        textFieldRef.current.classList.remove(activeClassName);
+        textFieldRef.current?.classList.remove(activeClassName);
     }
 
     const inputElement = (() => {
         let elementType, typeProp;
-        switch (type) {
-            case TextField.Type.singleLine:
+        switch (props.type ?? TextFieldType.SingleLine) {
+            case TextFieldType.SingleLine:
                 elementType = "input"; typeProp = "text";
                 break;
-            case TextField.Type.multipleLine:
+            case TextFieldType.MultipleLine:
                 elementType = "textarea";
                 break;
             default: return null;
         }
         const propDict = {
-            className: "text-input " + className,
-            placeholder: placeholderText,
+            className: "text-input " + props.className ?? "",
+            placeholder: props.placeholderText,
             onFocus: respondToOnFocus,
             onBlur: respondToOnBlur,
             type: typeProp,
         };
         return React.createElement(elementType, propDict);
     })();
-
+    
     return <div className="TextField" ref={textFieldRef}>
-        <div className="top-text">{topText}</div>
+        <div className="top-text">{props.topText}</div>
         {inputElement}
     </div>
-}
-
-TextField.Type = {
-    singleLine: Symbol(),
-    multipleLine: Symbol(),
 }
 
 

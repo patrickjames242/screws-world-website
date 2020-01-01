@@ -6,10 +6,10 @@ import { SCREWS_WORLD_NUMBER, SCREWS_WORLD_EMAIL } from 'jshelpers';
 
 export default function Footer() {
 
-    function ContactMethod({ platform, info, link, shouldOpenInNewWindow = false}) {
-        return <a href={link} target={ shouldOpenInNewWindow ? "_blank" : ""} rel="noopener noreferrer" className="ContactMethod">
-            <div className="platform">{platform}</div>
-            <div className="info">{info}</div>
+    function ContactMethod(props: { platform: string, info: string, link: string, shouldOpenInNewWindow?: boolean}) {
+        return <a href={props.link} target={ props.shouldOpenInNewWindow ?? false ? "_blank" : ""} rel="noopener noreferrer" className="ContactMethod">
+            <div className="platform">{props.platform}</div>
+            <div className="info">{props.info}</div>
         </a>
     }
 
@@ -33,3 +33,4 @@ const contactMethods = [
     { platform: "Email", info: SCREWS_WORLD_EMAIL, link: "mailto:" + SCREWS_WORLD_EMAIL},
     { platform: "Phone", info: SCREWS_WORLD_NUMBER, link: "tel:" + SCREWS_WORLD_NUMBER}
 ];
+
