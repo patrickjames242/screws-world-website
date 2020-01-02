@@ -1,1 +1,111 @@
+
+
 @import 'helpers';
+
+
+.Products{
+    $page-content-inset-from-nav-bar: 2rem;
+    
+    $page-content-inset-from-screen-top: $nav-bar-height-from-top + $page-content-inset-from-nav-bar;
+
+    $main-content-border-radius: 2rem;
+
+
+    margin-top: $page-content-inset-from-screen-top;
+    margin-bottom: 6rem;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: auto 1fr;
+
+    align-items: start;
+    @include setProps(padding-left padding-right, $nav-bar-insets);
+
+    
+
+    .SideBar{
+        
+        box-sizing: border-box;
+        height: calc(100vh - #{$page-content-inset-from-screen-top});
+        width: 300px;
+        position: sticky;
+        top: $page-content-inset-from-screen-top;
+
+        > .content-holder{
+            @include setProps(width height, 100%);
+            overflow: scroll;
+        }
+
+        > .top-fader, > .bottom-fader{
+            position: absolute;
+            @include setProps(left right, 0);
+            height: 8em;
+            pointer-events: none;
+            transition-property: opacity;
+            transition-duration: 0.25s;
+        }
+
+        > .top-fader{
+            top: 0;
+            background: linear-gradient(180deg, colors(dark-blue) 0%, transparent 100%);
+        }
+
+        > .bottom-fader{        
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 0%, colors(dark-blue) 100%);
+        }
+    }
+
+    .SideBar > .content-holder > .content{
+        
+        @include setProps(padding-top padding-bottom, $main-content-border-radius);
+        padding-right: $nav-bar-insets;
+        display: grid;
+        gap: 0.5rem;
+        
+        > .SideBarLink{
+
+            @mixin configureForHoverTransition($properties){
+                transition-property: $properties;
+                transition-duration: 0.2s;
+            }
+            cursor: pointer;
+            display: grid;
+            grid-auto-flow: column;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.5rem;
+            padding: 0.7rem 1rem;
+            @include configureForHoverTransition(background-color);
+        
+            &.selected{
+                background-color: colors(light-blue);
+            }
+
+            &:not(.selected):hover{
+                background-color: rgba(colors(light-blue), 0.2);
+                > *{
+                    color: colors(light-blue);
+                }
+            }
+
+            > *{
+                @include configureForHoverTransition(color);
+            }
+
+            > .title{
+                font-size: 1rem;
+            }
+
+            > .chevron{
+                font-size: 1.2rem;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .MainContent{
+        height: 2000px;
+        background-color: colors(light-gray-bg);
+        border-radius: $main-content-border-radius;
+    }
+}

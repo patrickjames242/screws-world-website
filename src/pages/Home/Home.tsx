@@ -65,8 +65,6 @@ function FeaturesBox() {
         </div>
     }
 
-    
-
     const features = featuresDict.map((x, i) => {
         return <Feature title={x.title} description={x.description} image={x.image} key={i} />
     });
@@ -216,5 +214,4 @@ function MapSection() {
     </div>
 
 }
-
 

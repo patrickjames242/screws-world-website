@@ -1,11 +1,23 @@
 
 $nav-bar-height: 5rem;
+
+// the amount of space between the nav bar and the top and sides of the screen
 $nav-bar-insets: 0.9375rem;
+
+// the distance of the bottom edge of the nav bar from the top of the view port
 $nav-bar-height-from-top: $nav-bar-height + $nav-bar-insets;
+
 $nav-bar-border-radius: 1.25rem;
-$max-narrow-width: 775px;
+
+// the height of each nav link cell in the drop down nav bar menu
 $narrow-nav-cell-height: 5rem;
+
+// the minimum width of the view port at which the horizontal row of nav bar links will appear.
 $wide-nav-bar-links-cut-off-point: 976px;
+
+// the maximum view port width at which the font-size property of the root element will be reduced from the default.
+$max-narrow-width: 775px;
+
 
 
 // direction accepts either "horizontal" or "vertical"
