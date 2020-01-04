@@ -139,15 +139,26 @@ function useSideBarFaderFunctionality(contentHolderRef: React.RefObject<HTMLElem
     useEffect(() => {
 
         function respondToOnScroll() {
+            
             const contentHolder = contentHolderRef.current!;
             const isScrolledToTop = contentHolder.scrollTop === 0;
             const isScrolledToBottom = contentHolder.scrollTop === contentHolder.scrollHeight - contentHolder.clientHeight;
 
-            topFaderRef.current!.style.opacity = isScrolledToTop ? "0" : "1";
-            bottomFaderRef.current!.style.opacity = isScrolledToBottom ? "0" : "1";
+            const newTopFaderOpacity = isScrolledToTop ? "0" : "1";
+            const newBottomFaderOpacity = isScrolledToBottom ? "0" : "1";
+            
+            if (topFaderRef.current!.style.opacity !== newTopFaderOpacity){
+                topFaderRef.current!.style.opacity = newTopFaderOpacity;
+            }
+
+            if (bottomFaderRef.current!.style.opacity !== newBottomFaderOpacity){
+                bottomFaderRef.current!.style.opacity = newBottomFaderOpacity
+            }
+
         }
         respondToOnScroll();
         contentHolderRef.current?.addEventListener('scroll', respondToOnScroll);
+        window.addEventListener("resize", respondToOnScroll);
     }, []);
 
     return <>
