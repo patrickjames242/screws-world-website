@@ -18,8 +18,7 @@ import ContactUs from './pages/ContactUs/ContactUs'
 import Footer from './random-components/Footer/Footer';
 import { fixScrollingIssueBecauseOfTransitionAnimation } from 'jshelpers';
 
-// because transition animation between pages would cause the bottom scroll bar to flash.
-document.documentElement.style.overflowX = "hidden";
+
 
 fixScrollingIssueBecauseOfTransitionAnimation();
 

@@ -19,6 +19,8 @@ body{
     background-color: colors(dark-blue);
     color: white;
     font-family: Rubik;
+    // because transition animation between pages would cause the bottom scroll bar to flash.
+    overflow-x: hidden;
 }
 
 a{
