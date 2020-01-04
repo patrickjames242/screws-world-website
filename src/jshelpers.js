@@ -20,6 +20,16 @@ export function useUpdateEffect(effect, dependencies) {
     }, dependencies);
 }
 
+export function getIntegerArray(upper, lower){
+    upper = Math.round(upper); lower = Math.round(lower);
+    const numbers = [];
+    for (let x=upper; x<=lower; x++){
+        numbers.push(x);
+    }
+    return numbers;
+}
+
+
 
 
 export function fixScrollingIssueBecauseOfTransitionAnimation(){

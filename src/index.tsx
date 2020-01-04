@@ -18,6 +18,8 @@ import ContactUs from './pages/ContactUs/ContactUs'
 import Footer from './random-components/Footer/Footer';
 import { fixScrollingIssueBecauseOfTransitionAnimation } from 'jshelpers';
 
+// because transition animation between pages would cause the bottom scroll bar to flash.
+document.documentElement.style.overflowX = "hidden";
 
 fixScrollingIssueBecauseOfTransitionAnimation();
 
@@ -107,9 +109,7 @@ function useNavBarExpandCollapseFunctionality() {
     })();
 
     /* eslint-enable react-hooks/rules-of-hooks */
-
     return { backgroundDimmerElement, navBarElement };
-
 }
 
 interface IndexableObject<ResultType>{
@@ -118,11 +118,8 @@ interface IndexableObject<ResultType>{
 
 function usePageTransitionFunctionality() {
 
-
-
     type DivRefType = React.RefObject<HTMLDivElement & {scrollTopWasAlreadySet?: boolean}>;
         
-    
     const animatedDivRefs = useRef<IndexableObject<DivRefType>>({}).current;
 
     function animatedDivRefForPath(pathname: string): DivRefType {

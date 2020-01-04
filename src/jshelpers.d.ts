@@ -7,7 +7,7 @@ declare module jshelpers{
 
     export function useUpdateEffect(effect: React.EffectCallback, dependencies?: React.DependencyList): void;
     export function fixScrollingIssueBecauseOfTransitionAnimation(): void;
-    
+    export function getIntegerArray(upper: number, lower: number): number[];
 }
 
 

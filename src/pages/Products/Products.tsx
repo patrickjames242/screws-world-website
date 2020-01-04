@@ -1,47 +1,128 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import './Products.scss';
+import { getIntegerArray } from 'jshelpers';
+
+
+type Optional<Wrapped> = Wrapped | null;
+
+
+
+enum ProductDataType {
+    Product,
+    ProductCategory,
+}
+
+interface ProductDataObject {
+    readonly id: number,
+    readonly name: string,
+    readonly description: string,
+    readonly dataType: ProductDataType,
+}
+
+class Product implements ProductDataObject {
+
+    readonly dataType: ProductDataType.Product = ProductDataType.Product;
+
+    constructor(
+        readonly id: number,
+        readonly name: string,
+        readonly description: string,
+
+    ) { }
+}
+
+class ProductCategory implements ProductDataObject {
+
+    readonly dataType: ProductDataType.ProductCategory = ProductDataType.ProductCategory;
+
+    constructor(
+        readonly id: number,
+        readonly name: string,
+        readonly description: string,
+        readonly children: ProductDataObject[] = [],
+    ) { }
+}
+
+function getProductsDataTree(): ProductDataObject[] {
+
+    const names = [
+        "Hex bolts", "Flange bolts", "Roofing screws", "Socket screws", "Set screws", "Nuts", "Washers", "Threaded inserts", "Elevator bolts", "Thumb screws"
+    ];
+
+    const descriptions = [
+        "The most common type of bolt used in structural connections offering a larger diameter hex head."
+    ]
+
+    const getRandomDecimal = (() => {
+        
+        let currentRandomDecimalIndex = -1;
+        const randomDecimals = getIntegerArray(0, 20).map(x => x / 20);
+
+        return () => {
+            currentRandomDecimalIndex = (currentRandomDecimalIndex + 1) % randomDecimals.length
+            const selectedDecimal = randomDecimals[currentRandomDecimalIndex];
+            return selectedDecimal;
+        }
+    })();
+
+    function getRandomElementFrom<Element>(array: Element[]): Optional<Element>{
+        if (array.length <= 0) { return null; }
+        const randomIndex = Math.round((array.length - 1) * getRandomDecimal());
+        return array[randomIndex];
+    }
+
+    const getRandomName = () => getRandomElementFrom(names)!;
+    const getRandomDescription = () => getRandomElementFrom(descriptions)!;
+
+    let nextAvailableID = 0;
+
+    const categories = getIntegerArray(1, 20).map(() => {
+        const upper = Math.round(getRandomDecimal() * 15) + 3;
+        const products = getIntegerArray(1, upper).map(() => {
+            return new Product(nextAvailableID++, getRandomName(), getRandomDescription());
+        })
+
+        return new ProductCategory(nextAvailableID++, getRandomName(), getRandomDescription(), products);
+    });
+
+    return categories;
+}
+
+
 
 export default function Products() {
+
+    const currentProductsDataTree =
+        (Products as any).currentProductsDataTree ??
+        ((Products as any).currentProductsDataTree = getProductsDataTree());
+
+    const [selectedItem, setSelectedItem] = useState<Optional<ProductDataObject>>(null);
+
+    function respondToItemClick(item: ProductDataObject){
+        setSelectedItem(item);
+    }
+    
     return <div className="Products">
-        <SideBar />
-        <MainContent />
+        <SideBar allCategories={currentProductsDataTree} onItemClick={respondToItemClick} selectedItem={selectedItem}/>
+        <MainContent isTopLevelItems={selectedItem === null} currentlySelectedItem={selectedItem} allItems={currentProductsDataTree}/>
     </div>
 }
 
-class ProductCategory {
 
-    constructor(
-        public id: number,
-        public name: string
-    ) { }
-
-    static getAll(): ProductCategory[] {
-        const arrayToReturn: ProductCategory[] = [];
-        for (let i = 0; i < 50; i++) {
-            arrayToReturn.push(new ProductCategory(i, "Test Category " + i));
-        }
-        return arrayToReturn;
-    }
-}
-
-
-function SideBar() {
-    const [selectedCategoryID, setSelectedCategoryID] = useState(0);
+function SideBar(props: { allCategories: ProductDataObject[], onItemClick: (object: ProductDataObject) => void, selectedItem: Optional<ProductDataObject>}) {
+    
     const contentHolderRef = useRef<HTMLDivElement>(null);
 
     const faderElements = useSideBarFaderFunctionality(contentHolderRef);
-
-    function respondToLinkClicked(category: ProductCategory){
-        setSelectedCategoryID(category.id);
-    }
 
     return <div className="SideBar">
         <div className="content-holder" ref={contentHolderRef}>
             <div className="content">
                 {
-                    ProductCategory.getAll().map((x, i) => {
-                        const isSelected = x.id === selectedCategoryID;
-                        return <SideBarLink category={x} onClick={respondToLinkClicked} isSelected={isSelected} key={i} />
+                    props.allCategories.map(x => {
+                        const isSelected = x.id === props.selectedItem?.id;
+                        return <SideBarLink category={x} onClick={props.onItemClick} isSelected={isSelected} key={x.id} />
                     })
                 }
             </div>
@@ -50,18 +131,18 @@ function SideBar() {
     </div>
 }
 
-function useSideBarFaderFunctionality(contentHolderRef: React.RefObject<HTMLElement>): React.ReactElement{
+function useSideBarFaderFunctionality(contentHolderRef: React.RefObject<HTMLElement>): React.ReactElement {
 
     const topFaderRef = useRef<HTMLDivElement>(null);
     const bottomFaderRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
 
-        function respondToOnScroll(){
+        function respondToOnScroll() {
             const contentHolder = contentHolderRef.current!;
             const isScrolledToTop = contentHolder.scrollTop === 0;
             const isScrolledToBottom = contentHolder.scrollTop === contentHolder.scrollHeight - contentHolder.clientHeight;
-            
+
             topFaderRef.current!.style.opacity = isScrolledToTop ? "0" : "1";
             bottomFaderRef.current!.style.opacity = isScrolledToBottom ? "0" : "1";
         }
@@ -77,9 +158,9 @@ function useSideBarFaderFunctionality(contentHolderRef: React.RefObject<HTMLElem
 
 
 
-function SideBarLink(props: { category: ProductCategory, isSelected: boolean, onClick: (category: ProductCategory) => void}) {
+function SideBarLink(props: { category: ProductDataObject, isSelected: boolean, onClick: (category: ProductDataObject) => void }) {
 
-    function respondToOnClick(){
+    function respondToOnClick() {
         props.onClick(props.category);
     }
 
@@ -89,10 +170,65 @@ function SideBarLink(props: { category: ProductCategory, isSelected: boolean, on
     </div>
 }
 
-function MainContent() {
+
+function MainContent(props: { isTopLevelItems: boolean, currentlySelectedItem: Optional<ProductDataObject>, allItems: Optional<ProductDataObject[]> }) {
+
+    const [title, description] = (() => {
+        const title = props.isTopLevelItems ? "Browse Our Products" : (props.currentlySelectedItem?.name ?? "NO TITLE PROVIDED");
+
+        const description = props.isTopLevelItems ? "Here you can browse a catalogue of our top selling products to see exactly what we have to offer." : (props.currentlySelectedItem?.description ?? "NO DESCRIPTION PROVIDED");
+
+        return [title, description];
+    })();
+
+    const products = (props.isTopLevelItems ? props.allItems : (props.currentlySelectedItem as ProductCategory)?.children) ?? []
+
     return <div className="MainContent">
 
+        <div className="title-box">
+            <div className="text-box">
+                <div className="title">{title}</div>
+                <div className="description">{description}</div>
+            </div>
+            <div className="bottom-line" />
+        </div>
+
+        <div className="product-grid">
+            {products.map(x => {
+                return <ProductOrCategoryItem dataObject={x} key={x.id} />
+            })}
+        </div>
+
     </div>
+}
+
+
+function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
+
+    const productOrCategoryText = (() => {
+        switch (props.dataObject.dataType) {
+            case ProductDataType.Product: return "product";
+            case ProductDataType.ProductCategory: return "category";
+        }
+    })();
+
+    return <a href="" className="ProductOrCategoryItem">
+        <div className="background-view" />
+        <div className="content-box">
+            <div className="image-box">
+                <div className="content">
+                    <div className="product-or-category">{productOrCategoryText}</div>
+                </div>
+            </div>
+            <div className="under-image-content">
+                <div className="text-box">
+                    <div className="title">{props.dataObject.name}</div>
+                    <div className="description">{props.dataObject.description}</div>
+                </div>
+            </div>
+
+        </div>
+    </a>
 }
 
 
