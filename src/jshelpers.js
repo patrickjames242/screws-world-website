@@ -3,6 +3,7 @@ import { useRef, useEffect } from 'react';
 
 
 
+
 export const SCREWS_WORLD_EMAIL = "info@screwsworldbahamas.com";
 export const SCREWS_WORLD_NUMBER = "(242) 326-1976";
 

@@ -96,7 +96,6 @@ function useExpandCollapseFunctionality(props: NavBarProps) {
     return { isExpanded, setIsExpanded, toggleIsExpanded, springStyle }
 }
 
-
 function getAllNavBarLinks(){
     const S = SelectionType;
     
@@ -110,10 +109,10 @@ function getAllNavBarLinks(){
             });
 }
 
-
 function NavBarLink(props: {item: SelectionType, image: React.ReactElement<any, any>, text: string}) {
-    const path = getInfoForSelection(props.item).routePath;
-    return <NavLink className="NavBarLink" exact to={path} activeClassName="selected">
+    const {routePath, pageRouteHasSubRoutes} = getInfoForSelection(props.item);
+
+    return <NavLink className="NavBarLink" exact={!pageRouteHasSubRoutes} to={routePath} activeClassName="selected">
         <div className="icon-container">{props.image}</div>
         <div className="text-box">{props.text}</div>
     </NavLink>

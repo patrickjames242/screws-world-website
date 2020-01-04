@@ -4,7 +4,6 @@
 
 .ContactUs{
     > .content{
-        margin-top: $nav-bar-height-from-top;
         max-width: 60rem;
         --content-padding: 2.5rem;
         @include setProps(margin-left margin-right, auto);
@@ -16,9 +15,8 @@
         > .PageHeader{
             --top-and-bottom-margins: 8rem;
             @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
-            
         }
-
+        
         > .body-content-holder{
             display: grid;
             grid-template-columns: 2fr 1fr;

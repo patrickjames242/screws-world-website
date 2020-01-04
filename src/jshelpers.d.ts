@@ -2,6 +2,9 @@
 import React from 'react';
 
 declare module jshelpers{
+    
+    export type Optional<Wrapped> = Wrapped | null;
+
     export const SCREWS_WORLD_EMAIL: string;
     export const SCREWS_WORLD_NUMBER: string;
 

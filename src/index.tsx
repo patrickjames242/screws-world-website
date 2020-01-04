@@ -4,10 +4,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactDom from 'react-dom';
 import { Route, Switch, BrowserRouter as Router, useHistory } from 'react-router-dom';
 import { animated, useTransition } from 'react-spring';
+import {Location} from 'history';
 
 import './index.scss';
 import scssVariables from './_helpers.scss';
-import {SelectionType as NavBarSelection, getAllSelections, getSelectionItemForRoutePath, getInfoForSelection} from './random-components/NavBar/SelectionType';
+import {SelectionType as NavBarSelection, getAllSelections, getSelectionItemForRoutePath, getInfoForSelection, SelectionType} from './random-components/NavBar/SelectionType';
 import NavBar, { NavBarDelegateRef } from './random-components/NavBar/NavBar';
 import Home from './pages/Home/Home';
 import AboutUs from './pages/AboutUs/AboutUs';
@@ -17,7 +18,7 @@ import ContactUs from './pages/ContactUs/ContactUs'
 
 import Footer from './random-components/Footer/Footer';
 import { fixScrollingIssueBecauseOfTransitionAnimation } from 'jshelpers';
-
+import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
 
 
 fixScrollingIssueBecauseOfTransitionAnimation();
@@ -156,18 +157,22 @@ function usePageTransitionFunctionality() {
         delete animatedDivRefs[location.pathname];
     }
 
-    
+    function getTransitionKeyForLocation(location: Location): SelectionType{
+        return getSelectionItemForRoutePath(location.pathname)!;
+    }
 
-    const pageTransition = useTransition(history.location, l => l.pathname, {
+    const pageTransition = useTransition(history.location, getTransitionKeyForLocation, {
         from: { opacity: 0, transform: "translateY(1.25rem) scale(0.95, 0.95)" },
         enter: { opacity: 1, transform: "translateY(0rem) scale(1, 1)" },
         leave: { opacity: 0 },
         config: {tension: 300, friction: 22.5},
-        
         onStart: respondToOnStart as any,
         
     });
-    console.warn("used casting below to forcebly add the function to the object. Fix it!");
+
+
+
+    // console.warn("used casting below to forcebly add the function to the object. Fix it!");
 
     (pageTransition as any).onRest = respondToOnRest;
 
@@ -176,14 +181,18 @@ function usePageTransitionFunctionality() {
             position: "absolute",
             left: "0", right: "0", top: "0",
             minHeight: "100vh",
-            ...props
+            paddingTop: scssVariables.navBarHeightFromScreenTop,
+            ...props,
         }}>
             <Switch location={item}>
                 {getAllSelections().map((x, i) => {
                     const Component = componentForSelection(x);
-                    const path = getInfoForSelection(x).routePath;
-                    return <Route key={i} exact path={path} component={Component} />
+                    const selectionInfo = getInfoForSelection(x);
+                    const path = selectionInfo.routePath;
+                    const isExact = selectionInfo.pageRouteHasSubRoutes === false;
+                    return <Route key={i} exact={isExact} path={path} component={Component} />
                 })}
+                <Route path="*" component={NotFoundPage}/>
             </Switch>
             <Footer/>
         </animated.div>

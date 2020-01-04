@@ -41,6 +41,7 @@ $max-narrow-width: 775px;
     totalNavBarHeightWhenExpanded: ($narrow-nav-cell-height * 4) + $nav-bar-height ;
     maxNarrowWidth: $max-narrow-width;
     wideNavBarLinksCutOffPoint: $wide-nav-bar-links-cut-off-point;
+    navBarHeightFromScreenTop: $nav-bar-height-from-top;
 }
 
 $theme-colors: (
