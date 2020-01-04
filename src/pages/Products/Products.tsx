@@ -51,7 +51,11 @@ function getProductsDataTree(): ProductDataObject[] {
     ];
 
     const descriptions = [
-        "The most common type of bolt used in structural connections offering a larger diameter hex head."
+        "The most common type of bolt used in structural connections offering a larger diameter hex head.",
+        // "A hexagonal head for use with a wrench. These bolts are sometimes called Frame bolts.",
+        // "Screws with coarse threads and a pointed end for use in sheet metal sometimes also used in plastic, fiberglass, or wood.",
+        // "Screws with coarse threads and a drill point end for use in thicker gauge steel.",
+
     ]
 
     const getRandomDecimal = (() => {
@@ -114,7 +118,7 @@ function SideBar(props: { allCategories: ProductDataObject[], onItemClick: (obje
     
     const contentHolderRef = useRef<HTMLDivElement>(null);
 
-    const faderElements = useSideBarFaderFunctionality(contentHolderRef.current);
+    const faderElements = useSideBarFaderFunctionality(contentHolderRef);
 
     return <div className="SideBar">
         <div className="content-holder" ref={contentHolderRef}>
@@ -131,20 +135,19 @@ function SideBar(props: { allCategories: ProductDataObject[], onItemClick: (obje
     </div>
 }
 
-function useSideBarFaderFunctionality(contentHolder: Optional<HTMLElement>): React.ReactElement {
-    
+function useSideBarFaderFunctionality(contentHolderRef: React.RefObject<HTMLElement>): React.ReactElement {
+
     const topFaderRef = useRef<HTMLDivElement>(null);
     const bottomFaderRef = useRef<HTMLDivElement>(null);
-
-    
 
     useEffect(() => {
     
         function respondToOnScroll() {
+            const contentHolder = contentHolderRef.current;
             if (contentHolder === null){return;}
             
             const isScrolledToTop = contentHolder.scrollTop === 0;
-            const isScrolledToBottom = contentHolder.scrollTop === contentHolder?.scrollHeight - contentHolder?.clientHeight;
+            const isScrolledToBottom = contentHolder.scrollTop === contentHolder.scrollHeight - contentHolder.clientHeight;
 
             const newTopFaderOpacity = isScrolledToTop ? "0" : "1";
             const newBottomFaderOpacity = isScrolledToBottom ? "0" : "1";
@@ -161,11 +164,11 @@ function useSideBarFaderFunctionality(contentHolder: Optional<HTMLElement>): Rea
 
         const resizeEvent = 'resize';
         const scrollEvent = 'scroll';
-        contentHolder?.addEventListener(scrollEvent, respondToOnScroll);
+        contentHolderRef.current?.addEventListener(scrollEvent, respondToOnScroll);
         window.addEventListener(resizeEvent, respondToOnScroll);
 
         return () => {
-            contentHolder?.removeEventListener(scrollEvent, respondToOnScroll);
+            contentHolderRef.current?.removeEventListener(scrollEvent, respondToOnScroll);
             window.removeEventListener(resizeEvent, respondToOnScroll);
         }
     }, []);
