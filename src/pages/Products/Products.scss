@@ -4,15 +4,15 @@
 
 .Products{
     margin: auto;
-    max-width: 1880px;
+    max-width: 1850px;
 }
 
 .Products > .content{
-    $page-content-inset-from-nav-bar: 2rem;
+    $page-content-inset-from-nav-bar: 1.2rem;
     
     $page-content-inset-from-screen-top: $nav-bar-height-from-top + $page-content-inset-from-nav-bar;
 
-    $main-content-border-radius: 2rem;
+    $main-content-border-radius: 1.4rem;
     
     
     margin-top: $page-content-inset-from-nav-bar;
@@ -64,12 +64,12 @@
 
         > .top-fader{
             top: 0;
-            background: linear-gradient(180deg, colors(dark-blue) 0%, transparent 100%);
+            background: linear-gradient(180deg, colors(dark-blue) 0%, rgba(colors(dark-blue), 0) 100%);
         }
 
         > .bottom-fader{        
             bottom: 0;
-            background: linear-gradient(180deg, transparent 0%, colors(dark-blue) 100%);
+            background: linear-gradient(180deg, rgba(colors(dark-blue), 0) 0%, colors(dark-blue) 100%);
             height: 8em;
         }
     }
@@ -102,6 +102,7 @@
                 // background-color: colors(light-blue);
                 background-color: rgb(13, 137, 218);
             }
+
             @media(hover: hover){
                 &:not(.selected):hover{
                     background-color: rgba(colors(light-blue), 0.2);
@@ -136,6 +137,10 @@
         border-radius: $main-content-border-radius;
         padding: 3rem;
 
+        @media(max-width: 400px){
+            padding: 2rem;
+        }
+
     
         > .title-box{
 
@@ -167,36 +172,52 @@
             }
         }
 
+
         > .product-grid{
 
             $product-grid-insets: 1rem;
+            margin-left: -$product-grid-insets;
 
             margin-top: $product-grid-insets;
             display: grid;
-            grid-template-columns: 1fr;
+            gap: $product-grid-insets;
+            grid-template-columns: auto;
+            justify-content: center;
+            justify-items: center;
 
-            @media(min-width: 500px){
-                grid-template-columns: 1fr 1fr;
+            @media(min-width: 550px){
+                grid-template-columns: auto auto;
             }
 
-            @media(min-width: 700px){
-                grid-template-columns: 1fr 1fr 1fr;
+            @media(min-width: 850px){
+                grid-template-columns: auto auto  auto ;
             }
 
-            @media(min-width: 1500px){
-                grid-template-columns: 1fr 1fr 1fr 1fr;
+            @media(min-width: $min-width-for-displaying-side-bar){
+                grid-template-columns: auto auto;
+            }
+
+            @media(min-width: 1250px){
+                grid-template-columns: auto auto auto;
+            }
+
+            @media(min-width: 1600px){
+                grid-template-columns: auto auto auto auto;
             }
 
             
 
-            gap: $product-grid-insets;
+            
             
             > .ProductOrCategoryItem{
+                
 
                 @mixin configureTransition($properties){
                     transition-property: $properties;
                     transition-duration: 0.2s;
                 }
+
+                max-width: 315px;
 
                 padding: $product-grid-insets;
                 position: relative;
@@ -212,21 +233,20 @@
                     @include configureTransition(top left);
                 }
                 
-                
-                &:hover{
-                    z-index: 1000; 
-                    > .background-view{
-                        top: 0; left: 0; bottom: -$product-grid-insets;
-                    }
-                    > .content-box > .under-image-content{
-                        transform: translateX(-$product-grid-insets);
-                        > .text-box > .title{
-                            @include applyBlueThemeTextGradient;
+                @media(hover: hover){
+                    &:hover{
+                        z-index: 1000; 
+                        > .background-view{
+                            top: 0; left: 0; bottom: -$product-grid-insets;
+                        }
+                        > .content-box > .under-image-content{
+                            transform: translateX(-$product-grid-insets);
+                            > .text-box > .title{
+                                @include applyBlueThemeTextGradient;
+                            }
                         }
                     }
                 }
-
-                
 
                 > .content-box{
                     position: relative;
@@ -246,7 +266,7 @@
                                 text-transform: uppercase;
                                 justify-self: start;
                                 font-weight: bold;
-                                font-size: 0.7rem;
+                                font-size: 11.2px;
                                 padding: 0.265rem 0.4rem 0.2rem;
                                 border-radius: 0.3rem;
                                 background-color: colors(light-blue);
@@ -267,12 +287,24 @@
                             
                             > .title{
                                 font-weight: bold;
-                                font-size: 1rem;
+                                font-size: 16px;
+
+                                display: -webkit-box;
+                                text-overflow: ellipsis;
+                                -webkit-line-clamp: 2;
+                                -webkit-box-orient: vertical;
+                                overflow: hidden;
+
                             }
 
                             > .description{
-                                font-size: 0.95rem;
+                                font-size: 14px;
                                 color: colors(grayish-blue-text);
+                                display: -webkit-box;
+                                -webkit-line-clamp: 3;
+                                -webkit-box-orient: vertical;
+                                text-overflow: ellipsis;
+                                overflow: hidden;
                             }
                         }
                     }

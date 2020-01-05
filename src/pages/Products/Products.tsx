@@ -9,7 +9,6 @@ import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
 
 
 
-
 function getToURLForProductsItem(productsItem: ProductDataObject): string {
     const pathName = NavBarSelection.getInfoForSelection(NavBarSelection.SelectionType.Products).routePath;
     return pathName + "/" + productsItem.id;
@@ -46,10 +45,6 @@ export default function Products() {
         <Route path="*" component={NotFoundPage} />
     </Switch>
 
-
-
-
-
 }
 
 
@@ -83,9 +78,9 @@ function useSideBarFaderFunctionality(contentHolderRef: React.RefObject<HTMLElem
 
         function respondToOnScroll() {
             if (contentHolder === null) { return; }
-
-            const isScrolledToTop = contentHolder.scrollTop === 0;
-            const isScrolledToBottom = contentHolder.scrollTop === contentHolder.scrollHeight - contentHolder.clientHeight;
+            
+            const isScrolledToTop = contentHolder.scrollTop <= 0;
+            const isScrolledToBottom = contentHolder.scrollTop >= contentHolder.scrollHeight - contentHolder.clientHeight;
 
             const newTopFaderOpacity = isScrolledToTop ? "0" : "1";
             const newBottomFaderOpacity = isScrolledToBottom ? "0" : "1";

@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, ReactNode } from 'react';
+import React, { useEffect, ReactNode, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {SelectionType as NavBarSelection, getInfoForSelection} from 'random-components/NavBar/SelectionType';
 
@@ -139,8 +139,6 @@ function AdditionalInfoBox() {
 
 function ReviewsSection() {
 
-
-
     function Review(props: { text: string, author: string, authorTitle: string }) {
         return <div className="Review">
             <div className="review-text">{props.text}</div>
@@ -185,9 +183,20 @@ const reviews = (() => {
 function MapSection() {
 
     const mapDivID = "Home-Page-MapSection-map-view";
+    const mapSectionDivRef = useRef<HTMLDivElement>(null);
 
+    // map is loaded when its section is actually scrolled into view because loading the map is expensive and slows down the page while it is loading
     useEffect(() => {
-        const timeOutID = setTimeout(() => {
+
+        // we display the map immediately if the browser doesn't support the intersection api
+        if ('IntersectionObserver' in window === false){
+            displayMapOnScreen();
+            return;
+        }
+
+        let observer = new IntersectionObserver(intersectionOccured)
+
+        function displayMapOnScreen(){
             const center = { lon: -77.339006, lat: 25.052057 };
             const map = new mapboxgl.Map({
                 container: mapDivID,
@@ -196,11 +205,25 @@ function MapSection() {
                 zoom: 14.5,
             });
             new mapboxgl.Marker({ color: "#0470d9" }).setLngLat(center).addTo(map);
-        }, 1000);
-        return () => clearTimeout(timeOutID);
-    }, []);
+        }
 
-    return <div className="MapSection">
+        function intersectionOccured(entries: IntersectionObserverEntry[]){
+            const entry = entries[0];
+            // testing for the isIntersecting property because some older browsers didn't implement it
+            if ('isIntersecting' in entry && entry.isIntersecting === false){return;}
+            displayMapOnScreen();
+            observer.disconnect();
+        }
+
+        if (mapSectionDivRef.current){
+            observer.observe(mapSectionDivRef.current);
+        }
+
+        return () => observer.disconnect();
+
+    });
+
+    return <div className="MapSection" ref={mapSectionDivRef}>
         <div className="content">
             <div className="map-holder">
                 <div id={mapDivID} className="map"></div>
