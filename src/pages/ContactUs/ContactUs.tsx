@@ -1,7 +1,7 @@
 
 import React, { useRef } from 'react';
 import './ContactUs.scss';
-import { SCREWS_WORLD_EMAIL, SCREWS_WORLD_NUMBER } from 'jshelpers';
+import { SCREWS_WORLD_EMAIL, SCREWS_WORLD_NUMBER, useSetTitleFunctionality } from 'jshelpers';
 import PageHeader from 'random-components/PageHeader/PageHeader';
 
 
@@ -13,6 +13,7 @@ enum TextFieldType{
 
 
 export default function ContactUs() {
+    useSetTitleFunctionality("Contact Us");
 
     const textFieldsInfo = [
         {

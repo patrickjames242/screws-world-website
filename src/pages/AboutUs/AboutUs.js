@@ -1,11 +1,11 @@
 import React from 'react';
 import './AboutUs.scss';
+import { useSetTitleFunctionality } from 'jshelpers';
 
-export default class AboutUs extends React.Component{
+export default function AboutUs() {
 
+    useSetTitleFunctionality("About Us");
     
-
-    render(){
-        return <div className="page-comming-soon">About Us Page Coming Soon</div>
-    }
+    return <div className="page-comming-soon">About Us Page Coming Soon</div>
+    
 }

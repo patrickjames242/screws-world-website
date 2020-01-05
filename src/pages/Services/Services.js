@@ -1,9 +1,11 @@
 import React from 'react';
 import './Services.scss';
+import { useSetTitleFunctionality } from 'jshelpers';
 
-export default class Services extends React.Component{
-    render(){
-        return <div className="page-comming-soon">Services Page Coming Soon</div>
-    }
+export default function Services() {
+    useSetTitleFunctionality("Services");
+    
+    return <div className="page-comming-soon">Services Page Coming Soon</div>
+
 }
 

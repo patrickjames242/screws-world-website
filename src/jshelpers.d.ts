@@ -5,6 +5,8 @@ declare module jshelpers{
     
     export type Optional<Wrapped> = Wrapped | null;
 
+    export function useSetTitleFunctionality(titleString: Optional<string>): void;
+
     export const SCREWS_WORLD_EMAIL: string;
     export const SCREWS_WORLD_NUMBER: string;
 

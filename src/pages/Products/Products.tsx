@@ -1,12 +1,13 @@
 
 import React, { useRef, useEffect } from 'react';
 import './Products.scss';
-import { Optional } from 'jshelpers';
+import { Optional, useSetTitleFunctionality } from 'jshelpers';
 import { ProductDataObject, productsDataTree, ProductCategory, ProductDataType, getDataObjectForID } from './ProductsData';
 import * as NavBarSelection from 'random-components/NavBar/SelectionType';
-import { NavLink, useRouteMatch, useParams, Switch, Route, Link } from 'react-router-dom';
+import { NavLink, useRouteMatch, Switch, Route, Link, useHistory } from 'react-router-dom';
 import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
-
+import { useSpring } from 'react-spring';
+import showSideBarIcon from './icons/showSideBarIcon';
 
 
 function getToURLForProductsItem(productsItem: ProductDataObject): string {
@@ -17,10 +18,11 @@ function getToURLForProductsItem(productsItem: ProductDataObject): string {
 
 export default function Products() {
 
+    useSetTitleFunctionality("Products");
+
     const currentProductsDataTree = productsDataTree;
 
     const { url: currentURL } = useRouteMatch();
-
 
     const selectedItem: Optional<ProductDataObject> = (() => {
         /* eslint-disable react-hooks/rules-of-hooks */
@@ -32,29 +34,60 @@ export default function Products() {
         /* eslint-enable react-hooks/rules-of-hooks */
     })();
 
+    useScrollToTopOnPathChangeFunctionality();
+
 
     return <Switch>
         <Route path={[currentURL, currentURL + "/:id"]} exact render={() => {
             return <div className="Products">
                 <div className="content">
-                    <SideBar allCategories={currentProductsDataTree} />
+                    <AttachedSideBar allCategories={currentProductsDataTree} />
                     <MainContent isTopLevelItems={selectedItem === null} currentlySelectedItem={selectedItem} allItems={currentProductsDataTree} />
                 </div>
+                {/* <div className="show-detached-side-bar-button">
+                    {showSideBarIcon}
+                </div> */}
             </div>
         }} />
         <Route path="*" component={NotFoundPage} />
     </Switch>
-
 }
 
 
-function SideBar(props: { allCategories: ProductDataObject[] }) {
+function useScrollToTopOnPathChangeFunctionality() {
+    const [_, activateSpringAnimation] = useSpring(() => ({ y: 0 }));
+
+    const history = useHistory();
+
+    useEffect(() => {
+        let previousLocation = history.location;
+        const unregister = history.listen((newLocation) => {
+            if (previousLocation.pathname !== newLocation.pathname) {
+                const animationOptions = {
+                    y: 0,
+                    reset: true,
+                    from: { y: window.scrollY },
+                };
+                // because typescript doesn't wanna cooperate
+                (animationOptions as any).onFrame = (props: any) => {
+                    window.scroll(0, props.y);
+                };
+                activateSpringAnimation(animationOptions);
+            }
+            previousLocation = newLocation;
+        });
+        return () => unregister();
+    }, []);
+}
+
+
+function AttachedSideBar(props: { allCategories: ProductDataObject[] }) {
 
     const contentHolderRef = useRef<HTMLDivElement>(null);
 
     const faderElements = useSideBarFaderFunctionality(contentHolderRef);
 
-    return <div className="SideBar">
+    return <div className="AttachedSideBar">
         <div className="content-holder" ref={contentHolderRef}>
             <div className="content">
                 {
@@ -78,7 +111,7 @@ function useSideBarFaderFunctionality(contentHolderRef: React.RefObject<HTMLElem
 
         function respondToOnScroll() {
             if (contentHolder === null) { return; }
-            
+
             const isScrolledToTop = contentHolder.scrollTop <= 0;
             const isScrolledToBottom = contentHolder.scrollTop >= contentHolder.scrollHeight - contentHolder.clientHeight;
 
@@ -100,6 +133,7 @@ function useSideBarFaderFunctionality(contentHolderRef: React.RefObject<HTMLElem
             contentHolder?.removeEventListener(scrollEvent, respondToOnScroll);
             window.removeEventListener(resizeEvent, respondToOnScroll);
         }
+        // eslint-disable-next-line
     }, []);
 
     return <>
@@ -145,7 +179,6 @@ function MainContent(props: { isTopLevelItems: boolean, currentlySelectedItem: O
                 return <ProductOrCategoryItem dataObject={x} key={x.id} />
             })}
         </div>
-
     </div>
 }
 

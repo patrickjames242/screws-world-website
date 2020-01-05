@@ -2,7 +2,7 @@
 
 import React, { useEffect, ReactNode, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import {SelectionType as NavBarSelection, getInfoForSelection} from 'random-components/NavBar/SelectionType';
+import { SelectionType as NavBarSelection, getInfoForSelection } from 'random-components/NavBar/SelectionType';
 
 import './Home.scss';
 
@@ -11,21 +11,24 @@ import priceIcon from 'assets/home-screen-images/price.png';
 import toolsIcon from 'assets/home-screen-images/tools.png';
 import quotesIcon from './quotes-icon.js';
 import mapboxgl from 'mapbox-gl';
+import { useSetTitleFunctionality } from 'jshelpers';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoicGF0cmlja2hhbm5hMjQyIiwiYSI6ImNqcnh2eWVrczBydGo0OWx2dDUyYjhvNnMifQ.SGbGDXppFmFkdUnBxIyoqA';
 
 
 
-export default class Home extends React.Component {
-    render() {
-        return <div className="Home">
-            <ShowCase />
-            <FeaturesBox />
-            <AdditionalInfoBox />
-            <ReviewsSection />
-            <MapSection />
-        </div>
-    }
+export default function Home() {
+
+    useSetTitleFunctionality("Home");
+
+    return <div className="Home">
+        <ShowCase />
+        <FeaturesBox />
+        <AdditionalInfoBox />
+        <ReviewsSection />
+        <MapSection />
+    </div>
+
 }
 
 
@@ -55,7 +58,7 @@ function ShowCase() {
 
 function FeaturesBox() {
 
-    function Feature(props: {image: string, title: string, description: string}) {
+    function Feature(props: { image: string, title: string, description: string }) {
         return <div className="Feature">
             <div className="image-holder">
                 <img src={props.image} alt="" />
@@ -189,14 +192,14 @@ function MapSection() {
     useEffect(() => {
 
         // we display the map immediately if the browser doesn't support the intersection api
-        if ('IntersectionObserver' in window === false){
+        if ('IntersectionObserver' in window === false) {
             displayMapOnScreen();
             return;
         }
 
         let observer = new IntersectionObserver(intersectionOccured)
 
-        function displayMapOnScreen(){
+        function displayMapOnScreen() {
             const center = { lon: -77.339006, lat: 25.052057 };
             const map = new mapboxgl.Map({
                 container: mapDivID,
@@ -207,15 +210,15 @@ function MapSection() {
             new mapboxgl.Marker({ color: "#0470d9" }).setLngLat(center).addTo(map);
         }
 
-        function intersectionOccured(entries: IntersectionObserverEntry[]){
+        function intersectionOccured(entries: IntersectionObserverEntry[]) {
             const entry = entries[0];
             // testing for the isIntersecting property because some older browsers didn't implement it
-            if ('isIntersecting' in entry && entry.isIntersecting === false){return;}
+            if ('isIntersecting' in entry && entry.isIntersecting === false) { return; }
             displayMapOnScreen();
             observer.disconnect();
         }
 
-        if (mapSectionDivRef.current){
+        if (mapSectionDivRef.current) {
             observer.observe(mapSectionDivRef.current);
         }
 

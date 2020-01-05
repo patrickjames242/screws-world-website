@@ -3,8 +3,19 @@
 @import 'helpers';
 
 .Products{
+    --main-content-padding: 3rem;
+
     margin: auto;
     max-width: 1850px;
+
+    > .show-detached-side-bar-button{
+        background-color: red;
+        position: fixed;
+        // @include setProps(top right, 10rem);
+        top: 10px; left: 10px;
+        height: 10rem;
+        width: 10rem;
+    }
 }
 
 .Products > .content{
@@ -24,9 +35,15 @@
     align-items: start;
     @include setProps(padding-left padding-right, $nav-bar-insets);
 
+    
+
     $min-width-for-displaying-side-bar: 1100px;
 
-    .SideBar{
+    @media(max-width: $min-width-for-displaying-side-bar){
+        grid-template-columns: auto;
+    }
+
+    .AttachedSideBar{
 
         box-sizing: border-box;
         height: calc(100vh - #{$page-content-inset-from-screen-top + $main-content-border-radius});
@@ -74,7 +91,7 @@
         }
     }
 
-    .SideBar > .content-holder > .content{
+    .AttachedSideBar > .content-holder > .content{
         
         
         display: grid;
@@ -135,10 +152,10 @@
         background-color: rgb(27, 42, 56);
         
         border-radius: $main-content-border-radius;
-        padding: 3rem;
+        padding: var(--main-content-padding);
 
         @media(max-width: 400px){
-            padding: 2rem;
+            --main-content-padding: 2rem;
         }
 
     
