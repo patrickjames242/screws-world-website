@@ -99,7 +99,6 @@ function useNavBarExpandCollapseFunctionality() {
             if (navBarDelegateRef.setNavBarExpanded) {
                 navBarDelegateRef.setNavBarExpanded({ isExpanded: false });
             }
-
         }
 
         return backgroundDimmerTransition.map(({ item, key, props }) => {
@@ -170,9 +169,6 @@ function usePageTransitionFunctionality() {
         onStart: respondToOnStart as any,
 
     });
-
-
-
     // console.warn("used casting below to forcebly add the function to the object. Fix it!");
 
     (pageTransition as any).onRest = respondToOnRest;

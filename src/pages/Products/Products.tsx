@@ -4,7 +4,7 @@ import './Products.scss';
 import { Optional } from 'jshelpers';
 import { ProductDataObject, productsDataTree, ProductCategory, ProductDataType, getDataObjectForID } from './ProductsData';
 import * as NavBarSelection from 'random-components/NavBar/SelectionType';
-import { NavLink, useRouteMatch, useParams, Switch, Route, Link} from 'react-router-dom';
+import { NavLink, useRouteMatch, useParams, Switch, Route, Link } from 'react-router-dom';
 import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
 
 
@@ -21,29 +21,29 @@ export default function Products() {
     const currentProductsDataTree = productsDataTree;
 
     const { url: currentURL } = useRouteMatch();
-    
+
 
     const selectedItem: Optional<ProductDataObject> = (() => {
         /* eslint-disable react-hooks/rules-of-hooks */
-        const idRouteMatch = (useRouteMatch<{id: string}>(currentURL + "/:id"));
+        const idRouteMatch = (useRouteMatch<{ id: string }>(currentURL + "/:id"));
         const idString = idRouteMatch?.params.id;
-        if (idString == null){return null;}
+        if (idString == null) { return null; }
         const selectedItemID = Number(idString);
         return getDataObjectForID(selectedItemID);
         /* eslint-enable react-hooks/rules-of-hooks */
     })();
 
-    
+
     return <Switch>
-        <Route path={[currentURL, currentURL + "/:id"]} render={() => {
+        <Route path={[currentURL, currentURL + "/:id"]} exact render={() => {
             return <div className="Products">
-                <SideBar allCategories={currentProductsDataTree} />
-                <MainContent isTopLevelItems={selectedItem === null} currentlySelectedItem={selectedItem} allItems={currentProductsDataTree} />
+                <div className="content">
+                    <SideBar allCategories={currentProductsDataTree} />
+                    <MainContent isTopLevelItems={selectedItem === null} currentlySelectedItem={selectedItem} allItems={currentProductsDataTree} />
+                </div>
             </div>
-        }}/>
-
-        <Route path="*" component={NotFoundPage}/>
-
+        }} />
+        <Route path="*" component={NotFoundPage} />
     </Switch>
 
 
@@ -124,7 +124,7 @@ function SideBarLink(props: { category: ProductDataObject }) {
 
 
 function MainContent(props: { isTopLevelItems: boolean, currentlySelectedItem: Optional<ProductDataObject>, allItems: Optional<ProductDataObject[]> }) {
-    
+
     const [title, description] = (() => {
         const title = props.isTopLevelItems ? "Browse Our Products" : (props.currentlySelectedItem?.name ?? "NO TITLE PROVIDED");
 

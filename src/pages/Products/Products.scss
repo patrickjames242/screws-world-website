@@ -2,13 +2,18 @@
 
 @import 'helpers';
 
-
 .Products{
+    margin: auto;
+    max-width: 1880px;
+}
+
+.Products > .content{
     $page-content-inset-from-nav-bar: 2rem;
     
     $page-content-inset-from-screen-top: $nav-bar-height-from-top + $page-content-inset-from-nav-bar;
 
     $main-content-border-radius: 2rem;
+    
     
     margin-top: $page-content-inset-from-nav-bar;
     margin-bottom: 6rem;
@@ -19,10 +24,10 @@
     align-items: start;
     @include setProps(padding-left padding-right, $nav-bar-insets);
 
-    
+    $min-width-for-displaying-side-bar: 1100px;
 
     .SideBar{
-        
+
         box-sizing: border-box;
         height: calc(100vh - #{$page-content-inset-from-screen-top + $main-content-border-radius});
         width: 18.75rem;
@@ -30,6 +35,10 @@
         top: $page-content-inset-from-screen-top + $main-content-border-radius;
         
         @include setProps(margin-top margin-bottom, $main-content-border-radius);
+
+        @media (max-width: $min-width-for-displaying-side-bar){
+            display: none;
+        }
 
         // ------ to achieve equal spacing between the right and left side of the vertical scroll bar
         margin-right: $nav-bar-insets / 2;
@@ -61,6 +70,7 @@
         > .bottom-fader{        
             bottom: 0;
             background: linear-gradient(180deg, transparent 0%, colors(dark-blue) 100%);
+            height: 8em;
         }
     }
 
@@ -163,7 +173,22 @@
 
             margin-top: $product-grid-insets;
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr;
+
+            @media(min-width: 500px){
+                grid-template-columns: 1fr 1fr;
+            }
+
+            @media(min-width: 700px){
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            @media(min-width: 1500px){
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+            }
+
+            
+
             gap: $product-grid-insets;
             
             > .ProductOrCategoryItem{
