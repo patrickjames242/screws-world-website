@@ -4,11 +4,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactDom from 'react-dom';
 import { Route, Switch, BrowserRouter as Router, useHistory } from 'react-router-dom';
 import { animated, useTransition } from 'react-spring';
-import {Location} from 'history';
+import { Location } from 'history';
 
 import './index.scss';
 import scssVariables from './_helpers.scss';
-import {SelectionType as NavBarSelection, getAllSelections, getSelectionItemForRoutePath, getInfoForSelection, SelectionType} from './random-components/NavBar/SelectionType';
+import { SelectionType as NavBarSelection, getAllSelections, getSelectionItemForRoutePath, getInfoForSelection, SelectionType } from './random-components/NavBar/SelectionType';
 import NavBar, { NavBarDelegateRef } from './random-components/NavBar/NavBar';
 import Home from './pages/Home/Home';
 import AboutUs from './pages/AboutUs/AboutUs';
@@ -58,7 +58,7 @@ function useNavBarExpandCollapseFunctionality() {
 
         useEffect(() => {
             const unlisten = history.listen(() => {
-                if (navBarDelegateRef.setNavBarExpanded){
+                if (navBarDelegateRef.setNavBarExpanded) {
                     navBarDelegateRef.setNavBarExpanded({ isExpanded: false });
                 }
             });
@@ -68,7 +68,7 @@ function useNavBarExpandCollapseFunctionality() {
         useEffect(() => {
             const listener = (media: MediaQueryListEvent) => {
                 if (media.matches === false) {
-                    if (navBarDelegateRef.setNavBarExpanded){
+                    if (navBarDelegateRef.setNavBarExpanded) {
                         navBarDelegateRef.setNavBarExpanded({ isExpanded: false, isAnimated: false });
                     }
                 }
@@ -79,7 +79,7 @@ function useNavBarExpandCollapseFunctionality() {
             }
         }, []);
 
-        
+
         const currentItem = getSelectionItemForRoutePath(history.location.pathname)!;
 
         return <NavBar selectedItem={currentItem} onExpansionStateChange={respondToNavBarExpansionStateChange} delegateRef={navBarDelegateRef} />
@@ -96,10 +96,10 @@ function useNavBarExpandCollapseFunctionality() {
         });
 
         function respondToScreenDimmerClick() {
-            if (navBarDelegateRef.setNavBarExpanded){
+            if (navBarDelegateRef.setNavBarExpanded) {
                 navBarDelegateRef.setNavBarExpanded({ isExpanded: false });
             }
-            
+
         }
 
         return backgroundDimmerTransition.map(({ item, key, props }) => {
@@ -112,14 +112,14 @@ function useNavBarExpandCollapseFunctionality() {
     return { backgroundDimmerElement, navBarElement };
 }
 
-interface IndexableObject<ResultType>{
-    [i: string]: ResultType; 
+interface IndexableObject<ResultType> {
+    [i: string]: ResultType;
 }
 
 function usePageTransitionFunctionality() {
 
-    type DivRefType = React.RefObject<HTMLDivElement & {scrollTopWasAlreadySet?: boolean}>;
-        
+    type DivRefType = React.RefObject<HTMLDivElement & { scrollTopWasAlreadySet?: boolean }>;
+
     const animatedDivRefs = useRef<IndexableObject<DivRefType>>({}).current;
 
     function animatedDivRefForPath(pathname: string): DivRefType {
@@ -136,7 +136,7 @@ function usePageTransitionFunctionality() {
     function respondToOnStart(location: Location, event: string) {
         if (event === "leave") {
             const ref = animatedDivRefs[location.pathname]?.current;
-            if (!ref){return}
+            if (!ref) { return }
             const scrollVal = document.documentElement.scrollTop;
             if (ref.scrollTopWasAlreadySet || scrollVal === 0) { return; }
             ref.style.overflow = "hidden";
@@ -157,7 +157,7 @@ function usePageTransitionFunctionality() {
         delete animatedDivRefs[location.pathname];
     }
 
-    function getTransitionKeyForLocation(location: Location): SelectionType{
+    function getTransitionKeyForLocation(location: Location): SelectionType {
         return getSelectionItemForRoutePath(location.pathname)!;
     }
 
@@ -165,9 +165,10 @@ function usePageTransitionFunctionality() {
         from: { opacity: 0, transform: "translateY(1.25rem) scale(0.95, 0.95)" },
         enter: { opacity: 1, transform: "translateY(0rem) scale(1, 1)" },
         leave: { opacity: 0 },
-        config: {tension: 300, friction: 22.5},
-        onStart: respondToOnStart as any,
+        config: { tension: 300, friction: 22.5 },
         
+        onStart: respondToOnStart as any,
+
     });
 
 
@@ -181,20 +182,22 @@ function usePageTransitionFunctionality() {
             position: "absolute",
             left: "0", right: "0", top: "0",
             minHeight: "100vh",
-            paddingTop: scssVariables.navBarHeightFromScreenTop,
             ...props,
         }}>
-            <Switch location={item}>
-                {getAllSelections().map((x, i) => {
-                    const Component = componentForSelection(x);
-                    const selectionInfo = getInfoForSelection(x);
-                    const path = selectionInfo.routePath;
-                    const isExact = selectionInfo.pageRouteHasSubRoutes === false;
-                    return <Route key={i} exact={isExact} path={path} component={Component} />
-                })}
-                <Route path="*" component={NotFoundPage}/>
-            </Switch>
-            <Footer/>
+            <div style={{marginTop: scssVariables.navBarHeightFromScreenTop}}>
+                <Switch location={item}>
+                    {getAllSelections().map((x, i) => {
+                        const Component = componentForSelection(x);
+                        const selectionInfo = getInfoForSelection(x);
+                        const path = selectionInfo.routePath;
+                        const isExact = selectionInfo.pageRouteHasSubRoutes === false;
+                        return <Route key={i} exact={isExact} path={path} component={Component} />
+                    })}
+                    <Route path="*" component={NotFoundPage} />
+                </Switch>
+                <Footer />
+            </div>
+
         </animated.div>
     });
 }
@@ -214,7 +217,7 @@ function componentForSelection(selection: NavBarSelection): any {
 }
 
 
-function ScreenDimmer(props: {onClick: React.MouseEventHandler, style: React.CSSProperties}) {
+function ScreenDimmer(props: { onClick: React.MouseEventHandler, style: React.CSSProperties }) {
     return <animated.div onClick={props.onClick} style={{
         backgroundColor: "rgba(0, 0, 0, 0.6)",
         position: "fixed",
