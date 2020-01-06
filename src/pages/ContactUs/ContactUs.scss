@@ -1,7 +1,6 @@
 @import 'helpers';
 
 
-
 .ContactUs{
     > .content{
         max-width: 60rem;
@@ -46,7 +45,7 @@
                     $top-and-bottom-padding: 1rem;
                     $height: ($top-and-bottom-padding * 2) + $font-size;
 
-                    background-color: rgb(13, 137, 218);
+                    background-color: colors(dark-light-blue);
                     text-transform: uppercase;
                     font-weight: bold;
                     

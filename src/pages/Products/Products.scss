@@ -1,47 +1,123 @@
 
 
 @import 'helpers';
+@import 'products-variables';
+
 
 .Products{
+
     --main-content-padding: 3rem;
 
     margin: auto;
     max-width: 1850px;
+    display: grid;
 
-    > .show-detached-side-bar-button{
-        background-color: red;
-        position: fixed;
-        // @include setProps(top right, 10rem);
-        top: 10px; left: 10px;
-        height: 10rem;
-        width: 10rem;
+    @media(min-width: $min-width-for-displaying-side-bar){
+        margin-bottom: 5rem;
+    }
+    
+    > .side-bar-button{
+
+        $side-bar-button-insets: 2.5rem;
+
+        background-color: colors(dark-light-blue);
+        @include setProps(height width, 2rem);
+        z-index: 1;
+        padding: 0.7rem 1.4rem;
+        border-radius: 1rem;
+        position: sticky;
+        bottom: $side-bar-button-insets;
+        justify-self: end;
+        box-shadow:0px 0px 3.3rem 1rem rgba(colors(dark-blue), 0.6);
+
+        @include setProps(margin-top margin-bottom margin-right, $side-bar-button-insets);
+
+        @include bounceOnHover(1.2);
+        
+        > svg{
+            fill: white;
+        }
+
+
+        @media(min-width: $min-width-for-displaying-side-bar){
+            display: none;
+        }
     }
 }
 
 .Products > .content{
-    $page-content-inset-from-nav-bar: 1.2rem;
     
-    $page-content-inset-from-screen-top: $nav-bar-height-from-top + $page-content-inset-from-nav-bar;
 
-    $main-content-border-radius: 1.4rem;
-    
-    
     margin-top: $page-content-inset-from-nav-bar;
-    margin-bottom: 6rem;
+    // margin-bottom: 6rem;
     display: grid;
     grid-auto-flow: column;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto;
 
     align-items: start;
     @include setProps(padding-left padding-right, $nav-bar-insets);
 
     
-
-    $min-width-for-displaying-side-bar: 1100px;
-
-    @media(max-width: $min-width-for-displaying-side-bar){
-        grid-template-columns: auto;
+    @media(min-width: $min-width-for-displaying-side-bar){
+        grid-template-columns: auto 1fr;
     }
+
+    
+    .SideBar{
+        .SideBarLink{
+            
+            @mixin configureForHoverTransition($properties){
+                transition-property: $properties;
+                transition-duration: 0.2s;
+            }
+            cursor: pointer;
+            display: grid;
+            grid-auto-flow: column;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.5rem;
+            padding: 0.7rem 1rem;
+            @include configureForHoverTransition(background-color);
+            
+            &.selected{
+                // background-color: colors(light-blue);
+                background-color: colors(dark-light-blue);
+            }
+            
+            @media(hover: hover){
+                &:not(.selected):hover{
+                    background-color: rgba(colors(light-blue), 0.2);
+                    > *{
+                        color: colors(light-blue);
+                    }
+                }
+            }
+            
+            > *{
+                @include configureForHoverTransition(color);
+            }
+            
+            > .title{
+                font-size: 1rem;
+            }
+            
+            > .chevron{
+                font-size: 1.2rem;
+                font-weight: bold;
+            }
+        }
+        
+        .SideBarLinksNode{
+            overflow: hidden;
+            > .children-holder{
+                margin-top: $side-bar-link-spacing;
+                margin-left: 1.5rem;
+                display: grid;
+                gap: $side-bar-link-spacing;
+            }
+        }
+    }
+    
 
     .AttachedSideBar{
 
@@ -52,9 +128,9 @@
         top: $page-content-inset-from-screen-top + $main-content-border-radius;
         
         @include setProps(margin-top margin-bottom, $main-content-border-radius);
-
-        @media (max-width: $min-width-for-displaying-side-bar){
-            display: none;
+        display: none;
+        @media (min-width: $min-width-for-displaying-side-bar){
+            display: initial;
         }
 
         // ------ to achieve equal spacing between the right and left side of the vertical scroll bar
@@ -68,6 +144,12 @@
         > .content-holder{
             @include setProps(width height, 100%);
             overflow-y: scroll;
+
+            > .content{
+                display: grid;
+                gap: $side-bar-link-spacing;
+                padding-bottom: $side-bar-link-spacing;
+            }
         }
 
         > .top-fader, > .bottom-fader{
@@ -75,6 +157,7 @@
             @include setProps(left right, 0);
             height: 5em;
             pointer-events: none;
+            opacity: 0;
             transition-property: opacity;
             transition-duration: 0.25s;
         }
@@ -91,61 +174,10 @@
         }
     }
 
-    .AttachedSideBar > .content-holder > .content{
-        
-        
-        display: grid;
-
-        $link-gap: 0.5rem;
-        gap: $link-gap;
-        padding-bottom: $link-gap;
-        
-        > .SideBarLink{
-
-            @mixin configureForHoverTransition($properties){
-                transition-property: $properties;
-                transition-duration: 0.2s;
-            }
-            cursor: pointer;
-            display: grid;
-            grid-auto-flow: column;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 0.5rem;
-            padding: 0.7rem 1rem;
-            @include configureForHoverTransition(background-color);
-        
-            &.selected{
-                // background-color: colors(light-blue);
-                background-color: rgb(13, 137, 218);
-            }
-
-            @media(hover: hover){
-                &:not(.selected):hover{
-                    background-color: rgba(colors(light-blue), 0.2);
-                    > *{
-                        color: colors(light-blue);
-                    }
-                }
-            }
-            
-
-            > *{
-                @include configureForHoverTransition(color);
-            }
-
-            > .title{
-                font-size: 1rem;
-            }
-
-            > .chevron{
-                font-size: 1.2rem;
-                font-weight: bold;
-            }
-        }
-    }
-
     
+    
+
+
 
     .MainContent{
         
@@ -158,8 +190,7 @@
             --main-content-padding: 2rem;
         }
 
-    
-        > .title-box{
+        > .TitleBox{
 
             display: grid;
             gap: 2rem;
@@ -190,9 +221,8 @@
         }
 
 
-        > .product-grid{
+        > .ProductItemsGrid{
 
-            $product-grid-insets: 1rem;
             margin-left: -$product-grid-insets;
 
             margin-top: $product-grid-insets;
@@ -223,12 +253,8 @@
             }
 
             
-
-            
-            
             > .ProductOrCategoryItem{
-                
-
+            
                 @mixin configureTransition($properties){
                     transition-property: $properties;
                     transition-duration: 0.2s;
@@ -252,7 +278,7 @@
                 
                 @media(hover: hover){
                     &:hover{
-                        z-index: 1000; 
+                        z-index: 1; 
                         > .background-view{
                             top: 0; left: 0; bottom: -$product-grid-insets;
                         }
@@ -271,7 +297,6 @@
                     > .image-box{
                         padding-top: 56%;
                         background-color: colors(grayish-blue-text);
-                        // background-color: lightGray;
                         border-radius: 0.4rem;
                         position: relative;
                         > .content{
@@ -305,23 +330,13 @@
                             > .title{
                                 font-weight: bold;
                                 font-size: 16px;
-
-                                display: -webkit-box;
-                                text-overflow: ellipsis;
-                                -webkit-line-clamp: 2;
-                                -webkit-box-orient: vertical;
-                                overflow: hidden;
-
+                                @include setMaximumLines(2);
                             }
 
                             > .description{
                                 font-size: 14px;
                                 color: colors(grayish-blue-text);
-                                display: -webkit-box;
-                                -webkit-line-clamp: 3;
-                                -webkit-box-orient: vertical;
-                                text-overflow: ellipsis;
-                                overflow: hidden;
+                                @include setMaximumLines(3);
                             }
                         }
                     }

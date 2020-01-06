@@ -49,6 +49,7 @@ $theme-colors: (
     light-dark-blue: rgb(25, 39, 52),
     light-gray-bg: rgb(37, 51, 65),
     light-blue: #1da1f2,
+    dark-light-blue: rgb(13, 137, 218),
     white-dimmed-blue: rgb(207, 235, 252),
     grayish-blue-text: rgb(153, 168, 182),
 );
@@ -173,4 +174,14 @@ $theme-colors: (
         border-radius: $scroll-bar-size / 2;
         background-color: colors(light-gray-bg);
     }
+}
+
+
+
+@mixin setMaximumLines($max-lines){
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: $max-lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }

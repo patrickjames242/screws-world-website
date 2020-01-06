@@ -1,0 +1,16 @@
+$page-content-inset-from-nav-bar: 1.2rem;
+$page-content-inset-from-screen-top: $nav-bar-height-from-top + $page-content-inset-from-nav-bar;
+
+$min-width-for-displaying-side-bar: 1100px;
+$side-bar-link-spacing: 0.5rem;
+
+
+$main-content-border-radius: 1.4rem;
+
+$product-grid-insets: 1rem;
+
+
+:export{
+    minWidthForDisplayingSideBar: $min-width-for-displaying-side-bar;
+    sideBarLinkSpacing: $side-bar-link-spacing;
+}

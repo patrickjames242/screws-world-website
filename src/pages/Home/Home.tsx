@@ -224,7 +224,7 @@ function MapSection() {
 
         return () => observer.disconnect();
 
-    });
+    }, []);
 
     return <div className="MapSection" ref={mapSectionDivRef}>
         <div className="content">
