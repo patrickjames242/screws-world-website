@@ -1,7 +1,9 @@
 
-import { getIntegerArray, Optional } from "jshelpers";
+
 import React from 'react';
+
 import * as NavBarSelection from 'random-components/NavBar/SelectionType';
+import { getIntegerArray, Optional } from "jshelpers";
 
 export enum ProductDataType {
     Product,
@@ -13,11 +15,13 @@ export interface ProductDataObject {
     readonly name: string,
     readonly description: string,
     readonly dataType: ProductDataType,
+    parent: Optional<ProductDataObject>,
 }
 
 export class Product implements ProductDataObject {
-
+    
     readonly dataType: ProductDataType.Product = ProductDataType.Product;
+    parent: Optional<ProductDataObject> = null;
 
     constructor(
         readonly id: number,
@@ -25,26 +29,46 @@ export class Product implements ProductDataObject {
         readonly description: string,
     ) { }
 }
-
-
 
 export class ProductCategory implements ProductDataObject {
 
     readonly dataType: ProductDataType.ProductCategory = ProductDataType.ProductCategory;
+    parent: Optional<ProductDataObject> = null;
 
     constructor(
         readonly id: number,
         readonly name: string,
         readonly description: string,
+        
         readonly children: ProductDataObject[] = [],
-    ) { }
+    ) { 
+        this.children.forEach(x => {
+            x.parent = this;
+        })
+    }
+}
+
+export function isProduct(x: any): x is Product{
+    return x.dataType === ProductDataType.Product;
 }
 
 export function isProductCategory(x: any): x is ProductCategory{
-    return !!x.children;
+    return x.dataType === ProductDataType.ProductCategory;
 }
 
-
+// returns true if the item IS the category. works as expected otherwise
+export function doesProductCategoryRecursivelyContainItem(item: ProductDataObject, category: ProductCategory): boolean{
+    if (item.id === category.id){return true;}
+    for (const child of category.children){
+        if (isProductCategory(child) && 
+        doesProductCategoryRecursivelyContainItem(item, child)){
+            return true;
+        } else if (item.id === child.id){
+            return true;
+        }
+    }
+    return false;
+}
 
 
 function getProductsDataTreeInfo(): [ProductDataObject[], {[itemIndex: number]: ProductDataObject}]{

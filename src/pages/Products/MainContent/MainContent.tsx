@@ -1,57 +1,72 @@
 
 import React from 'react';
-
-
-import { ProductDataObject, ProductCategory, ProductDataType, useAllProductItems } from '../ProductsData';
 import { Link } from 'react-router-dom';
-
+import {Optional} from 'jshelpers';
+import { ProductDataObject, ProductCategory, ProductDataType, useAllProductItems, isProductCategory } from '../ProductsData';
 import { useCurrentlySelectedItem, getToURLForProductsItem } from '../ProductsData';
 
 
 export default function MainContent() {
-
-    return <div className="MainContent">
-        <TitleBox />
-        <ProductItemsGrid />
-    </div>
-}
-
-function TitleBox() {
-
-    const currentlySelectedItem = useCurrentlySelectedItem();
-
-    const shouldDisplayProductsIntro = currentlySelectedItem == null;
-
-    const [title, description] = (() => {
-        const title = shouldDisplayProductsIntro ? "Browse Our Products" : (currentlySelectedItem?.name ?? "NO TITLE PROVIDED");
-
-        const description = shouldDisplayProductsIntro ? "Here you can browse a catalogue of our top selling products to see exactly what we have to offer." : (currentlySelectedItem?.description ?? "NO DESCRIPTION PROVIDED");
-
-        return [title, description];
-    })();
-
-    return <div className="TitleBox">
-        <div className="text-box">
-            <div className="title">{title}</div>
-            <div className="description">{description}</div>
-        </div>
-        <div className="bottom-line" />
-    </div>
-
-}
-
-
-function ProductItemsGrid() {
-
+    
     const currentDataTree = useAllProductItems();
     const currentlySelectedItem = useCurrentlySelectedItem();
-
+    
     const shouldDisplayProductsIntro = currentlySelectedItem == null;
 
     const products = (shouldDisplayProductsIntro ? currentDataTree : (currentlySelectedItem as ProductCategory)?.children) ?? []
 
+    const title = (() => {
+        if (shouldDisplayProductsIntro){
+            return "Browse Our Products";
+        } else if (currentlySelectedItem != null){
+            return getCompleteTitleForProductItem(currentlySelectedItem);
+        } else {
+            return "NO TITLE PROVIDED";
+        }
+    })();
+
+    const description = (() => {
+        if (shouldDisplayProductsIntro){
+            return "Here you can browse a catalogue of our top selling products to see exactly what we have to offer.";
+        } else if (isProductCategory(currentlySelectedItem)){
+            return currentlySelectedItem.description;
+        } else {
+            return null;
+        }
+    })();
+
+    return <div className="MainContent">
+        <TitleBox title={title} description={description}/>
+        <ProductItemsGrid products={products}/>
+    </div>
+}
+
+function getCompleteTitleForProductItem(productItem: ProductDataObject): string{
+    let names = [productItem.name];
+    if (productItem.parent != null){
+        names.push(getCompleteTitleForProductItem(productItem.parent));
+    }
+    return names.reverse().join(", ");
+}
+
+
+function TitleBox(props: {title: string, description: Optional<string>}) {
+    return <div className="TitleBox">
+        <div className="text-box">
+            <div className="title">{props.title}</div>
+            {props.description != null ? 
+            <div className="description">{props.description}</div> 
+            : null}
+        </div>
+        <div className="bottom-line" />
+    </div>
+}
+
+
+function ProductItemsGrid(props: {products: ProductDataObject[]}) {
+
     return <div className="ProductItemsGrid">
-        {products.map(x => {
+        {props.products.map(x => {
             return <ProductOrCategoryItem dataObject={x} key={x.id} />
         })}
     </div>

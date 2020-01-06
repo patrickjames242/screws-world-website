@@ -74,9 +74,14 @@
             display: grid;
             grid-auto-flow: column;
             justify-content: space-between;
+            gap: 1rem;
+            align-content: center;
             align-items: center;
             border-radius: 0.5rem;
-            padding: 0.7rem 1rem;
+
+            $padding-centering-adjustment-factor: 0.06rem;
+            padding: $side-bar-link-top-and-bottom-padding + $padding-centering-adjustment-factor 1rem $side-bar-link-top-and-bottom-padding - $padding-centering-adjustment-factor;
+
             @include configureForHoverTransition(background-color);
             
             &.selected{
@@ -96,9 +101,15 @@
             > *{
                 @include configureForHoverTransition(color);
             }
+
+            // must be set because the computed height of each nav bar link in the code relies on the font  inside the link to be exactly what they are in this code.
+            line-height: 1;
             
             > .title{
-                font-size: 1rem;
+                
+                font-size: $side-bar-link-title-font-size;
+                word-break: break-all;
+                @include setMaximumLines(1);
             }
             
             > .chevron{
@@ -109,6 +120,7 @@
         
         .SideBarLinksNode{
             overflow: hidden;
+
             > .children-holder{
                 margin-top: $side-bar-link-spacing;
                 margin-left: 1.5rem;
