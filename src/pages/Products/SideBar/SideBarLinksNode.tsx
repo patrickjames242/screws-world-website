@@ -13,13 +13,14 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
 
     const currentlySelectedItem = useCurrentlySelectedItem();
 
+    const isInitialRender = useIsInitialRender();
+
     const springNodeProps = useSpring({
         to: { height: getHeightForNodeElement(props.item, currentlySelectedItem) },
+        immediate: isInitialRender,
     });
 
     const _shouldNodeBeExpanded = shouldNodeBeExpanded(props.item, currentlySelectedItem);
-
-    const isInitialRender = useIsInitialRender();
 
     const transitionItems = useTransition(_shouldNodeBeExpanded, null, {
         from: { opacity: 0, transform: "translateX(75px)", },
