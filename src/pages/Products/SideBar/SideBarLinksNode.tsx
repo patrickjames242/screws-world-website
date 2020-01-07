@@ -2,11 +2,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import productPageScssVariables from '../_products-variables.scss';
-import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct, ProductCategory } from '../ProductsData';
+import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct } from '../ProductsData';
 import { useCurrentlySelectedItem, getToURLForProductsItem } from '../ProductsData';
-import { Optional } from 'jshelpers';
-import { useSpring, animated } from 'react-spring';
-
+import { Optional, useIsInitialRender } from 'jshelpers';
+import { useSpring, animated, useTransition } from 'react-spring';
 
 
 
@@ -14,50 +13,53 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
 
     const currentlySelectedItem = useCurrentlySelectedItem();
 
-    // const shouldBeExpanded = (() => {
-    //     if (currentlySelectedItem === null){return false;}
-    //     return shouldNodeBeExpanded(props.item, currentlySelectedItem);
-    // })(); 
-
     const springNodeProps = useSpring({
         to: { height: getHeightForNodeElement(props.item, currentlySelectedItem) },
     });
 
     const _shouldNodeBeExpanded = shouldNodeBeExpanded(props.item, currentlySelectedItem);
 
-    const springChildrenOpacityProps = useSpring({
-        opacity: _shouldNodeBeExpanded ? 1 : 0,
-        transform: _shouldNodeBeExpanded ? "translateX(0px)" : "translateX(100px)",
-        config: { friction: 30 },
+    const isInitialRender = useIsInitialRender();
+
+    const transitionItems = useTransition(_shouldNodeBeExpanded, null, {
+        from: { opacity: 0, transform: "translateX(75px)", },
+        enter: { opacity: 1, transform: "translateX(0px)" },
+        leave: { opacity: 0, transform: "translateX(75px)" },
+        immediate: isInitialRender,
     });
+
+    const componentProps = props;
 
     return <animated.div className="SideBarLinksNode" style={springNodeProps}>
         <SideBarLink category={props.item} />
 
-        {(() => {
-            if (isProductCategory(props.item)) {
-                return <animated.div style={springChildrenOpacityProps} className="children-holder">
-                    {props.item.children.map((x, i) => {
-                        return <SideBarLinksNode item={x} key={i} />
-                    })}
-                </animated.div>
-            }
-        })()}
+        {transitionItems.map(({ item, key, props }) => {
+            if (item === false) { return null; }
+            return <animated.div style={props} key={key} className="children-holder">
+                {(() => {
+                    if (isProductCategory(componentProps.item)) {
+                        return componentProps.item.children.map((x, i) => {
+                            if (isProduct(x)) {
+                                return <SideBarLink category={x} key={i} />
+                            } else {
+                                return <SideBarLinksNode item={x} key={i} />
+                            }
+                        })
+                    } else { return null; }
+                
+                })()}
+            </animated.div>
+        })}
 
     </animated.div>
 }
 
 function shouldNodeBeExpanded(nodeItem: ProductDataObject, currentlySelectedItem: Optional<ProductDataObject>): boolean {
-    if (nodeItem.id === currentlySelectedItem?.id) {
-        return true;
+    if (currentlySelectedItem == null || isProduct(nodeItem)) {
+        return false;
     } else if (isProductCategory(nodeItem)) {
-        for (const child of nodeItem.children) {
-            if (shouldNodeBeExpanded(child, currentlySelectedItem)) {
-                return true;
-            }
-        }
+        return doesProductCategoryRecursivelyContainItem(currentlySelectedItem, nodeItem);
     }
-
     return false;
 }
 
@@ -66,34 +68,28 @@ function getHeightForNodeElement(nodeItem: ProductDataObject, currentlySelectedI
     const linkHeight = Number(productPageScssVariables.sideBarLinkHeight);
     const linksSpacing = Number(productPageScssVariables.sideBarLinkSpacing);
 
-
     const heightAsNum = (() => {
         if (currentlySelectedItem == null || isProduct(nodeItem)) {
             return linkHeight;
-        }
+        } else if (isProductCategory(nodeItem)) {
+            return (function getHeightForNodeItem(nodeItem: ProductDataObject): number {
 
-        if (doesProductCategoryRecursivelyContainItem(currentlySelectedItem, nodeItem as ProductCategory)) {
-            return (function calculateHeightForNode(nodeItem: ProductDataObject): number {
-                if (isProductCategory(nodeItem)) {
+                if (isProductCategory(nodeItem) &&
+                    doesProductCategoryRecursivelyContainItem(currentlySelectedItem, nodeItem)) {
                     let height = linkHeight;
                     for (const child of nodeItem.children) {
-                        height += linksSpacing + calculateHeightForNode(child);
+                        height += linksSpacing + getHeightForNodeItem(child);
                     }
                     return height;
                 } else {
                     return linkHeight;
                 }
             })(nodeItem);
-        } else {
-            return linkHeight;
+
         }
     })();
-
     return heightAsNum + "rem";
 }
-
-
-
 
 
 function SideBarLink(props: { category: ProductDataObject }) {
@@ -103,3 +99,5 @@ function SideBarLink(props: { category: ProductDataObject }) {
         <div className="chevron">›</div>
     </NavLink>
 }
+
+

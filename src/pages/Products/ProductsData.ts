@@ -15,13 +15,13 @@ export interface ProductDataObject {
     readonly name: string,
     readonly description: string,
     readonly dataType: ProductDataType,
-    parent: Optional<ProductDataObject>,
+    parent: Optional<ProductCategory>,
 }
 
 export class Product implements ProductDataObject {
-    
+
     readonly dataType: ProductDataType.Product = ProductDataType.Product;
-    parent: Optional<ProductDataObject> = null;
+    parent: Optional<ProductCategory> = null;
 
     constructor(
         readonly id: number,
@@ -33,45 +33,39 @@ export class Product implements ProductDataObject {
 export class ProductCategory implements ProductDataObject {
 
     readonly dataType: ProductDataType.ProductCategory = ProductDataType.ProductCategory;
-    parent: Optional<ProductDataObject> = null;
+    parent: Optional<ProductCategory> = null;
 
     constructor(
         readonly id: number,
         readonly name: string,
         readonly description: string,
-        
         readonly children: ProductDataObject[] = [],
-    ) { 
+    ) {
         this.children.forEach(x => {
             x.parent = this;
         })
     }
 }
 
-export function isProduct(x: any): x is Product{
+export function isProduct(x: any): x is Product {
     return x.dataType === ProductDataType.Product;
 }
 
-export function isProductCategory(x: any): x is ProductCategory{
+export function isProductCategory(x: any): x is ProductCategory {
     return x.dataType === ProductDataType.ProductCategory;
 }
 
 // returns true if the item IS the category. works as expected otherwise
-export function doesProductCategoryRecursivelyContainItem(item: ProductDataObject, category: ProductCategory): boolean{
-    if (item.id === category.id){return true;}
-    for (const child of category.children){
-        if (isProductCategory(child) && 
-        doesProductCategoryRecursivelyContainItem(item, child)){
-            return true;
-        } else if (item.id === child.id){
-            return true;
-        }
+export function doesProductCategoryRecursivelyContainItem(item: ProductDataObject, category: ProductCategory): boolean {
+    if (item.id === category.id) { return true; }
+    if (item.parent != null){
+        return doesProductCategoryRecursivelyContainItem(item.parent, category);
     }
     return false;
 }
 
 
-function getProductsDataTreeInfo(): [ProductDataObject[], {[itemIndex: number]: ProductDataObject}]{
+function getProductsDataTreeInfo(): [ProductDataObject[], { [itemIndex: number]: ProductDataObject }] {
 
     const names = [
         "Hex bolts", "Flange bolts", "Roofing screws", "Socket screws", "Set screws", "Nuts", "Washers", "Threaded inserts", "Elevator bolts", "Thumb screws"
@@ -88,7 +82,7 @@ function getProductsDataTreeInfo(): [ProductDataObject[], {[itemIndex: number]: 
     const getRandomDecimal = (() => {
 
         let currentRandomDecimalIndex = -1;
-        const randomDecimals = getIntegerArray(0, 20).map(x => x / 20);
+        const randomDecimals = [0.7, 0.1, 0.4, 0.6, 0.3, 0.9, 1, 0, 0.2, 0.5];
 
         return () => {
             currentRandomDecimalIndex = (currentRandomDecimalIndex + 1) % randomDecimals.length
@@ -107,17 +101,23 @@ function getProductsDataTreeInfo(): [ProductDataObject[], {[itemIndex: number]: 
     const getRandomDescription = () => getRandomElementFrom(descriptions)!;
 
     let nextAvailableID = 0;
-    
-    const itemsObject: {[itemIndex: number]: ProductDataObject} = {};
+
+    const itemsObject: { [itemIndex: number]: ProductDataObject } = {};
 
     const categories = getIntegerArray(1, 20).map(() => {
-        const upper = Math.round(getRandomDecimal() * 15) + 3;
-        const products = getIntegerArray(1, upper).map(() => {
-            const newProduct = new Product(nextAvailableID++, getRandomName(), getRandomDescription());
-            itemsObject[newProduct.id] = newProduct;
-            return newProduct;
+
+        const subCategories = getIntegerArray(1, 5).map(() => {
+            const upper = Math.round(getRandomDecimal() * 15) + 3;
+            const products = getIntegerArray(1, upper).map(() => {
+                const newProduct = new Product(nextAvailableID++, getRandomName(), getRandomDescription());
+                itemsObject[newProduct.id] = newProduct;
+                return newProduct;
+            });
+            const newCategory = new ProductCategory(nextAvailableID++, getRandomName(), getRandomDescription(), products);
+            itemsObject[newCategory.id] = newCategory;
+            return newCategory;
         });
-        const newCategory = new ProductCategory(nextAvailableID++, getRandomName(), getRandomDescription(), products);
+        const newCategory = new ProductCategory(nextAvailableID++, getRandomName(), getRandomDescription(), subCategories);
         itemsObject[newCategory.id] = newCategory;
         return newCategory;
     });
@@ -130,25 +130,23 @@ const productsDataTreeInfo = getProductsDataTreeInfo();
 export const productsDataTree = productsDataTreeInfo[0];
 const productsDataObjectIds = productsDataTreeInfo[1];
 
-export function getDataObjectForID(id: number): Optional<ProductDataObject>{
+export function getDataObjectForID(id: number): Optional<ProductDataObject> {
     return productsDataObjectIds[id] ?? null;
 }
 
-
-
 export const ProductsDataContext = React.createContext<Optional<{
-    currentlySelectedItem: Optional<ProductDataObject>, 
+    currentlySelectedItem: Optional<ProductDataObject>,
     allProductItems: ProductDataObject[],
 }>>(null);
 
-export function useCurrentlySelectedItem(): Optional<ProductDataObject>{
+export function useCurrentlySelectedItem(): Optional<ProductDataObject> {
     const productsData = React.useContext(ProductsDataContext);
-    if (productsData){
+    if (productsData) {
         return productsData.currentlySelectedItem;
     } else { return null; }
 }
 
-export function useAllProductItems(): ProductDataObject[]{
+export function useAllProductItems(): ProductDataObject[] {
     return React.useContext(ProductsDataContext)!.allProductItems;
 }
 

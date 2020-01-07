@@ -7,6 +7,8 @@ declare module jshelpers{
 
     export function useSetTitleFunctionality(titleString: Optional<string>): void;
 
+    export function useIsInitialRender(): boolean;
+
     export const SCREWS_WORLD_EMAIL: string;
     export const SCREWS_WORLD_NUMBER: string;
 

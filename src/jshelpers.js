@@ -17,6 +17,14 @@ export function useSetTitleFunctionality(titleString) {
     }, []);
 }
 
+export function useIsInitialRender(){
+    const isInitialRenderRef = useRef(true);
+    useEffect(() => {
+        isInitialRenderRef.current = false;
+    }, []);
+    return isInitialRenderRef.current;
+}
+
 
 export const SCREWS_WORLD_EMAIL = "info@screwsworldbahamas.com";
 export const SCREWS_WORLD_NUMBER = "(242) 326-1976";
