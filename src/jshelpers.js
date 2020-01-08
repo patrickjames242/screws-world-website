@@ -29,6 +29,8 @@ export function useIsInitialRender(){
 export const SCREWS_WORLD_EMAIL = "info@screwsworldbahamas.com";
 export const SCREWS_WORLD_NUMBER = "(242) 326-1976";
 
+
+// works just like useEffect, except that the effect is not called after the first render, as is the case with useEffect.
 export function useUpdateEffect(effect, dependencies) {
 
     const flag = useRef(true);
@@ -54,42 +56,58 @@ export function getIntegerArray(upper, lower) {
 
 
 
-
-export function fixScrollingIssueBecauseOfTransitionAnimation() {
-
-    const scrollPositionKey = "scroll-position";
-    const cachedScrollPosition = Number(sessionStorage.getItem(scrollPositionKey)) || 0;
-    (function scrollPageToCachedScrollPosition() {
-        const timeout = 150;
-        let iterations = 0;
-        const interval = 5;
-
-        const intervalID = setInterval(() => {
-            iterations += 1;
-            const currentTime = iterations * interval;
-
-            if (document.documentElement.scrollTop !== cachedScrollPosition) {
-                document.documentElement.scrollTop = cachedScrollPosition;
-            }
-
-            if (currentTime >= timeout) {
-                clearInterval(intervalID);
-            }
-
-        }, interval);
-    })();
-
-    (function storeScrollPositionOnScroll() {
-        let timer;
-        window.addEventListener('scroll', () => {
-            timer && clearTimeout(timer);
-            timer = setTimeout(() => {
-                const scrollPosition = document.documentElement.scrollTop;
-                sessionStorage.setItem(scrollPositionKey, scrollPosition);
-            }, 100);
-        });
-    })();
-
+export class Notification{
+    constructor(){
+        let listeners = [];
+        this.post = (info) => {
+            listeners.forEach(l => l(info));
+        }
+        this.addListener = (listener) => {
+            listeners.push(listener);
+            return () => this.removeListener(listener);
+        }
+        this.removeListener = (listener) => {
+            listeners = listeners.filter(x => x !== listener);
+        }
+    }
 }
+
+
+// export function fixScrollingIssueBecauseOfTransitionAnimation() {
+
+//     const scrollPositionKey = "scroll-position";
+//     const cachedScrollPosition = Number(sessionStorage.getItem(scrollPositionKey)) || 0;
+//     (function scrollPageToCachedScrollPosition() {
+//         const timeout = 150;
+//         let iterations = 0;
+//         const interval = 5;
+
+//         const intervalID = setInterval(() => {
+//             iterations += 1;
+//             const currentTime = iterations * interval;
+
+//             if (document.documentElement.scrollTop !== cachedScrollPosition) {
+//                 document.documentElement.scrollTop = cachedScrollPosition;
+//             }
+
+//             if (currentTime >= timeout) {
+//                 clearInterval(intervalID);
+//             }
+
+//         }, interval);
+//     })();
+
+//     (function storeScrollPositionOnScroll() {
+//         let timer;
+//         window.addEventListener('scroll', () => {
+//             timer && clearTimeout(timer);
+//             timer = setTimeout(() => {
+//                 const scrollPosition = document.documentElement.scrollTop;
+//                 sessionStorage.setItem(scrollPositionKey, scrollPosition);
+//             }, 100);
+//         });
+//     })();
+
+// }
 
 

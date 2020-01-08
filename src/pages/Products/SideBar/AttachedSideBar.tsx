@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from 'react';
 
 import SideBarLinksNode from './SideBarLinksNode';
-import { useAllProductItems } from '../ProductsData';
+import { useAllProductItems } from '../ProductsUIHelpers';
 
 
 

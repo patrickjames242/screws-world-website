@@ -2,13 +2,13 @@
 import React, { useEffect } from 'react';
 import './Products.scss';
 import { Optional, useSetTitleFunctionality } from 'jshelpers';
-import { ProductDataObject, productsDataTree, getDataObjectForID } from './ProductsData';
+import { ProductDataObject, productsDataTree, getDataObjectForID } from './ProductsDataHelpers';
 import { useRouteMatch, Switch, Route, useHistory } from 'react-router-dom';
 import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
 import { useSpring } from 'react-spring';
 import showSideBarIcon from './icons/showSideBarIcon';
 import AttachedSideBar from './SideBar/AttachedSideBar';
-import {ProductsDataContext } from './ProductsData';
+import {ProductsDataContext } from './ProductsUIHelpers';
 
 import MainContent from './MainContent/MainContent';
 

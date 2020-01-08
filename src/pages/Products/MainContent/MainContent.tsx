@@ -2,8 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {Optional} from 'jshelpers';
-import { ProductDataObject, ProductCategory, ProductDataType, useAllProductItems, isProductCategory } from '../ProductsData';
-import { useCurrentlySelectedItem, getToURLForProductsItem } from '../ProductsData';
+import { ProductDataObject, ProductCategory, ProductDataType, isProductCategory } from '../ProductsDataHelpers';
+import { useCurrentlySelectedItem, getToURLForProductsItem, useAllProductItems } from '../ProductsUIHelpers';
 
 
 export default function MainContent() {

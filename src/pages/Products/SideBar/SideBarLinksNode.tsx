@@ -1,9 +1,9 @@
 
-import React from 'react';
+import React, {useMemo} from 'react';
 import { NavLink } from 'react-router-dom';
 import productPageScssVariables from '../_products-variables.scss';
-import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct } from '../ProductsData';
-import { useCurrentlySelectedItem, getToURLForProductsItem } from '../ProductsData';
+import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct } from '../ProductsDataHelpers';
+import { useCurrentlySelectedItem, getToURLForProductsItem } from '../ProductsUIHelpers';
 import { Optional, useIsInitialRender } from 'jshelpers';
 import { useSpring, animated, useTransition } from 'react-spring';
 
@@ -15,12 +15,20 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
 
     const isInitialRender = useIsInitialRender();
 
+    const desiredHeight = useMemo(() => {
+        return getHeightForNodeElement(props.item, currentlySelectedItem)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.item.id, currentlySelectedItem?.id]); 
+
+    const _shouldNodeBeExpanded = useMemo(() => {
+        return shouldNodeBeExpanded(props.item, currentlySelectedItem);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.item.id, currentlySelectedItem?.id]);
+
     const springNodeProps = useSpring({
-        to: { height: getHeightForNodeElement(props.item, currentlySelectedItem) },
+        to: { height:  desiredHeight},
         immediate: isInitialRender,
     });
-
-    const _shouldNodeBeExpanded = shouldNodeBeExpanded(props.item, currentlySelectedItem);
 
     const transitionItems = useTransition(_shouldNodeBeExpanded, null, {
         from: { opacity: 0, transform: "translateX(75px)", },
@@ -74,7 +82,6 @@ function getHeightForNodeElement(nodeItem: ProductDataObject, currentlySelectedI
             return linkHeight;
         } else if (isProductCategory(nodeItem)) {
             return (function getHeightForNodeItem(nodeItem: ProductDataObject): number {
-
                 if (isProductCategory(nodeItem) &&
                     doesProductCategoryRecursivelyContainItem(currentlySelectedItem, nodeItem)) {
                     let height = linkHeight;
@@ -86,7 +93,6 @@ function getHeightForNodeElement(nodeItem: ProductDataObject, currentlySelectedI
                     return linkHeight;
                 }
             })(nodeItem);
-
         }
     })();
     return heightAsNum + "rem";

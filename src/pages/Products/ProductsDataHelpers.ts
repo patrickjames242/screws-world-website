@@ -1,8 +1,6 @@
 
 
-import React from 'react';
 
-import * as NavBarSelection from 'random-components/NavBar/SelectionType';
 import { getIntegerArray, Optional } from "jshelpers";
 
 export enum ProductDataType {
@@ -73,9 +71,9 @@ function getProductsDataTreeInfo(): [ProductDataObject[], { [itemIndex: number]:
 
     const descriptions = [
         "The most common type of bolt used in structural connections offering a larger diameter hex head.",
-        // "A hexagonal head for use with a wrench. These bolts are sometimes called Frame bolts.",
-        // "Screws with coarse threads and a pointed end for use in sheet metal sometimes also used in plastic, fiberglass, or wood.",
-        // "Screws with coarse threads and a drill point end for use in thicker gauge steel.",
+        "A hexagonal head for use with a wrench. These bolts are sometimes called Frame bolts.",
+        "Screws with coarse threads and a pointed end for use in sheet metal sometimes also used in plastic, fiberglass, or wood.",
+        "Screws with coarse threads and a drill point end for use in thicker gauge steel.",
 
     ]
 
@@ -134,23 +132,3 @@ export function getDataObjectForID(id: number): Optional<ProductDataObject> {
     return productsDataObjectIds[id] ?? null;
 }
 
-export const ProductsDataContext = React.createContext<Optional<{
-    currentlySelectedItem: Optional<ProductDataObject>,
-    allProductItems: ProductDataObject[],
-}>>(null);
-
-export function useCurrentlySelectedItem(): Optional<ProductDataObject> {
-    const productsData = React.useContext(ProductsDataContext);
-    if (productsData) {
-        return productsData.currentlySelectedItem;
-    } else { return null; }
-}
-
-export function useAllProductItems(): ProductDataObject[] {
-    return React.useContext(ProductsDataContext)!.allProductItems;
-}
-
-export function getToURLForProductsItem(productsItem: ProductDataObject): string {
-    const pathName = NavBarSelection.getInfoForSelection(NavBarSelection.SelectionType.Products).routePath;
-    return pathName + "/" + productsItem.id;
-}

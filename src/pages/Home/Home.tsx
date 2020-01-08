@@ -12,7 +12,6 @@ import toolsIcon from 'assets/home-screen-images/tools.png';
 import quotesIcon from './quotes-icon.js';
 import mapboxgl from 'mapbox-gl';
 import { useSetTitleFunctionality } from 'jshelpers';
-
 mapboxgl.accessToken = 'pk.eyJ1IjoicGF0cmlja2hhbm5hMjQyIiwiYSI6ImNqcnh2eWVrczBydGo0OWx2dDUyYjhvNnMifQ.SGbGDXppFmFkdUnBxIyoqA';
 
 
