@@ -98,7 +98,6 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
                     <div className="description">{props.dataObject.description}</div>
                 </div>
             </div>
-
         </div>
     </Link>
 }

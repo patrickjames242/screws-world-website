@@ -8,9 +8,11 @@ import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
 import { useSpring } from 'react-spring';
 import showSideBarIcon from './icons/showSideBarIcon';
 import AttachedSideBar from './SideBar/AttachedSideBar';
-import {ProductsDataContext } from './ProductsUIHelpers';
+import { ProductsDataContext } from './ProductsUIHelpers';
 
 import MainContent from './MainContent/MainContent';
+import DetatchedSideBar, { DetatchedSideBarFunctionsRef } from './SideBar/DetatchedSideBar';
+
 
 
 
@@ -34,6 +36,14 @@ export default function Products() {
 
     useScrollToTopOnPathChangeFunctionality();
 
+    const detatchedSideBarfunctions: DetatchedSideBarFunctionsRef = {};
+
+    function respondToSideBarButtonClicked(){
+        if (detatchedSideBarfunctions.setIsPresented){
+            detatchedSideBarfunctions.setIsPresented(true, true);
+        }
+    }
+
     return <Switch>
         <Route path={[currentURL, currentURL + "/:id"]} exact render={() => {
             return <ProductsDataContext.Provider value={{
@@ -44,10 +54,13 @@ export default function Products() {
                     <div className="content">
                         <AttachedSideBar />
                         <MainContent />
+                        <DetatchedSideBar functionsRef={detatchedSideBarfunctions}/>
                     </div>
-                    <div className="side-bar-button">
+                    <div
+                        onClick={respondToSideBarButtonClicked}
+                        className="side-bar-button">
                         {showSideBarIcon}
-                    </div>
+                    </div>;
                 </div>
             </ProductsDataContext.Provider>
         }} />
@@ -70,7 +83,7 @@ function useScrollToTopOnPathChangeFunctionality() {
                     reset: true,
                     from: { y: window.scrollY },
                 };
-                // because typescript doesn't wanna cooperate
+                // casted it because react-spring types doesn't wanna cooperate
                 (animationOptions as any).onFrame = (props: any) => {
                     window.scroll(0, props.y);
                 };
@@ -82,4 +95,5 @@ function useScrollToTopOnPathChangeFunctionality() {
         // eslint-disable-next-line
     }, []);
 }
+
 

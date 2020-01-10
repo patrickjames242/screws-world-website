@@ -29,7 +29,7 @@
         position: sticky;
         bottom: $side-bar-button-insets;
         justify-self: end;
-        box-shadow:0px 0px 3.3rem 1rem rgba(colors(dark-blue), 0.6);
+        box-shadow:0px 0px 1.5rem 0.5rem rgba(colors(dark-blue), 0.4);
 
         @include setProps(margin-top margin-bottom margin-right, $side-bar-button-insets);
 
@@ -63,7 +63,6 @@
         grid-template-columns: auto 1fr;
     }
 
-    
     .SideBar{
         .SideBarLink{
             
@@ -130,6 +129,7 @@
             }
         }
     }
+    
 
     
     
@@ -191,10 +191,53 @@
     
     
     .DetatchedSideBar{
+
+        $dismiss-button-left-inset: 0.7rem;
+        $dismiss-button-size: 3.85rem;
+        $detatched-side-bar-insets: $nav-bar-insets;
+    
         position: fixed;
-        @include setProps(left top bottom, $nav-bar-insets);
-        border-radius: $nav-bar-border-radius;
-        background-color: colors(light-gray-bg);
+        @include setProps(left top bottom, $detatched-side-bar-insets);
+        z-index: 100;
+        display: grid;
+        grid-template-columns: minmax(0rem, 22rem) auto;
+        gap: $dismiss-button-left-inset;
+        max-width: calc(100vw - #{$detatched-side-bar-insets * 2});
+
+        pointer-events: none;
+        
+        .links-container-holder{
+            pointer-events: auto;
+
+            background-color: colors(light-gray-bg);
+            overflow-y: scroll;
+            border-radius: $nav-bar-border-radius;
+
+            > .links-container{
+                display: grid;
+                gap: $side-bar-link-spacing;
+                padding: 1rem;
+            }    
+        }
+        
+        
+        
+        .dismiss-button{
+            @include bounceOnHover(1.15);
+            pointer-events: auto;
+            
+            background-color: colors(dark-light-blue);
+            @include setProps(width height, $dismiss-button-size);
+            border-radius: 1rem;
+            @include centerContentInGrid;
+
+            > svg{
+                @include setProps(width height, 1.6rem);
+                fill: white;
+            }
+        }
+
+
     }
     
     

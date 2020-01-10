@@ -9,6 +9,7 @@ $side-bar-link-top-and-bottom-padding: 0.7rem;
 $side-bar-link-title-font-size: 1rem;
 $side-bar-link-chevron-font-size: 1.2rem;
 
+
 $main-content-border-radius: 1.4rem;
 
 $product-grid-insets: 1rem;
@@ -18,4 +19,5 @@ $product-grid-insets: 1rem;
     minWidthForDisplayingSideBar: $min-width-for-displaying-side-bar;
     sideBarLinkSpacing: strip-unit($side-bar-link-spacing);
     sideBarLinkHeight: strip-unit(max($side-bar-link-chevron-font-size, $side-bar-link-title-font-size) + ($side-bar-link-top-and-bottom-padding * 2));
+    
 }
