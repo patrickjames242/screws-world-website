@@ -61,28 +61,29 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
         enter: { transform: "translateX(0rem)", opacity: 1 },
         leave: { transform: "translateX(-15rem)", opacity: 0 },
         config: { friction: 17, tension: 170 },
-
         immediate: !shouldIsPresentedUpdateBeAnimatedRef.current,
     });
 
     const productsDataTree = useAllProductItems();
 
 
-
     return <>
         {transitionProps.map(({ item, key, props }) => {
             if (item === false) { return null; }
             return <animated.div key={key} className="DetatchedSideBar SideBar" style={props}>
-                <div className="links-container-holder">
-                    <div className="links-container">
-                        {productsDataTree.map(x => {
-                            return <SideBarLinksNode item={x} key={x.id} />
-                        })}
+                <div className="content">
+                    <div className="links-container-holder">
+                        <div className="links-container">
+                            {productsDataTree.map(x => {
+                                return <SideBarLinksNode item={x} key={x.id} />
+                            })}
+                        </div>
+                    </div>
+                    <div className="dismiss-button" onClick={respondToDismissButtonClicked}>
+                        {xIcon}
                     </div>
                 </div>
-                <div className="dismiss-button" onClick={respondToDismissButtonClicked}>
-                    {xIcon}
-                </div>
+
             </animated.div>
         })}
     </>;

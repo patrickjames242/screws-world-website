@@ -30,6 +30,7 @@ export default function App() {
     }).current;
 
     return <AppHelpersContext.Provider value={appHelpersProviderValue}>
+        
         <div className="App" style={{ marginTop: scssVariables.navBarHeightFromScreenTop }}>
             <NavBar />
             <Switch>

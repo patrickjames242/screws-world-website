@@ -60,7 +60,7 @@ export default function Products() {
                         onClick={respondToSideBarButtonClicked}
                         className="side-bar-button">
                         {showSideBarIcon}
-                    </div>;
+                    </div>
                 </div>
             </ProductsDataContext.Provider>
         }} />
