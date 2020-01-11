@@ -95,7 +95,7 @@ function getHeightForNodeElement(nodeItem: ProductDataObject, currentlySelectedI
             })(nodeItem);
         }
     })();
-    return heightAsNum + "rem";
+    return heightAsNum + "px";
 }
 
 

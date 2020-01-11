@@ -50,7 +50,6 @@
     
 
     margin-top: $page-content-inset-from-nav-bar;
-    // margin-bottom: 6rem;
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: auto;
@@ -70,6 +69,7 @@
                 transition-property: $properties;
                 transition-duration: 0.2s;
             }
+
             cursor: pointer;
             display: grid;
             grid-auto-flow: column;
@@ -79,8 +79,8 @@
             align-items: center;
             border-radius: 0.5rem;
 
-            $padding-centering-adjustment-factor: 0.06rem;
-            padding: $side-bar-link-top-and-bottom-padding + $padding-centering-adjustment-factor 1rem $side-bar-link-top-and-bottom-padding - $padding-centering-adjustment-factor;
+            $padding-centering-adjustment-factor: 0.96px;
+            padding: $side-bar-link-top-and-bottom-padding + $padding-centering-adjustment-factor 16px $side-bar-link-top-and-bottom-padding - $padding-centering-adjustment-factor;
 
             @include configureForHoverTransition(background-color);
             
@@ -106,14 +106,13 @@
             line-height: 1;
             
             > .title{
-                
                 font-size: $side-bar-link-title-font-size;
                 word-break: break-all;
                 @include setMaximumLines(1);
             }
             
             > .chevron{
-                font-size: 1.2rem;
+                font-size: $side-bar-link-chevron-font-size;
                 font-weight: bold;
             }
         }
@@ -204,13 +203,16 @@
         pointer-events: none;
     
         > .content{
+            --max-detatched-side-bar-width: 330px;
             display: grid;
-            grid-template-columns: minmax(0rem, 22rem) auto;
+            grid-template-columns: minmax(0rem, var(--max-detatched-side-bar-width)) auto;
             gap: $dismiss-button-left-inset;
             max-width: calc(100vw - #{$detatched-side-bar-insets * 2});
-            
-            
             height: 100%;
+
+            @include respondToNarrowWidth{
+                --max-detatched-side-bar-width: 280px;
+            }
 
             
             .links-container-holder{
@@ -355,26 +357,57 @@
                         > .background-view{
                             top: 0; left: 0; bottom: -$product-grid-insets;
                         }
-                        > .content-box > .under-image-content{
-                            transform: translateX(-$product-grid-insets);
-                            > .text-box > .title{
-                                @include applyBlueThemeTextGradient;
+
+                        > .content-box{
+                            > .under-image-content{
+                                transform: translateX(-$product-grid-insets);
+                                > .text-box > .title{
+                                    @include applyBlueThemeTextGradient;
+                                }
+                            }
+                            > .image-box > .content > .image-holder > img {
+                                transform: scale(1.1);
                             }
                         }
                     }
                 }
 
                 > .content-box{
+
                     position: relative;
                     
                     > .image-box{
+
                         padding-top: 56%;
                         background-color: colors(grayish-blue-text);
                         border-radius: 0.4rem;
                         position: relative;
                         > .content{
+                            
                             position: absolute;
                             @include setProps(top bottom left right, 0);
+                            
+                            .image-holder{
+                                
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                
+                                height: 60%;
+                                width: 60%;
+
+                                > img{
+                                    position: absolute;
+                                    top: 0; left: 0;
+                                    width: 100%; height: 100%;
+                                    object-fit: contain;
+                                    @include configureTransition(transform);
+                                }
+                            }
+                            
+                            
+                            
                             > .product-or-category{
                                 position: absolute;
                                 @include setProps(right top, 0.5rem);
@@ -386,6 +419,7 @@
                                 border-radius: 0.3rem;
                                 background-color: colors(light-blue);
                             }
+
                         }
                         
                     }

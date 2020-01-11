@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {Optional} from 'jshelpers';
 import { ProductDataObject, ProductCategory, ProductDataType, isProductCategory } from '../ProductsDataHelpers';
 import { useCurrentlySelectedItem, getToURLForProductsItem, useAllProductItems } from '../ProductsUIHelpers';
-
+import screwImage from '../icons/screwProductImage.png';
 
 export default function MainContent() {
     
@@ -72,7 +72,6 @@ function ProductItemsGrid(props: {products: ProductDataObject[]}) {
     </div>
 }
 
-
 function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
 
     const productOrCategoryText = (() => {
@@ -89,6 +88,10 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
         <div className="content-box">
             <div className="image-box">
                 <div className="content">
+                    <div className="image-holder">
+                        <img src={screwImage} alt=""/>
+                    </div>
+                    
                     <div className="product-or-category">{productOrCategoryText}</div>
                 </div>
             </div>
