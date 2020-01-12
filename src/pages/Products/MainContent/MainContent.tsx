@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Optional } from 'jshelpers';
 import { ProductDataObject, ProductCategory, ProductDataType, isProductCategory, Product, isProduct } from '../ProductsDataHelpers';
 import { useCurrentlySelectedItem, getToURLForProductsItem, useAllProductItems } from '../ProductsUIHelpers';
-import screwImage from '../icons/screwProductImage.jpg';
 
 
 export default function MainContent() {
@@ -94,7 +93,7 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
         <div className="content-box">
             <div className="image-box">
                 <div className="content">
-                    <img src={screwImage} alt="" />
+                    <img src={props.dataObject.imageURL} alt="" />
                     <div className="product-or-category">{productOrCategoryText}</div>
                 </div>
             </div>
@@ -121,7 +120,7 @@ function ProductDetailsView(props: { product: Product }) {
                 <div className="content">
                     <div className="background-view" />
                     <div className="image-holder">
-                        <img src={screwImage} alt="" />
+                        <img src={props.product.imageURL} alt="" />
                     </div>
                 </div>
             </div>

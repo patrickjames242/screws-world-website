@@ -332,9 +332,9 @@
                     max-width: 500px;
                     @include setProps(margin-left margin-right, auto);
 
-                    // @media(min-width: $min-width-for-displaying-side-bar){
-                    //     max-width: initial;
-                    // }
+                    @media(max-width: $max-width-for-vertical-layout){
+                        max-width: initial;
+                    }
                     
                     > .content{
                         padding-top: $product-image-height-percentage-of-width;
