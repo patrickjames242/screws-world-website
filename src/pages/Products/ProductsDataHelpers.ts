@@ -46,10 +46,13 @@ export class ProductCategory implements ProductDataObject {
 }
 
 export function isProduct(x: any): x is Product {
+    if (!x || typeof x !== "object"){return false;}
     return x.dataType === ProductDataType.Product;
 }
 
 export function isProductCategory(x: any): x is ProductCategory {
+    if (!x || typeof x !== "object"){return false;}
+    
     return x.dataType === ProductDataType.ProductCategory;
 }
 

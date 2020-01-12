@@ -1,24 +1,25 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {Optional} from 'jshelpers';
-import { ProductDataObject, ProductCategory, ProductDataType, isProductCategory } from '../ProductsDataHelpers';
+import { Optional } from 'jshelpers';
+import { ProductDataObject, ProductCategory, ProductDataType, isProductCategory, Product, isProduct } from '../ProductsDataHelpers';
 import { useCurrentlySelectedItem, getToURLForProductsItem, useAllProductItems } from '../ProductsUIHelpers';
-import screwImage from '../icons/screwProductImage.png';
+import screwImage from '../icons/screwProductImage.jpg';
+
 
 export default function MainContent() {
-    
+
     const currentDataTree = useAllProductItems();
     const currentlySelectedItem = useCurrentlySelectedItem();
-    
+
     const shouldDisplayProductsIntro = currentlySelectedItem == null;
 
     const products = (shouldDisplayProductsIntro ? currentDataTree : (currentlySelectedItem as ProductCategory)?.children) ?? []
 
     const title = (() => {
-        if (shouldDisplayProductsIntro){
+        if (shouldDisplayProductsIntro) {
             return "Browse Our Products";
-        } else if (currentlySelectedItem != null){
+        } else if (currentlySelectedItem != null) {
             return getCompleteTitleForProductItem(currentlySelectedItem);
         } else {
             return "NO TITLE PROVIDED";
@@ -26,9 +27,9 @@ export default function MainContent() {
     })();
 
     const description = (() => {
-        if (shouldDisplayProductsIntro){
+        if (shouldDisplayProductsIntro) {
             return "Here you can browse a catalogue of our top selling products to see exactly what we have to offer.";
-        } else if (isProductCategory(currentlySelectedItem)){
+        } else if (isProductCategory(currentlySelectedItem)) {
             return currentlySelectedItem.description;
         } else {
             return null;
@@ -36,35 +37,40 @@ export default function MainContent() {
     })();
 
     return <div className="MainContent">
-        <TitleBox title={title} description={description}/>
-        <ProductItemsGrid products={products}/>
+        <TitleBox title={title} description={description} />
+        {(() => {
+            if (isProduct(currentlySelectedItem)) {
+                return <ProductDetailsView product={currentlySelectedItem} />
+            } else {
+                return <ProductItemsGrid products={products} />
+            }
+        })()}
     </div>
 }
 
-function getCompleteTitleForProductItem(productItem: ProductDataObject): string{
+function getCompleteTitleForProductItem(productItem: ProductDataObject): string {
     let names = [productItem.name];
-    if (productItem.parent != null){
+    if (productItem.parent != null) {
         names.push(getCompleteTitleForProductItem(productItem.parent));
     }
     return names.reverse().join(", ");
 }
 
 
-function TitleBox(props: {title: string, description: Optional<string>}) {
+function TitleBox(props: { title: string, description: Optional<string> }) {
     return <div className="TitleBox">
         <div className="text-box">
             <div className="title">{props.title}</div>
-            {props.description != null ? 
-            <div className="description">{props.description}</div> 
-            : null}
+            {props.description != null ?
+                <div className="description">{props.description}</div>
+                : null}
         </div>
         <div className="bottom-line" />
     </div>
 }
 
 
-function ProductItemsGrid(props: {products: ProductDataObject[]}) {
-
+function ProductItemsGrid(props: { products: ProductDataObject[] }) {
     return <div className="ProductItemsGrid">
         {props.products.map(x => {
             return <ProductOrCategoryItem dataObject={x} key={x.id} />
@@ -88,10 +94,7 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
         <div className="content-box">
             <div className="image-box">
                 <div className="content">
-                    <div className="image-holder">
-                        <img src={screwImage} alt=""/>
-                    </div>
-                    
+                    <img src={screwImage} alt="" />
                     <div className="product-or-category">{productOrCategoryText}</div>
                 </div>
             </div>
@@ -103,5 +106,27 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
             </div>
         </div>
     </Link>
+}
+
+
+function ProductDetailsView(props: { product: Product }) {
+    return <div className="ProductDetailsView">
+        <div className="description-section">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates temporibus, earum voluptas minus facere error quam saepe similique doloremque est suscipit perferendis facilis eius, assumenda repellat ab, praesentium qui itaque?
+        <br /><br />
+            Aliquid suscipit quidem deleniti adipisci a officia excepturi dicta culpa aspernatur, perferendis sint ipsam molestias soluta provident totam omnis animi magni recusandae numquam laudantium ducimus possimus aperiam ab nisi.
+        </div>
+        <div className="image-section-holder">
+            <div className="image-section">
+                <div className="content">
+                    <div className="background-view" />
+                    <div className="image-holder">
+                        <img src={screwImage} alt="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 }
 

@@ -29,7 +29,7 @@
         position: sticky;
         bottom: $side-bar-button-insets;
         justify-self: end;
-        box-shadow:0px 0px 1.5rem 0.5rem rgba(colors(dark-blue), 0.4);
+        box-shadow: 0px 0px 1.5rem 0.5rem rgba(colors(dark-blue), 0.4);
 
         @include setProps(margin-top margin-bottom margin-right, $side-bar-button-insets);
 
@@ -48,16 +48,13 @@
 
 .Products > .content{
     
-
     margin-top: $page-content-inset-from-nav-bar;
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: auto;
-
     align-items: start;
     @include setProps(padding-left padding-right, $nav-bar-insets);
 
-    
     @media(min-width: $min-width-for-displaying-side-bar){
         grid-template-columns: auto 1fr;
     }
@@ -231,8 +228,7 @@
                 }    
             }
             
-            
-            
+
             .dismiss-button{
                 @include bounceOnHover(1.15);
                 pointer-events: auto;
@@ -263,7 +259,6 @@
         padding: var(--main-content-padding);
         
         @media(max-width: 400px){
-           
             --main-content-padding: 2rem;
         }
 
@@ -271,6 +266,7 @@
 
             display: grid;
             gap: 2rem;
+
             > .text-box{
                 display: grid;
                 gap: 1rem;
@@ -297,6 +293,82 @@
             }
         }
 
+        > .ProductDetailsView{
+
+            $max-width-for-vertical-layout: 750px;
+            
+
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            
+            margin-top: 2.5rem;
+            align-items: start;
+            gap: 2rem;
+        
+
+            @media(max-width: $max-width-for-vertical-layout){
+                grid-template-columns: initial;
+                max-width: 425px;
+                @include setProps(margin-left margin-right, auto);
+                > .image-section-holder{
+                    grid-row: 1;
+                }
+            }
+
+            > .description-section{
+                font-size: 18px;
+                line-height: 1.6;
+
+                @include respondToNarrowWidth{
+                    font-size: 16px;
+                }
+            }
+
+            > .image-section-holder{
+
+                > .image-section{
+                    
+                    $insets: 1.2rem;
+                    max-width: 500px;
+                    @include setProps(margin-left margin-right, auto);
+
+                    // @media(min-width: $min-width-for-displaying-side-bar){
+                    //     max-width: initial;
+                    // }
+                    
+                    > .content{
+                        padding-top: $product-image-height-percentage-of-width;
+                        position: relative;
+                        
+                        > .image-holder{
+                            position: absolute;
+                            @include setProps(top left, 0);
+                            @include setProps(right bottom, $insets);
+                        
+                            border-radius: 0.7rem;
+                            overflow: hidden;
+                            background-color: lightGray;
+    
+                            > img{
+                                height: 100%;
+                                width: 100%;
+                                object-fit: cover;
+                            }
+                        }
+                        
+                        > .background-view{
+                            background-color: $product-item-info-background-color;
+                            box-shadow:0px 0px 3.3rem 1rem rgba(colors(dark-blue), 0.9);
+                            border-radius: 1rem;
+                            position: absolute;
+                            @include setProps(top left, $insets);
+                            @include setProps(right bottom, 0);
+                        }
+                    }
+                }
+            }
+
+        }
 
         > .ProductItemsGrid{
 
@@ -339,9 +411,10 @@
 
                 padding: $product-grid-insets;
                 position: relative;
+
                 > .background-view{
                     position: absolute;
-                    background-color: rgb(40, 56, 71);
+                    background-color: $product-item-info-background-color;
                     box-shadow:0px 0px 3.3rem 1rem rgba(colors(dark-blue), 0.9);
                     border-radius: 0.8rem;
                     left: $product-grid-insets * 2;
@@ -356,6 +429,7 @@
                         z-index: 1; 
                         > .background-view{
                             top: 0; left: 0; bottom: -$product-grid-insets;
+                            
                         }
 
                         > .content-box{
@@ -365,7 +439,7 @@
                                     @include applyBlueThemeTextGradient;
                                 }
                             }
-                            > .image-box > .content > .image-holder > img {
+                            > .image-box > .content > img {
                                 transform: scale(1.1);
                             }
                         }
@@ -377,36 +451,23 @@
                     position: relative;
                     
                     > .image-box{
-
-                        padding-top: 56%;
-                        background-color: colors(grayish-blue-text);
-                        border-radius: 0.4rem;
+                        
+                        padding-top: $product-image-height-percentage-of-width;
+                        background-color: lightGray;
+                        border-radius: 0.55rem;
                         position: relative;
+                        overflow: hidden;
+
                         > .content{
                             
                             position: absolute;
                             @include setProps(top bottom left right, 0);
-                            
-                            .image-holder{
-                                
-                                position: absolute;
-                                top: 50%;
-                                left: 50%;
-                                transform: translate(-50%, -50%);
-                                
-                                height: 60%;
-                                width: 60%;
-
-                                > img{
-                                    position: absolute;
-                                    top: 0; left: 0;
-                                    width: 100%; height: 100%;
-                                    object-fit: contain;
-                                    @include configureTransition(transform);
-                                }
+        
+                            > img{
+                                width: 100%; height: 100%;
+                                object-fit: contain;
+                                @include configureTransition(transform);
                             }
-                            
-                            
                             
                             > .product-or-category{
                                 position: absolute;
@@ -421,7 +482,7 @@
                             }
 
                         }
-                        
+                
                     }
 
                     > .under-image-content{

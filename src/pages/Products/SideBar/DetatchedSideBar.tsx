@@ -2,12 +2,16 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import xIcon from '../icons/xIcon';
 
-import { useAppHelpers } from 'App/AppUIHelpers';
-import { useTransition, animated } from 'react-spring';
 
-import productsScssVariables from '../_products-variables.scss';
-import { useAllProductItems } from '../ProductsUIHelpers';
+import { useTransition, animated } from 'react-spring';
+import { useLocation } from 'react-router-dom';
+import {Location} from 'history';
+
+import { useAppHelpers } from 'App/AppUIHelpers';
+import { useAllProductItems, useCurrentlySelectedItem } from '../ProductsUIHelpers';
 import SideBarLinksNode from './SideBarLinksNode';
+import { isProduct } from '../ProductsDataHelpers';
+import productsScssVariables from '../_products-variables.scss';
 
 
 export interface DetatchedSideBarFunctionsRef {
@@ -47,10 +51,22 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
             if (event.matches === false) { return; }
             _setIsPresented(false, false);
         }
-
         minWidthForAttatchedSideBarMediaQuery.addListener(listener);
         return () => minWidthForAttatchedSideBarMediaQuery.removeListener(listener);
     }, [isPresented, _setIsPresented]);
+
+    const currentlySelectedItem = useCurrentlySelectedItem();
+    const prevLocationRef = useRef<Location>();
+    const location = useLocation();
+
+    useEffect(() => {
+        if (prevLocationRef.current?.key === location.key){return;}
+        if (isProduct(currentlySelectedItem) && isPresented) {
+            _setIsPresented(false, true);
+        }
+        prevLocationRef.current = location;
+    });
+
 
     function respondToDismissButtonClicked() {
         _setIsPresented(false, true);
