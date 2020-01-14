@@ -283,8 +283,11 @@
 
 .Dashboard{
     > .Products > .content > .MainContent{
-        margin-bottom: $page-content-left-and-right-insets;
-
+        margin-bottom: 0;
+        @media(min-width: $min-width-for-displaying-side-bar){
+            margin-bottom: $page-content-left-and-right-insets;
+            
+        }
     }
 }
 

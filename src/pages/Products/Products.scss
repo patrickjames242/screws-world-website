@@ -72,45 +72,53 @@
             grid-template-rows: auto 1fr;
 
             > .TopActionButtonsView{
+                --left-and-right-padding: 1.5rem;
                 @include setProps(padding-top padding-bottom, 1.5rem);
-                padding-left: 1.5rem;
-                padding-right: 1.5rem;
-                // position: sticky;
+                @include setProps(padding-left padding-right, var(--left-and-right-padding));
                 z-index: 5;
-                // top: 0;
                 grid-column: -1 / -2;
                 grid-row: 1 / 2;
                 display: grid;
                 grid-auto-flow: column;
                 justify-content: space-between;
+
+                
             
-                > .TopRightActionButtonsView{
+                > .right-buttons{
                     display: grid;
                     grid-auto-flow: column;
                     gap: 1.7rem;
                     justify-content: end;
                 }
 
-                
                 .TopActionButton{
-                    $button-size: 3.8rem;
-                    border-radius: $button-size / 2;
-                    @include setProps(height width, $button-size);
+                    --button-size: 3.8rem;
+                    border-radius: calc(var(--button-size) / 2);
+                    @include setProps(height width, var(--button-size));
                     background-color: colors(dark-light-blue);
-                    // @include centerContentInGrid;
                     @include bounceOnHover(1.2);
-                    // box-shadow: 0 0 2rem 0.8rem rgba(colors(dark-blue), 0.7);
+                    
                     &.destructive{
                         background-color: rgb(187, 34, 34);
                     }
                     position: relative;
                     > svg{
-                        @include setProps(height width, $button-size / 2);
+                        @include setProps(height width, calc(var(--button-size) / 2));
                         position: absolute;
                         top: 50%; left: 50%;
                         transform: translate(-50%, -50%);
                         fill: white;
                     }
+                }
+
+                @media(max-width: 370px){
+                    --left-and-right-padding: 0.5rem;
+                    > .right-buttons{
+                        gap: 1.4rem;
+                    }
+                    .TopActionButton{
+                        --button-size: 3.5rem;
+                    }   
                 }
             }
 
@@ -125,14 +133,6 @@
             }
         }
     }
-    
-    
+
 }
-
-
-
-
-
-
-
 

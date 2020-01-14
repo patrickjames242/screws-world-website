@@ -110,19 +110,17 @@ function TopActionButtonsView(){
     
     return <div className="TopActionButtonsView">
         <TopActionButton svgIcon={homeIcon} title="go home" link={dashboardURL}/>
-        <TopRightActionButtonsView/>
-    </div>
-}
-
-function TopRightActionButtonsView(){
-    return <div className="TopRightActionButtonsView">
+        <div className="right-buttons">
         {[
             {icon: plusIcon, title: "create new item"}, 
             {icon: editIcon, title: "edit current item"}, 
             {icon: trashIcon, isDestructive: true, title: "delete current item"},
         ].map((x, i) => <TopActionButton svgIcon={x.icon} isDestructive={x.isDestructive} title={x.title} key={i}/>)}
     </div>
+    </div>
 }
+
+
 
 function TopActionButton(props: {svgIcon: React.ReactElement, isDestructive?: boolean, title: string, link?: string}){
 
