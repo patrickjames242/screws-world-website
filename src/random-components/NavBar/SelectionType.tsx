@@ -1,4 +1,4 @@
-
+import * as RoutePaths from 'routePaths';
 
 export enum SelectionType {
     Home,
@@ -9,11 +9,11 @@ export enum SelectionType {
 }
 
 const routePaths = {
-    [SelectionType.Home]: '/',
-    [SelectionType.AboutUs]: '/about-us',
-    [SelectionType.Services]: '/services',
-    [SelectionType.Products]: '/products',
-    [SelectionType.ContactUs]: '/contact-us',
+    [SelectionType.Home]: RoutePaths.HOME,
+    [SelectionType.AboutUs]: RoutePaths.ABOUT_US,
+    [SelectionType.Services]: RoutePaths.SERVICES,
+    [SelectionType.Products]: RoutePaths.PRODUCTS,
+    [SelectionType.ContactUs]: RoutePaths.CONTACT_US,
 }
 
 export function getAllSelections() {

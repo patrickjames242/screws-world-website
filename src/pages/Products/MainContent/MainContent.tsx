@@ -3,7 +3,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Optional } from 'jshelpers';
 import { ProductDataObject, ProductCategory, ProductDataType, isProductCategory, Product, isProduct } from '../ProductsDataHelpers';
-import { useCurrentlySelectedItem, getToURLForProductsItem, useAllProductItems } from '../ProductsUIHelpers';
+import { useCurrentlySelectedItem, useToURLForProductItem, useAllProductItems } from '../ProductsUIHelpers';
+import './MainContent.scss';
+import { useIsDashboard } from 'App/AppUIHelpers';
 
 
 export default function MainContent() {
@@ -12,12 +14,18 @@ export default function MainContent() {
     const currentlySelectedItem = useCurrentlySelectedItem();
 
     const shouldDisplayProductsIntro = currentlySelectedItem == null;
-
+    
     const products = (shouldDisplayProductsIntro ? currentDataTree : (currentlySelectedItem as ProductCategory)?.children) ?? []
+    const isDashboard = useIsDashboard();
 
     const title = (() => {
         if (shouldDisplayProductsIntro) {
-            return "Browse Our Products";
+            if (isDashboard){
+                return "Welcome to the Products Dashboard";
+            } else {
+                return "Browse Our Products";
+            } 
+            
         } else if (currentlySelectedItem != null) {
             return getCompleteTitleForProductItem(currentlySelectedItem);
         } else {
@@ -27,7 +35,12 @@ export default function MainContent() {
 
     const description = (() => {
         if (shouldDisplayProductsIntro) {
-            return "Here you can browse a catalogue of our top selling products to see exactly what we have to offer.";
+            if (isDashboard){
+                return "Here you can create, edit, and delete products displayed on the Screws World products page."
+            } else {
+                return "Here you can browse a catalogue of our top selling products to see exactly what we have to offer.";
+            }
+            
         } else if (isProductCategory(currentlySelectedItem)) {
             return currentlySelectedItem.description;
         } else {
@@ -86,7 +99,7 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
         }
     })();
 
-    const path = getToURLForProductsItem(props.dataObject);
+    const path = useToURLForProductItem(props.dataObject);
 
     return <Link to={path} className="ProductOrCategoryItem">
         <div className="background-view" />
@@ -125,7 +138,6 @@ function ProductDetailsView(props: { product: Product }) {
                 </div>
             </div>
         </div>
-
     </div>
 }
 

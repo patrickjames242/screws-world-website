@@ -1,7 +1,10 @@
 
 @import 'helpers';
 $page-content-inset-from-nav-bar: 1.2rem;
+$page-content-left-and-right-insets: $nav-bar-insets;
 $page-content-inset-from-screen-top: $nav-bar-height-from-top + $page-content-inset-from-nav-bar;
+
+
 
 $min-width-for-displaying-side-bar: 1100px;
 
@@ -16,6 +19,8 @@ $main-content-border-radius: 1.4rem;
 $product-grid-insets: 1rem;
 $product-item-info-background-color: rgb(40, 56, 71);
 $product-image-height-percentage-of-width: 57%;
+
+
 
 :export{
     minWidthForDisplayingSideBar: $min-width-for-displaying-side-bar;

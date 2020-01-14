@@ -1,17 +1,20 @@
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import xIcon from '../icons/xIcon';
+import xIcon from '../../icons/xIcon';
 
 
 import { useTransition, animated } from 'react-spring';
 import { useLocation } from 'react-router-dom';
 import {Location} from 'history';
 
-import { useAppHelpers } from 'App/AppUIHelpers';
-import { useAllProductItems, useCurrentlySelectedItem } from '../ProductsUIHelpers';
-import SideBarLinksNode from './SideBarLinksNode';
-import { isProduct } from '../ProductsDataHelpers';
-import productsScssVariables from '../_products-variables.scss';
+import { useScreenDimmerFunctions } from 'App/AppUIHelpers';
+import { useAllProductItems, useCurrentlySelectedItem } from '../../ProductsUIHelpers';
+import SideBarLinksNode from '../SideBarLinksNode/SideBarLinksNode';
+import { isProduct } from '../../ProductsDataHelpers';
+import productsScssVariables from '../../_products-variables.scss';
+import { callIfPossible } from 'jshelpers';
+
+import './DetachedSideBar.scss';
 
 
 export interface DetatchedSideBarFunctionsRef {
@@ -26,24 +29,26 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
     const [isPresented, setIsPresented] = useState(false);
     const shouldIsPresentedUpdateBeAnimatedRef = useRef(true);
 
-    const appHelpers = useAppHelpers();
+    const dimmer = useScreenDimmerFunctions();
 
-    const _setIsPresented = useCallback(function (isPresented: boolean, isAniamted: boolean) {
-        shouldIsPresentedUpdateBeAnimatedRef.current = isAniamted;
-        appHelpers.screenDimmer.setScreenDimmerVisibility(isPresented, isAniamted);
+    const _setIsPresented = useCallback(function (isPresented: boolean, isAnimated: boolean) {
+        shouldIsPresentedUpdateBeAnimatedRef.current = isAnimated;
+        callIfPossible(dimmer.setVisibility, isPresented, isAnimated);
+
+        // screenDimmerFunctions.setScreenDimmerVisibility(isPresented, isAniamted);
         setIsPresented(isPresented);
-    }, [appHelpers.screenDimmer]);
+    }, [dimmer]);
 
     props.functionsRef.isPresented = isPresented;
     props.functionsRef.setIsPresented = _setIsPresented;
 
     useEffect(() => {
         if (isPresented === false) { return; }
-        const unListen = appHelpers.screenDimmer.screenDimmerDidDismissNotification.addListener(() => {
+        const unListen = callIfPossible(dimmer.dimmerWasClickedNotification?.addListener, () => {
             _setIsPresented(false, true);
         });
         return unListen;
-    }, [isPresented, appHelpers.screenDimmer.screenDimmerDidDismissNotification, _setIsPresented]);
+    }, [isPresented, dimmer, _setIsPresented]);
 
     useEffect(() => {
         if (isPresented === false) { return; }

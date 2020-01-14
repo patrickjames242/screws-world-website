@@ -1,9 +1,9 @@
 
 import React, { useRef, useEffect } from 'react';
 
-import SideBarLinksNode from './SideBarLinksNode';
-import { useAllProductItems } from '../ProductsUIHelpers';
-
+import SideBarLinksNode from '../SideBarLinksNode/SideBarLinksNode';
+import { useAllProductItems } from '../../ProductsUIHelpers';
+import './AttachedSideBar.scss';
 
 
 

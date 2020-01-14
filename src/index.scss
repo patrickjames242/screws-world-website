@@ -58,14 +58,12 @@ textarea{
     text-align: center;
     font-size: 2rem;
     font-weight: bold;
-    
-
     max-width: 15rem;
 }
 
 ::selection {
-    background: #ffb7b7; /* WebKit/Blink Browsers */
+    background: colors(light-blue); /* WebKit/Blink Browsers */
 }
 ::-moz-selection {
-    background: #ffb7b7; /* Gecko Browsers */
+    background: colors(light-blue); /* Gecko Browsers */
 }

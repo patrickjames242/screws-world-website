@@ -1,0 +1,68 @@
+
+@import 'helpers';
+@import '../../products-variables';
+
+.Products > .content{
+
+    .DetatchedSideBar {
+
+        $dismiss-button-left-inset: 0.7rem;
+        $dismiss-button-size: 3.85rem;
+        $detatched-side-bar-insets: $nav-bar-insets;
+
+        position: fixed;
+        @include setProps(left top bottom, $detatched-side-bar-insets);
+        z-index: 100;
+
+        pointer-events: none;
+    
+        > .content{
+            --max-detatched-side-bar-width: 330px;
+            display: grid;
+            grid-template-columns: minmax(0rem, var(--max-detatched-side-bar-width)) auto;
+            gap: $dismiss-button-left-inset;
+            max-width: calc(100vw - #{$detatched-side-bar-insets * 2});
+            height: 100%;
+
+            @include respondToNarrowWidth{
+                --max-detatched-side-bar-width: 280px;
+            }
+
+            
+            .links-container-holder{
+                pointer-events: auto;
+
+                background-color: colors(light-gray-bg);
+                overflow-y: scroll;
+                border-radius: $nav-bar-border-radius;
+                
+                position: relative;
+                
+                > .links-container{
+                    display: grid;
+                    gap: $side-bar-link-spacing;
+                    padding: 1rem;
+                }    
+            }
+            
+
+            .dismiss-button{
+                @include bounceOnHover(1.15);
+                pointer-events: auto;
+                
+                background-color: colors(dark-light-blue);
+                @include setProps(width height, $dismiss-button-size);
+                border-radius: 1rem;
+                @include centerContentInGrid;
+
+                > svg{
+                    @include setProps(width height, 1.6rem);
+                    fill: white;
+                }
+            }
+
+
+        }
+
+    }
+}

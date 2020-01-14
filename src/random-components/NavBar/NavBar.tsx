@@ -14,8 +14,8 @@ import menuIcon from 'assets/nav-bar-icons/menu-icon.js';
 import scssVariables from '_helpers.scss';
 
 import { SelectionType, getInfoForSelection } from './SelectionType';
-import { useAppHelpers } from 'App/AppUIHelpers';
-import {Optional} from 'jshelpers';
+import { useScreenDimmerFunctions } from 'App/AppUIHelpers';
+import { Optional, callIfPossible } from 'jshelpers';
 
 
 
@@ -54,14 +54,14 @@ const wideNavBarLinksCutOffPoint = window.matchMedia(`(max-width: ${scssVariable
 
 function useExpandCollapseFunctionality(navBarRef: React.MutableRefObject<Optional<HTMLDivElement>>) {
 
-    
+
     const navBarHeight = scssVariables.navBarHeight;
     const expandedNarrowNavBoxHeight = scssVariables.totalNavBarHeightWhenExpanded;
 
     const [isExpanded, setIsExpanded] = useState(false);
     const shouldAnimateNextExpandRef = useRef(true);
 
-    const appHelpers = useAppHelpers();
+    const dimmer = useScreenDimmerFunctions();
     const history = useHistory();
 
     const _setExpanded = useCallback((isExpanded: ((prevProp: boolean) => boolean) | boolean, isAnimated: boolean) => {
@@ -69,27 +69,26 @@ function useExpandCollapseFunctionality(navBarRef: React.MutableRefObject<Option
 
         if (typeof isExpanded === "boolean") {
             updateIsAnimated();
-            appHelpers.screenDimmer.setScreenDimmerVisibility(isExpanded, isAnimated);
+            callIfPossible(dimmer.setVisibility, isExpanded, isAnimated);
             setIsExpanded(isExpanded);
         } else {
             setIsExpanded((prevProp) => {
                 const shouldExpand = (isExpanded as (prev: boolean) => boolean)(prevProp);
                 updateIsAnimated();
-                appHelpers.screenDimmer.setScreenDimmerVisibility(shouldExpand, isAnimated);
+                callIfPossible(dimmer.setVisibility, shouldExpand, isAnimated);
                 return shouldExpand;
             });
         }
-    }, [appHelpers.screenDimmer]);
+    }, [dimmer]);
 
     useEffect(() => {
         if (isExpanded === false) { return; }
-        const removeListener = appHelpers.screenDimmer.screenDimmerDidDismissNotification
-            .addListener(() => {
-                _setExpanded(false, true);
-            });
+        const removeListener = callIfPossible(dimmer.dimmerWasClickedNotification?.addListener, () => {
+            _setExpanded(false, true);
+        });
         return removeListener;
 
-    }, [isExpanded, _setExpanded, appHelpers.screenDimmer.screenDimmerDidDismissNotification]);
+    }, [isExpanded, _setExpanded, dimmer.dimmerWasClickedNotification]);
 
     useEffect(() => {
         if (isExpanded === false) { return; }
@@ -106,7 +105,7 @@ function useExpandCollapseFunctionality(navBarRef: React.MutableRefObject<Option
     }, [isExpanded, _setExpanded]);
 
     useEffect(() => {
-        if (isExpanded === false){return;}
+        if (isExpanded === false) { return; }
         const unlisten = history.listen(() => {
             _setExpanded(false, true);
         });
@@ -125,19 +124,19 @@ function useExpandCollapseFunctionality(navBarRef: React.MutableRefObject<Option
 
         // we adjust the z value on start and on rest so that the nav bar is only on top of the background dimmer when it is presented, and at all other times it is beneath it. This is done so that in the event that any other component presentes the background dimmer, the nav bar will be benath it (obviously).
         onStart: () => {
-            if (navBarRef.current){
+            if (navBarRef.current) {
                 navBarRef.current.style.zIndex = '100';
             }
         },
 
         onRest: () => {
-            if (navBarRef.current && isExpanded === false){
+            if (navBarRef.current && isExpanded === false) {
                 (navBarRef.current.style as any).zIndex = null;
             }
         }
     });
 
-    return {isExpanded, toggleIsExpanded, springStyle };
+    return { isExpanded, toggleIsExpanded, springStyle };
 }
 
 

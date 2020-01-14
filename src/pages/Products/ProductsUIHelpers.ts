@@ -1,9 +1,10 @@
 
 import React from 'react';
+import {PRODUCTS as productsRouteURL, DASHBOARD as dashboardRouteURL } from 'routePaths';
 
-import * as NavBarSelection from 'random-components/NavBar/SelectionType';
 import { Optional } from "jshelpers";
 import {ProductDataObject} from './ProductsDataHelpers';
+import { useIsDashboard } from 'App/AppUIHelpers';
 
 
 export const ProductsDataContext = React.createContext<Optional<{
@@ -22,7 +23,10 @@ export function useAllProductItems(): ProductDataObject[] {
     return React.useContext(ProductsDataContext)!.allProductItems;
 }
 
-export function getToURLForProductsItem(productsItem: ProductDataObject): string {
-    const pathName = NavBarSelection.getInfoForSelection(NavBarSelection.SelectionType.Products).routePath;
-    return pathName + "/" + productsItem.id;
+export function useToURLForProductItem(productsItem: ProductDataObject): string {
+    const isDashboard = useIsDashboard();
+    const rootPath = isDashboard ? dashboardRouteURL : productsRouteURL;
+    return rootPath + "/" + productsItem.id;
 }
+
+

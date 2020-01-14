@@ -72,6 +72,12 @@ export class Notification{
     }
 }
 
+export function callIfPossible(func, ...rest){
+    if (func){
+        return func(...rest);
+    }
+}
+
 
 // export function fixScrollingIssueBecauseOfTransitionAnimation() {
 

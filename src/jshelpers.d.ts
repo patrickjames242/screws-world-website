@@ -13,7 +13,7 @@ declare module jshelpers{
     export const SCREWS_WORLD_NUMBER: string;
 
     export function useUpdateEffect(effect: React.EffectCallback, dependencies?: React.DependencyList): void;
-    // export function fixScrollingIssueBecauseOfTransitionAnimation(): void;
+    
     export function getIntegerArray(upper: number, lower: number): number[];
 
     export type NotificationListener<InfoType> = (info: InfoType) => void;
@@ -23,6 +23,8 @@ declare module jshelpers{
         addListener(listener: NotificationListener<InfoType>): () => void;
         removeListener(listener: NotificationListener<InfoType>): void;
     }
+
+    export function callIfPossible<FunctionType extends Function>(func: FunctionType | null | undefined, ...params: Parameters<FunctionType>): ReturnType<FunctionType>;
 
 }
 

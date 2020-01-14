@@ -1,24 +1,31 @@
 
 import React, { useEffect } from 'react';
-import './Products.scss';
 import { Optional, useSetTitleFunctionality } from 'jshelpers';
 import { ProductDataObject, productsDataTree, getDataObjectForID } from './ProductsDataHelpers';
-import { useRouteMatch, Switch, Route, useHistory } from 'react-router-dom';
+import { useRouteMatch, Switch, Route, useHistory, Link } from 'react-router-dom';
 import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
 import { useSpring } from 'react-spring';
 import showSideBarIcon from './icons/showSideBarIcon';
-import AttachedSideBar from './SideBar/AttachedSideBar';
+import AttachedSideBar from './SideBar/AttachedSideBar/AttachedSideBar';
 import { ProductsDataContext } from './ProductsUIHelpers';
 
 import MainContent from './MainContent/MainContent';
-import DetatchedSideBar, { DetatchedSideBarFunctionsRef } from './SideBar/DetatchedSideBar';
+import DetatchedSideBar, { DetatchedSideBarFunctionsRef } from './SideBar/DetachedSideBar/DetachedSideBar';
 
+import './Products.scss';
+import { useIsDashboard } from 'App/AppUIHelpers';
 
+import editIcon from './icons/edit.js';
+import plusIcon from './icons/plus.js';
+import trashIcon from './icons/trash.js';
+import homeIcon from './icons/home.js';
 
+import {DASHBOARD as dashboardURL} from 'routePaths';
 
 export default function Products() {
 
-    useSetTitleFunctionality("Products");
+    const isDashboard = useIsDashboard();
+    useSetTitleFunctionality( isDashboard ? "Dashboard" : "Products");
 
     const currentProductsDataTree = productsDataTree;
 
@@ -53,6 +60,8 @@ export default function Products() {
                 <div className="Products">
                     <div className="content">
                         <AttachedSideBar />
+
+                        {isDashboard ? <TopActionButtonsView/> : null}
                         <MainContent />
                         <DetatchedSideBar functionsRef={detatchedSideBarfunctions}/>
                     </div>
@@ -97,3 +106,37 @@ function useScrollToTopOnPathChangeFunctionality() {
 }
 
 
+function TopActionButtonsView(){
+    
+    return <div className="TopActionButtonsView">
+        <TopActionButton svgIcon={homeIcon} title="go home" link={dashboardURL}/>
+        <TopRightActionButtonsView/>
+    </div>
+}
+
+function TopRightActionButtonsView(){
+    return <div className="TopRightActionButtonsView">
+        {[
+            {icon: plusIcon, title: "create new item"}, 
+            {icon: editIcon, title: "edit current item"}, 
+            {icon: trashIcon, isDestructive: true, title: "delete current item"},
+        ].map((x, i) => <TopActionButton svgIcon={x.icon} isDestructive={x.isDestructive} title={x.title} key={i}/>)}
+    </div>
+}
+
+function TopActionButton(props: {svgIcon: React.ReactElement, isDestructive?: boolean, title: string, link?: string}){
+
+    const className = "TopActionButton" + (props.isDestructive ?? false ? " destructive" : "");
+
+    if (props.link){
+        return <Link to={props.link} className={className}>
+            {props.svgIcon}
+        </Link>
+    } else {
+        return <button title={props.title} className={className}>
+            {props.svgIcon}
+        </button>
+    }
+
+    
+}

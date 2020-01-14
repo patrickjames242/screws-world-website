@@ -1,13 +1,13 @@
 
 import React, {useMemo} from 'react';
 import { NavLink } from 'react-router-dom';
-import productPageScssVariables from '../_products-variables.scss';
-import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct } from '../ProductsDataHelpers';
-import { useCurrentlySelectedItem, getToURLForProductsItem } from '../ProductsUIHelpers';
+import productPageScssVariables from '../../_products-variables.scss';
+import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct } from '../../ProductsDataHelpers';
+import { useCurrentlySelectedItem, useToURLForProductItem } from '../../ProductsUIHelpers';
 import { Optional, useIsInitialRender } from 'jshelpers';
 import { useSpring, animated, useTransition } from 'react-spring';
 
-
+import './SideBarLinksNode.scss';
 
 export default function SideBarLinksNode(props: { item: ProductDataObject }) {
 
@@ -100,7 +100,7 @@ function getHeightForNodeElement(nodeItem: ProductDataObject, currentlySelectedI
 
 
 function SideBarLink(props: { category: ProductDataObject }) {
-    const path = getToURLForProductsItem(props.category)
+    const path = useToURLForProductItem(props.category)
     return <NavLink exact strict to={path} className="SideBarLink" activeClassName="selected">
         <div className="title">{props.category.name}</div>
         <div className="chevron">›</div>

@@ -104,6 +104,7 @@ $theme-colors: (
         transition-property: transform;
         &:hover{
             transform: scale($bounce-scale);
+            @content;
         }
     }
     
