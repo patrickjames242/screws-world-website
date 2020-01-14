@@ -81,7 +81,8 @@
                 display: grid;
                 grid-auto-flow: column;
                 justify-content: space-between;
-
+                position: sticky;
+                top: 0;
                 
             
                 > .right-buttons{
@@ -102,6 +103,8 @@
                         background-color: rgb(187, 34, 34);
                     }
                     position: relative;
+                    box-shadow: 0 0 2rem 0.8rem rgba(colors(dark-blue), 0.6);
+
                     > svg{
                         @include setProps(height width, calc(var(--button-size) / 2));
                         position: absolute;
