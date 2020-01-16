@@ -1,0 +1,56 @@
+
+@import 'helpers';
+
+
+.Dashboard .LogInScreen{
+    position: fixed;
+    @include setProps(left right bottom top, 0);
+    display: grid;
+    align-content: center;
+    background-color: colors(dark-blue);
+
+    z-index: 1;
+
+    > .vertically-centered-content{
+        @include setProps(padding-left padding-right, 1.7rem);
+        
+        > .horizontally-centered-content{
+            padding: 3rem;
+            max-width: 22.5rem;
+            @include setProps(margin-left margin-right, auto);
+            border-radius: 20px;
+            background-color: colors(light-dark-blue);
+            display: grid;
+
+            @media(max-width: 400px){
+                padding: 2.2rem;
+            }
+    
+            > .title{
+                font-size: 2rem;
+                font-weight: bold;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            > .CustomTextField{
+                .text-input{
+                    padding: 0.8rem 1.1rem;
+                }
+            }
+    
+            > .login-button{
+                margin-top: 1.8rem;
+                font-weight: bold;
+                font-size: 1.1rem;
+                @include setProps(padding-bottom padding-top, 0.7rem);
+                background-color: colors(dark-light-blue);
+                border-radius: 1000rem;
+                align-self: center;
+                @include dimOnHover;
+            }
+        }
+    }
+}
+
+

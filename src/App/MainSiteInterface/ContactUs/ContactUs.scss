@@ -104,52 +104,6 @@
     }
 }
 
-.ContactUs .TextField{
-    display: grid;
-    gap: 1rem;
-    $text-input-padding: 1.2rem;
 
-    @mixin configureTransition($transition-properties){
-        transition-property: $transition-properties;
-        transition-duration: 0.3s;
-    }
-
-    > .top-text{
-        margin-left: $text-input-padding;
-        font-size: 1rem;    
-        font-weight: bold;
-        @include configureTransition(color);
-    }
-
-    &.active > .top-text{
-        color: colors(light-blue);
-    }
-
-    > .text-input{
-        background-color: colors(light-gray-bg);
-        border: 2px solid transparent;
-        border-radius: 0.7rem;
-        padding: $text-input-padding;
-        color: white;
-        font-size: 1.2rem;
-        @include configureTransition(border background-color);
-        @include respondToNarrowWidth{
-            font-size: 16px;
-        }
-        &::placeholder{
-            color: rgb(136, 153, 166);
-        }
-    }
-
-    > textarea{
-        height: 9rem;
-    }
-
-    &.active > .text-input{
-        border: 2px solid colors(light-blue);
-        background-color: transparent;
-    }
-
-}
 
 

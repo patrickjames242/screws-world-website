@@ -162,10 +162,6 @@ $theme-colors: (
 
 
 
-
-
-
-
 @mixin setCustomScrollBarStyle{
     $scroll-bar-size: 0.8rem;
     &::-webkit-scrollbar {
@@ -187,7 +183,30 @@ $theme-colors: (
     overflow: hidden;
 }
 
+@mixin dimOnHover($setPosition: true){
+    cursor: pointer;
+    @if $setPosition{
+        position: relative;
+    }
+    overflow: hidden;   
+    
+    &::after{
+        content: '';
+        position: absolute;
+        @include setProps(left right top bottom, 0);
+        background-color: rgba(black, 0.2);
+        opacity: 0;
+        transition-property: opacity;
+        transition-duration: 0.2s;
+        z-index: 100;
+    }
 
+    @media(hover: hover){
+        &:hover::after{
+            opacity: 1;
+        }
+    }
+}
 
 /// Remove the unit of a length
 /// @param {Number} $number - Number to remove unit from
@@ -198,4 +217,4 @@ $theme-colors: (
     }
   
     @return $number;
-  }
+}

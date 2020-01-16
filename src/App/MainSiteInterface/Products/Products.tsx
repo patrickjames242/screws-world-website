@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { Optional, useSetTitleFunctionality } from 'jshelpers';
 import { ProductDataObject, productsDataTree, getDataObjectForID } from './ProductsDataHelpers';
-import { useRouteMatch, Switch, Route, useHistory, Link } from 'react-router-dom';
+import { useRouteMatch, Switch, Route, useHistory } from 'react-router-dom';
 import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
 import { useSpring } from 'react-spring';
 import showSideBarIcon from './icons/showSideBarIcon';
@@ -14,13 +14,9 @@ import DetatchedSideBar, { DetatchedSideBarFunctionsRef } from './SideBar/Detach
 
 import './Products.scss';
 import { useIsDashboard } from 'App/AppUIHelpers';
+import TopActionButtonsView from './TopActionsButtonsView/TopActionsButtonsView';
+import * as RoutePaths from 'routePaths';
 
-import editIcon from './icons/edit.js';
-import plusIcon from './icons/plus.js';
-import trashIcon from './icons/trash.js';
-import homeIcon from './icons/home.js';
-
-import {DASHBOARD as dashboardURL} from 'routePaths';
 
 export default function Products() {
 
@@ -33,7 +29,7 @@ export default function Products() {
 
     const selectedItem: Optional<ProductDataObject> = (() => {
         /* eslint-disable react-hooks/rules-of-hooks */
-        const idRouteMatch = (useRouteMatch<{ id: string }>(currentURL + "/:id"));
+        const idRouteMatch = (useRouteMatch<{ id: string }>(RoutePaths.DASHBOARD + "/:id"));
         const idString = idRouteMatch?.params.id;
         if (idString == null) { return null; }
         const selectedItemID = Number(idString);
@@ -60,7 +56,6 @@ export default function Products() {
                 <div className="Products">
                     <div className="content">
                         <AttachedSideBar />
-
                         {isDashboard ? <TopActionButtonsView/> : null}
                         <MainContent />
                         <DetatchedSideBar functionsRef={detatchedSideBarfunctions}/>
@@ -106,35 +101,3 @@ function useScrollToTopOnPathChangeFunctionality() {
 }
 
 
-function TopActionButtonsView(){
-    
-    return <div className="TopActionButtonsView">
-        <TopActionButton svgIcon={homeIcon} title="go home" link={dashboardURL}/>
-        <div className="right-buttons">
-        {[
-            {icon: plusIcon, title: "create new item"}, 
-            {icon: editIcon, title: "edit current item"}, 
-            {icon: trashIcon, isDestructive: true, title: "delete current item"},
-        ].map((x, i) => <TopActionButton svgIcon={x.icon} isDestructive={x.isDestructive} title={x.title} key={i}/>)}
-    </div>
-    </div>
-}
-
-
-
-function TopActionButton(props: {svgIcon: React.ReactElement, isDestructive?: boolean, title: string, link?: string}){
-
-    const className = "TopActionButton" + (props.isDestructive ?? false ? " destructive" : "");
-
-    if (props.link){
-        return <Link to={props.link} className={className}>
-            {props.svgIcon}
-        </Link>
-    } else {
-        return <button title={props.title} className={className}>
-            {props.svgIcon}
-        </button>
-    }
-
-    
-}

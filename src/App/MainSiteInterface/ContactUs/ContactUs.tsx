@@ -1,15 +1,12 @@
 
-import React, { useRef } from 'react';
+import React from 'react';
 import './ContactUs.scss';
 import { SCREWS_WORLD_EMAIL, SCREWS_WORLD_NUMBER, useSetTitleFunctionality } from 'jshelpers';
 import PageHeader from 'random-components/PageHeader/PageHeader';
 
+import CustomTextField, {TextFieldType} from 'random-components/CustomTextField/CustomTextField';
 
 
-enum TextFieldType{
-    SingleLine,
-    MultipleLine,
-}
 
 
 export default function ContactUs() {
@@ -43,7 +40,7 @@ export default function ContactUs() {
             <div className="body-content-holder">
                 <div className="text-fields">
                     {textFieldsInfo.map((x, i) => {
-                        return <TextField type={x.type} topText={x.topText} placeholderText={x.placeholderText} key={i} />
+                        return <CustomTextField type={x.type} topText={x.topText} placeholderText={x.placeholderText} key={i} />
                     })}
                     <button className="submit-button">Submit</button>
                 </div>
@@ -76,50 +73,6 @@ export default function ContactUs() {
 }
 
 
-function TextField(props: {
-    type?: TextFieldType,
-    topText: string,
-    placeholderText: string,
-    className?: string}) {
-
-    const textFieldRef = useRef<HTMLDivElement>(null);
-
-    const activeClassName = "active";
-
-    function respondToOnFocus() {
-        textFieldRef.current?.classList.add(activeClassName);
-    }
-
-    function respondToOnBlur() {
-        textFieldRef.current?.classList.remove(activeClassName);
-    }
-
-    const inputElement = (() => {
-        let elementType, typeProp;
-        switch (props.type ?? TextFieldType.SingleLine) {
-            case TextFieldType.SingleLine:
-                elementType = "input"; typeProp = "text";
-                break;
-            case TextFieldType.MultipleLine:
-                elementType = "textarea";
-                break;
-            default: return null;
-        }
-        const propDict = {
-            className: "text-input " + props.className ?? "",
-            placeholder: props.placeholderText,
-            onFocus: respondToOnFocus,
-            onBlur: respondToOnBlur,
-            type: typeProp,
-        };
-        return React.createElement(elementType, propDict);
-    })();
-    
-    return <div className="TextField" ref={textFieldRef}>
-        <div className="top-text">{props.topText}</div>
-        {inputElement}
-    </div>
-}
 
 
 

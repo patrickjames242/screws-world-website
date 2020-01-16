@@ -22,7 +22,7 @@ export function useScreenDimmerFunctions(): ScreenDimmerFunctions{
 // dashboard context
 
 export interface DashboardInfo{
-
+    logOut(): void;
 }
 
 export const DashboardInfoContext = React.createContext<Optional<DashboardInfo>>(null);
