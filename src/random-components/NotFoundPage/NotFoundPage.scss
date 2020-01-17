@@ -1,16 +1,27 @@
 @import 'helpers';
 
 .NotFoundPage{
-    @include setProps(margin-top margin-bottom, 10rem);
+    
     text-align: center;
-    display: grid;
-    gap: 2rem;
-    > .title{
-        font-weight: bold;
-        font-size: 3rem;
+    height: calc(100vh - #{$nav-bar-height-from-top});
+    
+    
+    .text-box{
+        margin-top: calc((100vh - #{$nav-bar-height-from-top}) * 0.26);
+        display: grid;
+        gap: 2rem;
+        @include setProps(padding-left padding-right, 4rem);
+
+        > .title{
+            font-weight: bold;
+            font-size: 3.8rem;
+        }
+
+        > .description{
+            font-size: 1.5rem;
+            color: colors(grayish-blue-text);
+        }
     }
 
-    > .description{
-        font-size: 1.2rem;
-    }
+    
 }

@@ -8,7 +8,6 @@ import './index.scss';
 import App from 'App/App';
 
 
-
-ReactDom.render(<Router><App /></Router>, document.getElementById('root'));
+ReactDom.render(<Router><App/></Router>, document.getElementById('root'));
 
 

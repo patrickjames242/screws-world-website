@@ -20,7 +20,6 @@ function setIsUserLoggedInStorage(newValue: boolean){
 }
 
 
-
 export default function Dashboard() {
     
     useSetTitleFunctionality("Dashboard");
@@ -60,7 +59,6 @@ export default function Dashboard() {
         }
     }
 
-    
     function respondToLoginButtonClick(){
         setIsUserLoggedIn(true);
     }
@@ -83,6 +81,7 @@ export default function Dashboard() {
 
 
 function LogInScreen(props: {onLogInButtonClick: () => void}){
+
     return <div className="LogInScreen">
         <div className="vertically-centered-content">
             <div className="horizontally-centered-content">

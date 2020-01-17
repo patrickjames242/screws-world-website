@@ -1,11 +1,15 @@
+
+
 import React from 'react';
 import './NotFoundPage.scss';
 
 export default function NotFoundPage() {
     return <div className="NotFoundPage">
+        <div className="text-box">
+            <div className="title">Page Not Found</div>
+            <div className="description">Sorry, but we couldn't find what you were looking for.</div>
+        </div>
 
-        <div className="title">Oops!</div>
-        <div className="description">The page you are looking for could not be found</div>
 
     </div>
 }

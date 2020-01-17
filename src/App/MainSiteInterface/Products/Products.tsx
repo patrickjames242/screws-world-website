@@ -2,8 +2,8 @@
 import React, { useEffect } from 'react';
 import { Optional, useSetTitleFunctionality } from 'jshelpers';
 import { ProductDataObject, productsDataTree, getDataObjectForID } from './ProductsDataHelpers';
-import { useRouteMatch, Switch, Route, useHistory } from 'react-router-dom';
-import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
+import { useRouteMatch, useHistory } from 'react-router-dom';
+
 import { useSpring } from 'react-spring';
 import showSideBarIcon from './icons/showSideBarIcon';
 import AttachedSideBar from './SideBar/AttachedSideBar/AttachedSideBar';
@@ -21,19 +21,16 @@ import * as RoutePaths from 'routePaths';
 export default function Products() {
 
     const isDashboard = useIsDashboard();
-    useSetTitleFunctionality( isDashboard ? "Dashboard" : "Products");
+    useSetTitleFunctionality(isDashboard ? "Dashboard" : "Products");
 
     const currentProductsDataTree = productsDataTree;
 
-    const { url: currentURL } = useRouteMatch();
-
     const selectedItem: Optional<ProductDataObject> = (() => {
         /* eslint-disable react-hooks/rules-of-hooks */
-        const idRouteMatch = (useRouteMatch<{ id: string }>(RoutePaths.DASHBOARD + "/:id"));
-        const idString = idRouteMatch?.params.id;
-        if (idString == null) { return null; }
-        const selectedItemID = Number(idString);
-        return getDataObjectForID(selectedItemID);
+        const baseURL = isDashboard ? RoutePaths.DASHBOARD : RoutePaths.PRODUCTS;
+        const idRouteMatch = useRouteMatch<{ id: string }>(baseURL + "/:id");
+        const idNum = Number(idRouteMatch?.params.id);
+        return getDataObjectForID(idNum);
         /* eslint-enable react-hooks/rules-of-hooks */
     })();
 
@@ -41,35 +38,34 @@ export default function Products() {
 
     const detatchedSideBarfunctions: DetatchedSideBarFunctionsRef = {};
 
-    function respondToSideBarButtonClicked(){
-        if (detatchedSideBarfunctions.setIsPresented){
+    function respondToSideBarButtonClicked() {
+        if (detatchedSideBarfunctions.setIsPresented) {
             detatchedSideBarfunctions.setIsPresented(true, true);
         }
     }
 
-    return <Switch>
-        <Route path={[currentURL, currentURL + "/:id"]} exact render={() => {
-            return <ProductsDataContext.Provider value={{
-                currentlySelectedItem: selectedItem,
-                allProductItems: currentProductsDataTree,
-            }}>
-                <div className="Products">
-                    <div className="content">
-                        <AttachedSideBar />
-                        {isDashboard ? <TopActionButtonsView/> : null}
-                        <MainContent />
-                        <DetatchedSideBar functionsRef={detatchedSideBarfunctions}/>
-                    </div>
-                    <div
-                        onClick={respondToSideBarButtonClicked}
-                        className="side-bar-button">
-                        {showSideBarIcon}
-                    </div>
-                </div>
-            </ProductsDataContext.Provider>
-        }} />
-        <Route path="*" component={NotFoundPage} />
-    </Switch>
+
+    return <ProductsDataContext.Provider value={{
+        currentlySelectedItem: selectedItem,
+        allProductItems: currentProductsDataTree,
+    }}>
+        <div className="Products">
+            <div className="content">
+                <AttachedSideBar />
+                {isDashboard ? <TopActionButtonsView /> : null}
+                <MainContent />
+                <DetatchedSideBar functionsRef={detatchedSideBarfunctions} />
+            </div>
+            <div
+                onClick={respondToSideBarButtonClicked}
+                className="side-bar-button">
+                {showSideBarIcon}
+            </div>
+        </div>
+    </ProductsDataContext.Provider>
+
+
+
 }
 
 

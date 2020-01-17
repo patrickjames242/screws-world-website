@@ -16,7 +16,7 @@
         
         > .horizontally-centered-content{
             padding: 3rem;
-            max-width: 22.5rem;
+            max-width: 21rem;
             @include setProps(margin-left margin-right, auto);
             border-radius: 20px;
             background-color: colors(light-dark-blue);
@@ -35,15 +35,15 @@
 
             > .CustomTextField{
                 .text-input{
-                    padding: 0.8rem 1.1rem;
+                    padding: 12.8px 17.6px;
                 }
             }
     
             > .login-button{
                 margin-top: 1.8rem;
                 font-weight: bold;
-                font-size: 1.1rem;
-                @include setProps(padding-bottom padding-top, 0.7rem);
+                font-size: 16px;
+                @include setProps(padding-bottom padding-top, 11.2px);
                 background-color: colors(dark-light-blue);
                 border-radius: 1000rem;
                 align-self: center;

@@ -1,35 +1,44 @@
 
 import React, { useState, useRef } from 'react';
 
-import { Route, Switch } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { animated, useTransition } from 'react-spring';
 
 
-import { DASHBOARD as dashboardRoutePath } from 'routePaths';
 import { ScreenDimmerFunctionsContext, ScreenDimmerFunctions } from './AppUIHelpers';
 import { Notification } from 'jshelpers';
 import Dashboard from './Dashboard/Dashboard';
 
 import MainSiteInterface from './MainSiteInterface/MainSiteInterface';
+import isValidDashboardRoute from './Dashboard/DashboardRoutesValidator';
+import isValidMainSiteInterfaceRoute from './MainSiteInterface/MainSideInterfaceRoutesValidator';
+import HeaderAndFooterContainer from 'random-components/HeaderAndFooterContainer/HeaderAndFooterContainer';
+import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
 
 
 export default function App() {
 
+    const location = useLocation();
+    
     const screenDimmerFunctionsRef = useRef<ScreenDimmerFunctions>({}).current;
 
     return <ScreenDimmerFunctionsContext.Provider value={screenDimmerFunctionsRef}>
         <div className="App">
-            <Switch>
-                <Route path={dashboardRoutePath} component={Dashboard} />
-                <Route path="*" component={MainSiteInterface} />
-            </Switch>
+            {(() => {
+                if (isValidDashboardRoute(location.pathname)){
+                    return <Dashboard/>
+                } else if (isValidMainSiteInterfaceRoute(location.pathname)){
+                    return <MainSiteInterface/>
+                } else {
+                    return <HeaderAndFooterContainer>
+                        <NotFoundPage/>
+                    </HeaderAndFooterContainer>
+                }
+            })()}
             <ScreenDimmer functionsRef={screenDimmerFunctionsRef} />
         </div>
     </ScreenDimmerFunctionsContext.Provider>
 }
-
-
-
 
 
 function ScreenDimmer(props: { functionsRef: ScreenDimmerFunctions }) {

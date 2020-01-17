@@ -77,8 +77,13 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
         _setIsPresented(false, true);
     }
 
+    function fromParam(){
+        console.log(arguments);
+        return { transform: "translateX(-15rem)", opacity: 0 };
+    }
+
     const transitionProps = useTransition(isPresented, null, {
-        from: { transform: "translateX(-15rem)", opacity: 0 },
+        from: fromParam,
         enter: { transform: "translateX(0rem)", opacity: 1 },
         leave: { transform: "translateX(-15rem)", opacity: 0 },
         config: { friction: 17, tension: 170 },
