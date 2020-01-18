@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import errorIcon from "../icons/errorIcon";
 import LoadingIndicator from "random-components/LoadingIndicator/LoadingIndicator";
@@ -5,10 +6,6 @@ import CustomTextField from 'random-components/CustomTextField/CustomTextField';
 import './LogInScreen.scss';
 import { Optional } from "jshelpers";
 import { logIn } from "API";
-
-
-
-
 
 
 export default function LogInScreen(props: {authTokenHandler: (authToken: string) => void}){
@@ -43,7 +40,6 @@ export default function LogInScreen(props: {authTokenHandler: (authToken: string
         formEvent.preventDefault();
     }
     
-
     return <form className="LogInScreen" onSubmit={respondToOnSubmit}>
         <div className="vertically-centered-content">
             <div className="horizontally-centered-content">

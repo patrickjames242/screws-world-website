@@ -114,7 +114,6 @@ function getProductsDataTreeInfo(): [ProductDataObject[], { [itemIndex: number]:
     const itemsObject: { [itemIndex: number]: ProductDataObject } = {};
 
     const categories = getIntegerArray(1, 20).map(() => {
-
         const subCategories = getIntegerArray(1, 5).map(() => {
             const upper = Math.round(getRandomDecimal() * 15) + 3;
             const products = getIntegerArray(1, upper).map(() => {
@@ -135,6 +134,8 @@ function getProductsDataTreeInfo(): [ProductDataObject[], { [itemIndex: number]:
 
 
 const productsDataTreeInfo = getProductsDataTreeInfo();
+
+
 
 export const productsDataTree = productsDataTreeInfo[0];
 const productsDataObjectIds = productsDataTreeInfo[1];

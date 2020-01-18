@@ -118,7 +118,7 @@ $theme-colors: (
     }    
 }
 
-@mixin roundedBGOnHover($height, $rounded-BG-color, $hover-text-color){
+@mixin roundedBGOnHover($rounded-BG-color, $hover-text-color){
     
     @include roundedBGOnHoverAnimConfig(color);
 
@@ -130,10 +130,10 @@ $theme-colors: (
         position: absolute;
         background-color: $rounded-BG-color;
         @include setProps(left right, 0);
-        height: $height;
+        height: 100%;
         top: 50%;
         transform: translateY(-50%);
-        border-radius: $height / 2;
+        border-radius: 1000rem;
         opacity: 0;
         @include roundedBGOnHoverAnimConfig(opacity);
     }
@@ -156,8 +156,8 @@ $theme-colors: (
 
 }
 
-@mixin blueBGOnHover($height){
-    @include roundedBGOnHover($height, rgba(colors(light-blue), 0.2), colors(light-blue)); 
+@mixin blueBGOnHover(){
+    @include roundedBGOnHover(rgba(colors(light-blue), 0.2), colors(light-blue)); 
 }
 
 

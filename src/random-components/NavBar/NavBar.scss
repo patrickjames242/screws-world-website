@@ -76,8 +76,9 @@ $narrow-nav-drop-down-bar-background-color: colors(light-dark-blue);
             grid-auto-flow: column;
             gap: 30px;
             > .NavBarLink{
-                @include blueBGOnHover(2.5rem);
-                @include setProps(padding-left padding-right, 1rem);
+                @include blueBGOnHover;
+                padding: 0.4rem 1rem;
+                // @include setProps(padding-left padding-right, 1rem);
             }
             
         }
@@ -147,8 +148,6 @@ $narrow-nav-drop-down-bar-background-color: colors(light-dark-blue);
     }
 
     .NavBarLink{
-        
-
         display: grid;
         align-items: center;
         justify-content: start;

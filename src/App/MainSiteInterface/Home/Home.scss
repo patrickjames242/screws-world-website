@@ -89,13 +89,13 @@
                 }
 
                 > .about-us-button{
-                    @include roundedBGOnHover(2.5rem, rgba(white, 0.2), white);
-                    $padding: 15px;
+                    @include roundedBGOnHover(rgba(white, 0.2), white);
+                    
                     display: grid;
                     grid-auto-flow: column;
                     align-items: center;
-        
-                    @include setProps(padding-left padding-right, $padding);
+                    
+                    padding: 0.5rem 1rem;
                     > .chevron{
                         font-size: 1.56rem;
                         padding-left: 10px;

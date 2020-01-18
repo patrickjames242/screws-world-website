@@ -1,0 +1,12 @@
+@import 'helpers';
+
+
+.CustomAlert{
+    position: fixed;
+    height: 500px;
+    width: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: colors(light-dark-blue);
+}

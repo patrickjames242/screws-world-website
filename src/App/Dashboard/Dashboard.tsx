@@ -1,5 +1,5 @@
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { DashboardInfo, DashboardInfoContext } from "App/AppUIHelpers";
 import './Dashboard.scss';
 
