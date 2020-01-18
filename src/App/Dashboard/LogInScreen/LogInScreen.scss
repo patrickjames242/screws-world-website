@@ -1,0 +1,88 @@
+@import 'helpers';
+
+.Dashboard .LogInScreen{
+    
+    position: fixed;
+    @include setProps(left right bottom top, 0);
+    display: grid;
+    align-content: center;
+    background-color: colors(dark-blue);
+
+    z-index: 2;
+
+    > .vertically-centered-content{
+        @include setProps(padding-left padding-right, 1.7rem);
+        
+        > .horizontally-centered-content{
+            padding: 3rem;
+            max-width: 21rem;
+            @include setProps(margin-left margin-right, auto);
+            border-radius: 20px;
+            background-color: colors(light-dark-blue);
+            display: grid;
+
+            @media(max-width: 400px){
+                padding: 2.2rem;
+            }
+    
+            > .title{
+                font-size: 2rem;
+                font-weight: bold;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            $text-field-side-padding: 17.6px;
+
+            > .CustomTextField{
+                .text-input{
+                    padding: 12.8px $text-field-side-padding;
+                }
+            }
+
+            > .error-message-box{
+                margin-top: 1.2rem;
+                margin-bottom: -0.3rem;
+                font-size: 14px;
+                
+                $red-color: rgb(209, 61, 61);
+                color: $red-color;
+
+                @include setProps(padding-left padding-right, 0.5rem);
+                display: grid;
+                grid-template-columns: auto 1fr;
+                gap: 0.5rem;
+
+                svg{
+                    fill: $red-color;
+                }
+            }
+    
+            > .login-button{
+                $top-and-bottom-padding: 11.2px;
+                $font-size: 16px;
+                height: ($top-and-bottom-padding * 2) + $font-size;
+                
+                margin-top: 1.5rem;
+                font-weight: bold;
+                font-size: $font-size;
+                line-height: 1;
+                @include setProps(padding-bottom padding-top, $top-and-bottom-padding);
+                background-color: colors(dark-light-blue);
+                border-radius: 1000rem;
+                @include dimOnHover;
+
+                position: relative;
+
+                > .LoadingIndicator{
+                    @include setProps(height width, 20.8px);
+                    position: absolute;
+                    @include setProps(top left, 50%);
+                    transform: translate(-50%, -50%);
+                }
+            }
+        }
+    }
+}
+
+

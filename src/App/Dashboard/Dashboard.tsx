@@ -1,24 +1,28 @@
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { DashboardInfo, DashboardInfoContext } from "App/AppUIHelpers";
 import './Dashboard.scss';
-import CustomTextField from 'random-components/CustomTextField/CustomTextField';
+
 import { useSetTitleFunctionality } from "jshelpers";
 import Products from "App/MainSiteInterface/Products/Products";
 import { useHistory, Switch, Route, useRouteMatch } from "react-router-dom";
 import * as RoutePaths from 'routePaths';
 
+import LogInScreen from "./LogInScreen/LogInScreen";
 
-const isUserLoggedInKey = "isUserLoggedIn";
 
-function getIsUserLoggedInStorage(): boolean{
-    return (localStorage.getItem(isUserLoggedInKey) ?? "0") === "1";
+
+
+
+const UserLoggedInPersistedState = {
+    key: "isUserLoggedIn",
+    get(): boolean{
+        return (localStorage.getItem(UserLoggedInPersistedState.key) ?? "0") === "1";
+    },
+    set(newValue: boolean){
+        localStorage.setItem(UserLoggedInPersistedState.key, newValue === true ? "1" : "0");
+    }
 }
-
-function setIsUserLoggedInStorage(newValue: boolean){
-    localStorage.setItem(isUserLoggedInKey, newValue === true ? "1" : "0");
-}
-
 
 export default function Dashboard() {
     
@@ -26,7 +30,7 @@ export default function Dashboard() {
 
     const history = useHistory();
 
-    const [isUserLoggedIn, setUserLoggedInState] = useState(getIsUserLoggedInStorage());
+    const [isUserLoggedIn, setUserLoggedInState] = useState(UserLoggedInPersistedState.get());
 
     const pageToRedirectToAfterLoginKey = "pageToRedirectToAfterLogin";
 
@@ -37,7 +41,7 @@ export default function Dashboard() {
             }
             return RoutePaths.DASHBOARD;
         })();
-        setIsUserLoggedInStorage(newValue);
+        UserLoggedInPersistedState.set(newValue);
         if (newValue){
             history.replace(redirectURL)
         } else {
@@ -59,19 +63,19 @@ export default function Dashboard() {
         }
     }
 
-    function respondToLoginButtonClick(){
-        setIsUserLoggedIn(true);
-    }
-
     const dashboardInfo = useRef<DashboardInfo>({logOut: () => {
         setIsUserLoggedIn(false);
     }}).current;
+
+    function handleAuthToken(authToken: string){
+        setIsUserLoggedIn(true);
+    }
 
     return <DashboardInfoContext.Provider value={dashboardInfo}>
         <div className="Dashboard">
             <Switch>
                 <Route exact path={RoutePaths.DASHBOARD_LOGIN}>
-                    <LogInScreen onLogInButtonClick={respondToLoginButtonClick}/>
+                    <LogInScreen authTokenHandler={handleAuthToken}/>
                 </Route>
                 <Route path="*" component={Products}/>
             </Switch>
@@ -80,16 +84,6 @@ export default function Dashboard() {
 }
 
 
-function LogInScreen(props: {onLogInButtonClick: () => void}){
 
-    return <div className="LogInScreen">
-        <div className="vertically-centered-content">
-            <div className="horizontally-centered-content">
-                <div className="title">Log In</div>
-                <CustomTextField placeholderText="Enter your passcode"/>
-                <button className="login-button" onClick={props.onLogInButtonClick}>Log In</button>
-            </div>
-        </div>        
-    </div>
-}
+
 
