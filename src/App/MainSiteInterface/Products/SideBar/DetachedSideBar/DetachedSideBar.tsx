@@ -47,7 +47,7 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
         const unListen = callIfPossible(dimmer.dimmerWasClickedNotification?.addListener, () => {
             _setIsPresented(false, true);
         });
-        return unListen;
+        if (unListen){return unListen;}
     }, [isPresented, dimmer, _setIsPresented]);
 
     useEffect(() => {

@@ -86,8 +86,8 @@ function useExpandCollapseFunctionality(navBarRef: React.MutableRefObject<Option
         const removeListener = callIfPossible(dimmer.dimmerWasClickedNotification?.addListener, () => {
             _setExpanded(false, true);
         });
-        return removeListener;
-
+        if (removeListener){return removeListener;}
+        
     }, [isExpanded, _setExpanded, dimmer.dimmerWasClickedNotification]);
 
     useEffect(() => {

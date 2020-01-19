@@ -45,7 +45,7 @@
                 margin-bottom: -0.3rem;
                 font-size: 14px;
                 
-                $red-color: rgb(209, 61, 61);
+                $red-color: colors(destructive-red);
                 color: $red-color;
 
                 @include setProps(padding-left padding-right, 0.5rem);

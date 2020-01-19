@@ -35,7 +35,6 @@ $max-narrow-width: 775px;
 }
 
 
-
 :export{
     navBarHeight: $nav-bar-height;
     totalNavBarHeightWhenExpanded: ($narrow-nav-cell-height * 4) + $nav-bar-height ;
@@ -52,14 +51,12 @@ $theme-colors: (
     dark-light-blue: rgb(13, 137, 218),
     white-dimmed-blue: rgb(207, 235, 252),
     grayish-blue-text: rgb(153, 168, 182),
+    destructive-red: rgb(204, 29, 29),
 );
 
 @function colors($colorName){    
     @return map-get($map: $theme-colors, $key:$colorName);
 }
-
-
-
 
 
 @mixin applyTextGradient($linear-gradient){
@@ -118,7 +115,7 @@ $theme-colors: (
     }    
 }
 
-@mixin roundedBGOnHover($rounded-BG-color, $hover-text-color){
+@mixin roundedBGOnHover($rounded-BG-color, $hover-text-color: null){
     
     @include roundedBGOnHoverAnimConfig(color);
 

@@ -76,6 +76,7 @@ export function callIfPossible(func, ...rest){
     if (func){
         return func(...rest);
     }
+    return null;
 }
 
 

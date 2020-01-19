@@ -24,7 +24,7 @@ declare module jshelpers{
         removeListener(listener: NotificationListener<InfoType>): void;
     }
 
-    export function callIfPossible<FunctionType extends Function>(func: FunctionType | null | undefined, ...params: Parameters<FunctionType>): ReturnType<FunctionType>;
+    export function callIfPossible<FunctionType extends Function>(func: FunctionType | null | undefined, ...params: Parameters<FunctionType>): Optional<ReturnType<FunctionType>>;
 
 }
 

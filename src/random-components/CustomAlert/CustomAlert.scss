@@ -1,12 +1,70 @@
+
+
 @import 'helpers';
 
 
 .CustomAlert{
+
     position: fixed;
-    height: 500px;
-    width: 500px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: colors(light-dark-blue);
+    z-index: 10;
+    @include setProps(left top bottom right, 0);
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    
+    .background-view{
+        position: absolute;
+        @include setProps(left right top bottom, 0);
+        background-color: rgba(black, 0.6);        
+    }
+    
+    > .content{
+        z-index: 1;
+        width: 500px;   
+        background-color: colors(light-dark-blue);
+        padding: 2.4rem;
+        border-radius: 1.5rem;
+        
+        display: grid;
+        gap: 1rem;
+        
+
+        > .title{
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        > .description{
+            color: rgb(185, 195, 206);
+            font-size: 16px;
+        }
+
+        > .button-box{
+            display: grid;
+            gap: 1rem;
+            grid-auto-flow: column;
+            justify-self: end;
+            > .CustomAlertButton{
+                font-size: 16px;
+                border-radius: 1000rem;
+                padding: 8px 16px;
+                font-weight: bold;
+                &.primary{
+                    background-color: colors(light-blue);
+                }
+                &.primary-destructive{
+                    background-color:colors(destructive-red);
+                }
+                &.primary, &.primary-destructive{
+                    @include bounceOnHover;
+                }
+                &.secondary{
+                    $color:rgb(207, 215, 223);
+                    color: $color;
+                    @include roundedBGOnHover(rgba($color, 0.3));
+                }
+            }
+        }
+    }
 }
+

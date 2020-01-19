@@ -14,6 +14,7 @@ import isValidDashboardRoute from './Dashboard/DashboardRoutesValidator';
 import isValidMainSiteInterfaceRoute from './MainSiteInterface/MainSideInterfaceRoutesValidator';
 import HeaderAndFooterContainer from 'random-components/HeaderAndFooterContainer/HeaderAndFooterContainer';
 import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
+import AlertProvider from 'random-components/CustomAlert/CustomAlert';
 
 
 export default function App() {
@@ -22,22 +23,24 @@ export default function App() {
     
     const screenDimmerFunctionsRef = useRef<ScreenDimmerFunctions>({}).current;
 
-    return <ScreenDimmerFunctionsContext.Provider value={screenDimmerFunctionsRef}>
-        <div className="App">
-            {(() => {
-                if (isValidDashboardRoute(location.pathname)){
-                    return <Dashboard/>
-                } else if (isValidMainSiteInterfaceRoute(location.pathname)){
-                    return <MainSiteInterface/>
-                } else {
-                    return <HeaderAndFooterContainer>
-                        <NotFoundPage/>
-                    </HeaderAndFooterContainer>
-                }
-            })()}
-            <ScreenDimmer functionsRef={screenDimmerFunctionsRef} />
-        </div>
-    </ScreenDimmerFunctionsContext.Provider>
+    return <AlertProvider>
+        <ScreenDimmerFunctionsContext.Provider value={screenDimmerFunctionsRef}>
+            <div className="App">
+                {(() => {
+                    if (isValidDashboardRoute(location.pathname)){
+                        return <Dashboard/>
+                    } else if (isValidMainSiteInterfaceRoute(location.pathname)){
+                        return <MainSiteInterface/>
+                    } else {
+                        return <HeaderAndFooterContainer>
+                            <NotFoundPage/>
+                        </HeaderAndFooterContainer>
+                    }
+                })()}
+                <ScreenDimmer functionsRef={screenDimmerFunctionsRef} />
+            </div>
+        </ScreenDimmerFunctionsContext.Provider>
+    </AlertProvider>
 }
 
 
