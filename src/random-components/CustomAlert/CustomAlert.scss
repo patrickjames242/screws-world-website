@@ -9,7 +9,7 @@
     z-index: 10;
     @include setProps(left top bottom right, 0);
     display: grid;
-    justify-content: center;
+    
     align-content: center;
     
     .background-view{
@@ -17,18 +17,25 @@
         @include setProps(left right top bottom, 0);
         background-color: rgba(black, 0.6);        
     }
-    
-    > .content{
+
+    > .vertically-centered-box{
+        padding: 2rem;
+        > .horizontally-centered-box{
+            @include setProps(margin-right margin-left, auto);
+            max-width: 25rem;
+        }
+    }
+
+    > .vertically-centered-box > .horizontally-centered-box{
+        
         z-index: 1;
-        width: 500px;   
         background-color: colors(light-dark-blue);
         padding: 2.4rem;
         border-radius: 1.5rem;
         
         display: grid;
-        gap: 1rem;
+        gap: 16px;
         
-
         > .title{
             font-size: 2rem;
             font-weight: bold;
@@ -37,13 +44,17 @@
         > .description{
             color: rgb(185, 195, 206);
             font-size: 16px;
+            line-height: 1.3;
         }
 
         > .button-box{
+            
+            margin-top: 10px;
             display: grid;
             gap: 1rem;
             grid-auto-flow: column;
             justify-self: end;
+
             > .CustomAlertButton{
                 font-size: 16px;
                 border-radius: 1000rem;

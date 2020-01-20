@@ -139,16 +139,21 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
     
     return <div className="CustomAlert">
         <animated.div onClick={respondToBackgroundViewClicked} style={backgroundStyle} className="background-view"/>
-        <animated.div style={centerContentStyle} className="content">
-            <div className="title">{props.title}</div>
-            <div className="description">{props.description}</div>
-            <div className="button-box">
-                {(() => {
-                    return [props.leftButtonInfo, props.rightButtonInfo].map((x, i) => {
-                        if (!x) { return null; }
-                        return <CustomAlertButton key={i} {...x}/>
-                    });
-                })()}
+        <animated.div style={centerContentStyle} className="vertically-centered-box">
+            <div className="horizontally-centered-box">
+                
+                    <div className="title">{props.title}</div>
+                    <div className="description">{props.description}</div>
+                    <div className="button-box">
+                        {(() => {
+                            return [props.leftButtonInfo, props.rightButtonInfo]
+                            .map((x, i) => {
+                                if (!x) { return null; }
+                                return <CustomAlertButton key={i} {...x}/>
+                            });
+                        })()}
+                    </div>
+                
             </div>
         </animated.div>
     </div>

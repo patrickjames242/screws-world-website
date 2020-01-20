@@ -29,7 +29,7 @@ export default function TopActionButtonsView() {
         const buttonDismissAction = () => callIfPossible(controllerRef.dismiss)
 
         const cancelButton = new CustomAlertButtonInfo("Cancel", buttonDismissAction, CustomAlertButtonType.SECONDARY);
-        
+
         const deleteButton = new CustomAlertButtonInfo("Delete", buttonDismissAction, CustomAlertButtonType.PRIMARY_DESTRUCTIVE);
 
         const alertInfo: CustomAlertInfo = {
@@ -59,11 +59,31 @@ export default function TopActionButtonsView() {
 
         const alertInfo: CustomAlertInfo = {
             uniqueKey: "DASHBOARD LOG OUT WARNING MESSAGE",
-            title: "Are you sure?",
+            title: "Are you sure? 🤔",
             description: "Are you sure you want to log out?",
             showsTextField: false,
             leftButtonInfo: cancelButton,
             rightButtonInfo: logOutButton,
+            controller: controllerRef,
+        };
+        alertFunctionality.showAlert(alertInfo);
+    }
+
+    function showFeatureNotAvailableAlert(){
+        const controllerRef: CustomAlertController = {};
+
+        const dismissAlert = () => callIfPossible(controllerRef.dismiss);
+        
+        const okButton = new CustomAlertButtonInfo("OK", () => {
+            dismissAlert();
+        }, CustomAlertButtonType.PRIMARY);
+
+        const alertInfo: CustomAlertInfo = {
+            uniqueKey: "DASHBOARD FEATURE NOT AVAILABLE MESSAGE",
+            title: "Oops 😱",
+            description: "This feature is not available yet.",
+            showsTextField: false,
+            rightButtonInfo: okButton,
             controller: controllerRef,
         };
         alertFunctionality.showAlert(alertInfo);
@@ -75,8 +95,8 @@ export default function TopActionButtonsView() {
         <TopActionButton svgIcon={homeIcon} title="go home" link={dashboardURL} />
         <TopActionButton svgIcon={logOutIcon} title="log out" onClick={respondToLogOutButtonClicked} className="log-out-button" />
         <div className="spacer-div" />
-        <TopActionButton svgIcon={plusIcon} title="create new item" />
-        <TopActionButton svgIcon={editIcon} title="edit current item" />
+        <TopActionButton svgIcon={plusIcon} title="create new item" onClick={showFeatureNotAvailableAlert}/>
+        <TopActionButton svgIcon={editIcon} title="edit current item" onClick={showFeatureNotAvailableAlert}/>
         <TopActionButton svgIcon={trashIcon} title="delete current item" onClick={respondToDeleteButtonClicked} isDestructive />
     </div>
 }
