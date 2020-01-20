@@ -10,7 +10,7 @@ import { DASHBOARD as dashboardURL } from 'routePaths';
 import { Link } from 'react-router-dom';
 import './TopActionsButtonsView.scss';
 import { useDashboardInfo } from 'App/AppUIHelpers';
-import { useAlertFunctionality, CustomAlertInfo, CustomAlertButtonInfo, CustomAlertButtonType, CustomAlertController } from 'random-components/CustomAlert/CustomAlert';
+import { useAlertFunctionality, CustomAlertInfo, CustomAlertButtonInfo, CustomAlertButtonType, CustomAlertController, CustomAlertButtonController, CustomAlertTextFieldInfo, CustomAlertTextFieldController } from 'random-components/CustomAlert/CustomAlert';
 import { callIfPossible } from 'jshelpers';
 
 
@@ -22,36 +22,18 @@ export default function TopActionButtonsView() {
 
     const alertFunctionality = useAlertFunctionality();
 
-    function respondToDeleteButtonClicked() {
-
-        const controllerRef: CustomAlertController = {};
-
-        const buttonDismissAction = () => callIfPossible(controllerRef.dismiss)
-
-        const cancelButton = new CustomAlertButtonInfo("Cancel", buttonDismissAction, CustomAlertButtonType.SECONDARY);
-
-        const deleteButton = new CustomAlertButtonInfo("Delete", buttonDismissAction, CustomAlertButtonType.PRIMARY_DESTRUCTIVE);
-
-        const alertInfo: CustomAlertInfo = {
-            uniqueKey: "DASHBOARD DELETE WARNING MESSAGE",
-            title: "Are you sure?",
-            description: "Deleted items cannot be recovered. Are you sure you want to continue?",
-            showsTextField: false,
-            leftButtonInfo: cancelButton,
-            rightButtonInfo: deleteButton,
-            controller: controllerRef,
-        };
-        alertFunctionality.showAlert(alertInfo);
+    function respondToDeleteButtonClicked(){
+        alertFunctionality.showAlert(getDeleteAlertInfo());
     }
 
     function respondToLogOutButtonClicked() {
 
-        const controllerRef: CustomAlertController = {};
+        let controller: CustomAlertController;
 
-        const dismissAlert = () => callIfPossible(controllerRef.dismiss);
-        
+        const dismissAlert = () => callIfPossible(controller?.dismiss);
+
         const cancelButton = new CustomAlertButtonInfo("Cancel", dismissAlert, CustomAlertButtonType.SECONDARY);
-        
+
         const logOutButton = new CustomAlertButtonInfo("Log Out", () => {
             dashboardInfo?.logOut();
             dismissAlert();
@@ -61,19 +43,18 @@ export default function TopActionButtonsView() {
             uniqueKey: "DASHBOARD LOG OUT WARNING MESSAGE",
             title: "Are you sure? 🤔",
             description: "Are you sure you want to log out?",
-            showsTextField: false,
             leftButtonInfo: cancelButton,
             rightButtonInfo: logOutButton,
-            controller: controllerRef,
+            onMount: c => controller = c,
         };
         alertFunctionality.showAlert(alertInfo);
     }
 
-    function showFeatureNotAvailableAlert(){
-        const controllerRef: CustomAlertController = {};
+    function showFeatureNotAvailableAlert() {
+        let controller: CustomAlertController;
 
-        const dismissAlert = () => callIfPossible(controllerRef.dismiss);
-        
+        const dismissAlert = () => callIfPossible(controller?.dismiss);
+
         const okButton = new CustomAlertButtonInfo("OK", () => {
             dismissAlert();
         }, CustomAlertButtonType.PRIMARY);
@@ -82,21 +63,18 @@ export default function TopActionButtonsView() {
             uniqueKey: "DASHBOARD FEATURE NOT AVAILABLE MESSAGE",
             title: "Oops 😱",
             description: "This feature is not available yet.",
-            showsTextField: false,
             rightButtonInfo: okButton,
-            controller: controllerRef,
+            onMount: c => controller = c,
         };
         alertFunctionality.showAlert(alertInfo);
     }
-
-    
 
     return <div className="TopActionButtonsView">
         <TopActionButton svgIcon={homeIcon} title="go home" link={dashboardURL} />
         <TopActionButton svgIcon={logOutIcon} title="log out" onClick={respondToLogOutButtonClicked} className="log-out-button" />
         <div className="spacer-div" />
-        <TopActionButton svgIcon={plusIcon} title="create new item" onClick={showFeatureNotAvailableAlert}/>
-        <TopActionButton svgIcon={editIcon} title="edit current item" onClick={showFeatureNotAvailableAlert}/>
+        <TopActionButton svgIcon={plusIcon} title="create new item" onClick={showFeatureNotAvailableAlert} />
+        <TopActionButton svgIcon={editIcon} title="edit current item" onClick={showFeatureNotAvailableAlert} />
         <TopActionButton svgIcon={trashIcon} title="delete current item" onClick={respondToDeleteButtonClicked} isDestructive />
     </div>
 }
@@ -116,4 +94,58 @@ function TopActionButton(props: { svgIcon: React.ReactElement, isDestructive?: b
         </button>
     }
 
+}
+
+
+
+
+function getDeleteAlertInfo(): CustomAlertInfo {
+
+    let controller: CustomAlertController;
+
+    const buttonDismissAction = () => callIfPossible(controller?.dismiss)
+
+    const cancelButton = new CustomAlertButtonInfo("Cancel", buttonDismissAction, CustomAlertButtonType.SECONDARY);
+
+    let deleteButtonController: CustomAlertButtonController;
+
+    const deleteButton = new CustomAlertButtonInfo(
+        "Delete",
+        buttonDismissAction,
+        CustomAlertButtonType.PRIMARY_DESTRUCTIVE,
+        c => deleteButtonController = c
+    );
+
+    let textFieldController: CustomAlertTextFieldController;
+
+    function refreshDeleteButtonActivation() {
+        const text = (textFieldController?.currentTextFieldText ?? "").trim();
+        callIfPossible(deleteButtonController?.setIsActive, text === confirmationMessage);
+    }
+
+    const textFieldInfo: CustomAlertTextFieldInfo = {
+        onMount: c => {
+            textFieldController = c
+            c.textDidChangeNotification.addListener(() => {
+                refreshDeleteButtonActivation();
+            });
+        },
+    }
+
+    const confirmationMessage = "DELETE ALL";
+
+    const alertInfo: CustomAlertInfo = {
+        uniqueKey: "DASHBOARD DELETE WARNING MESSAGE",
+        title: "Are you sure? 🧐",
+        description: "If you delete this category, ALL products and categories under it will also be deleted. Are you sure you want to continue?\n\nPlease type " + confirmationMessage + " to confirm.",
+        textFieldInfo: textFieldInfo,
+        leftButtonInfo: cancelButton,
+        rightButtonInfo: deleteButton,
+        onMount: (c) => {
+            controller = c;
+            refreshDeleteButtonActivation();
+        },
+    };
+
+    return alertInfo;
 }

@@ -1,8 +1,9 @@
 
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import './CustomAlert.scss';
-import { Optional } from 'jshelpers';
-import {animated, useSpring} from 'react-spring';
+import { Optional, callIfPossible, Notification } from 'jshelpers';
+import { animated, useSpring } from 'react-spring';
+import CustomTextField from '../CustomTextField/CustomTextField';
 
 interface AlertProviderFunctions {
     showAlert(info: CustomAlertInfo): void;
@@ -20,6 +21,7 @@ export default function AlertProvider(props: { children: JSX.Element | JSX.Eleme
 
     const [alerts, setAlerts] = useState<CustomAlertInfo[]>([]);
     document.body.style.overflow = alerts.length <= 0 ? "initial" : "hidden";
+
     const alertProviderFunctions = useRef<AlertProviderFunctions>({
         showAlert(info) {
             setAlerts((prevAlerts) => {
@@ -46,23 +48,16 @@ export default function AlertProvider(props: { children: JSX.Element | JSX.Eleme
     </AlertContext.Provider>
 }
 
-
-export enum CustomAlertButtonType {
-    // blue button
-    PRIMARY,
-    // red button
-    PRIMARY_DESTRUCTIVE,
-    // empty background, gray text
-    SECONDARY,
+export interface CustomAlertTextFieldController{
+    currentTextFieldText: string,
+    readonly textDidChangeNotification: Notification<string>;
 }
 
-
-export class CustomAlertButtonInfo {
+export class CustomAlertTextFieldInfo{
     constructor(
-        readonly title: string,
-        readonly action: () => void,
-        readonly type: CustomAlertButtonType,
-    ){}    
+        readonly placeholderText?: string,
+        readonly onMount?: (controller: CustomAlertTextFieldController) => void,
+    ){}
 }
 
 export class CustomAlertInfo {
@@ -70,60 +65,56 @@ export class CustomAlertInfo {
         readonly uniqueKey: string,
         readonly title: string,
         readonly description: string,
-        readonly showsTextField: boolean,
+        readonly textFieldInfo?: CustomAlertTextFieldInfo,       
         readonly leftButtonInfo?: CustomAlertButtonInfo,
         readonly rightButtonInfo?: CustomAlertButtonInfo,
-        readonly controller: CustomAlertController = {},
-    ){}   
+        readonly onMount?: (controller: CustomAlertController) => void,
+    ) { }
 }
 
-export interface CustomAlertController{
-    dismiss?: () => void;
+export interface CustomAlertController {
+    dismiss: () => void;
 }
+
+
 
 function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () => void }) {
 
     const [shouldBePresented, setShouldBePresented] = useState(true);
-    
+    const [textFieldText, setTextFieldText] = useState("");
+
     const backgroundIsDismissed = useRef(false);
     const centerContentIsDismissed = useRef(false);
 
-    function notifyThatAnimationHasFinished(){
-        
-        if ( backgroundIsDismissed.current === false || centerContentIsDismissed.current === false || shouldBePresented){return;}
-        
+    function notifyThatAnimationHasFinished() {
+        if (backgroundIsDismissed.current === false || centerContentIsDismissed.current === false || shouldBePresented) { return; }
         props.onAlertIsFinishedDismissing();
-    
     }
 
     function dismissAlert() {
         setShouldBePresented(false);
     }
 
-    function respondToBackgroundViewClicked(){
-        dismissAlert();
-    }
-
     const backgroundStyle = useSpring({
-        from: {opacity: 0},
+        from: { opacity: 0 },
         opacity: shouldBePresented ? 1 : 0,
         onRest: () => {
-            if (shouldBePresented === false){
+            if (shouldBePresented === false) {
                 backgroundIsDismissed.current = true;
                 notifyThatAnimationHasFinished();
             }
         },
-        config: {duration: 200},
+        config: { duration: 200 },
     });
 
     const centerContentStyle = useSpring({
-        from: {opacity: 0, transform: "translateY(20rem) rotate(20deg)"},
+        from: { opacity: 0, transform: "translateY(20rem) rotate(20deg)" },
         to: {
             opacity: shouldBePresented ? 1 : 0,
             transform: shouldBePresented ? "translateY(0px) rotate(0deg)" : "translateY(20rem) rotate(20deg)",
         },
         onRest: () => {
-            if (shouldBePresented === false){
+            if (shouldBePresented === false) {
                 centerContentIsDismissed.current = true;
                 notifyThatAnimationHasFinished();
             }
@@ -135,38 +126,99 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
         },
     });
 
-    props.controller.dismiss = dismissAlert;   
+    const alertController = useRef<CustomAlertController>({
+        dismiss: dismissAlert,
+    }).current;
+
+
+    const textFieldController = useRef<CustomAlertTextFieldController>({
+        currentTextFieldText: textFieldText,
+        textDidChangeNotification: new Notification<string>(),        
+    }).current;
+
+    useEffect(() => {
+        callIfPossible(props.onMount, alertController);
+        callIfPossible(props.textFieldInfo?.onMount, textFieldController);
+    }, [alertController, props.onMount, props.textFieldInfo, textFieldController]);
+
+    function respondToTextFieldTextDidChange(newText: string){
+        setTextFieldText(newText);
+        textFieldController.currentTextFieldText = newText;
+        textFieldController.textDidChangeNotification.post(newText);
+    }
+
     
     return <div className="CustomAlert">
-        <animated.div onClick={respondToBackgroundViewClicked} style={backgroundStyle} className="background-view"/>
+        <animated.div onClick={dismissAlert} style={backgroundStyle} className="background-view" />
         <animated.div style={centerContentStyle} className="vertically-centered-box">
             <div className="horizontally-centered-box">
+                <div className="title">{props.title}</div>
+                <div className="description">{props.description}</div>
                 
-                    <div className="title">{props.title}</div>
-                    <div className="description">{props.description}</div>
-                    <div className="button-box">
-                        {(() => {
-                            return [props.leftButtonInfo, props.rightButtonInfo]
+                {(() => {
+                    if (!props.textFieldInfo){return null;}
+                    return <CustomTextField 
+                    value={textFieldText} 
+                    onTextChange={respondToTextFieldTextDidChange} 
+                    placeholderText={props.textFieldInfo?.placeholderText ?? "Type here..."}/>
+                })()}
+
+                <div className="button-box">
+                    {(() => {
+                        return [props.leftButtonInfo, props.rightButtonInfo]
                             .map((x, i) => {
                                 if (!x) { return null; }
-                                return <CustomAlertButton key={i} {...x}/>
+                                return <CustomAlertButton key={i} {...x} />
                             });
-                        })()}
-                    </div>
-                
+                    })()}
+                </div>
             </div>
         </animated.div>
     </div>
 }
 
 
+export enum CustomAlertButtonType {
+    // blue button
+    PRIMARY,
+    // red button
+    PRIMARY_DESTRUCTIVE,
+    // empty background, gray text
+    SECONDARY,
+}
+
+export interface CustomAlertButtonController{
+    setIsLoading(isLoading: boolean): void;
+    setIsActive(isActive: boolean): void;
+}
+
+export class CustomAlertButtonInfo {
+    constructor(
+        readonly title: string,
+        readonly action: () => void,
+        readonly type: CustomAlertButtonType,
+        readonly onMount?: (controller: CustomAlertButtonController) => void,
+    ) { }
+}
+
+
 function CustomAlertButton(props: CustomAlertButtonInfo) {
 
-    function respondToClick(){
+    const [, setIsLoading] = useState(false);
+    const [isActive, setIsActive] = useState(true);
+
+    function respondToClick() {
         props.action();
     }
 
-    const className = "CustomAlertButton " + (() => {
+    const controller = useRef<CustomAlertButtonController>({
+        setIsActive: setIsActive,
+        setIsLoading: setIsLoading,
+    }).current;
+
+    const className = "CustomAlertButton " + 
+    (isActive ? "" : " deactivated ") +
+    (() => {
         switch (props.type) {
             case CustomAlertButtonType.PRIMARY: return 'primary';
             case CustomAlertButtonType.PRIMARY_DESTRUCTIVE: return 'primary-destructive';
@@ -174,7 +226,11 @@ function CustomAlertButton(props: CustomAlertButtonInfo) {
         }
     })();
 
-    return <button className={className} onClick={respondToClick}>
+    useEffect(() => {
+        callIfPossible(props.onMount, controller);
+    }, [controller, props.onMount]);
+
+    return <button style={{opacity: isActive ? undefined : 0.5}} className={className} onClick={respondToClick}>
         {props.title}
     </button>
 }
