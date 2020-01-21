@@ -57,6 +57,24 @@
             }
         }
 
+        > .error-message-box{
+            // margin-top: 1.2rem;
+            // margin-bottom: -0.3rem;
+            font-size: 14px;
+            
+            $red-color: colors(destructive-red);
+            color: $red-color;
+
+            @include setProps(padding-left padding-right, 0.5rem);
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.5rem;
+
+            svg{
+                fill: $red-color;
+            }
+        }
+
         > .button-box{
             
             margin-top: 10px;
@@ -66,10 +84,15 @@
             justify-self: end;
 
             > .CustomAlertButton{
+
+                
+
                 font-size: 16px;
                 border-radius: 1000rem;
                 padding: 8px 16px;
                 font-weight: bold;
+                
+                
                 &.primary{
                     background-color: colors(light-blue);
                 }
@@ -85,7 +108,7 @@
                     @include roundedBGOnHover(rgba($color, 0.3));
                 }
                 &.deactivated{
-                    opacity: 0.3;
+                    opacity: 0.4;
                     pointer-events: none;
                 }
             }

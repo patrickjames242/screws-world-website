@@ -6,6 +6,7 @@ import CustomTextField from 'random-components/CustomTextField/CustomTextField';
 import './LogInScreen.scss';
 import { Optional } from "jshelpers";
 import { logIn } from "API";
+import LoadingButton from "random-components/LoadingButton/LoadingButton";
 
 
 export default function LogInScreen(props: {authTokenHandler: (authToken: string) => void}){
@@ -53,13 +54,10 @@ export default function LogInScreen(props: {authTokenHandler: (authToken: string
                         </div>
                     }
                 })()}
-                <button className="login-button" style={{
-                    pointerEvents: isLoading ? "none" : undefined,
-                }} onClick={respondToLogInButtonClicked}>
-                    {isLoading ? <LoadingIndicator/> : "Log In"}
-                </button>
+                <LoadingButton className="login-button" shouldShowIndicator={isLoading} onClick={respondToLogInButtonClicked}>Log In</LoadingButton>
             </div>
         </div>        
     </form>
 }
+
 

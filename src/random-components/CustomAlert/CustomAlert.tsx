@@ -4,6 +4,8 @@ import './CustomAlert.scss';
 import { Optional, callIfPossible, Notification } from 'jshelpers';
 import { animated, useSpring } from 'react-spring';
 import CustomTextField from '../CustomTextField/CustomTextField';
+import errorIcon from 'App/Dashboard/icons/errorIcon.js';
+import LoadingButton from 'random-components/LoadingButton/LoadingButton';
 
 interface AlertProviderFunctions {
     showAlert(info: CustomAlertInfo): void;
@@ -48,16 +50,16 @@ export default function AlertProvider(props: { children: JSX.Element | JSX.Eleme
     </AlertContext.Provider>
 }
 
-export interface CustomAlertTextFieldController{
+export interface CustomAlertTextFieldController {
     currentTextFieldText: string,
     readonly textDidChangeNotification: Notification<string>;
 }
 
-export class CustomAlertTextFieldInfo{
+export class CustomAlertTextFieldInfo {
     constructor(
         readonly placeholderText?: string,
         readonly onMount?: (controller: CustomAlertTextFieldController) => void,
-    ){}
+    ) { }
 }
 
 export class CustomAlertInfo {
@@ -65,7 +67,7 @@ export class CustomAlertInfo {
         readonly uniqueKey: string,
         readonly title: string,
         readonly description: string,
-        readonly textFieldInfo?: CustomAlertTextFieldInfo,       
+        readonly textFieldInfo?: CustomAlertTextFieldInfo,
         readonly leftButtonInfo?: CustomAlertButtonInfo,
         readonly rightButtonInfo?: CustomAlertButtonInfo,
         readonly onMount?: (controller: CustomAlertController) => void,
@@ -74,6 +76,7 @@ export class CustomAlertInfo {
 
 export interface CustomAlertController {
     dismiss: () => void;
+    showErrorMessage: (message: Optional<string>) => void;
 }
 
 
@@ -82,6 +85,7 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
 
     const [shouldBePresented, setShouldBePresented] = useState(true);
     const [textFieldText, setTextFieldText] = useState("");
+    const [errorMessage, setErrorMessage] = useState<Optional<string>>(null);
 
     const backgroundIsDismissed = useRef(false);
     const centerContentIsDismissed = useRef(false);
@@ -128,12 +132,13 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
 
     const alertController = useRef<CustomAlertController>({
         dismiss: dismissAlert,
+        showErrorMessage: setErrorMessage,
     }).current;
 
 
     const textFieldController = useRef<CustomAlertTextFieldController>({
         currentTextFieldText: textFieldText,
-        textDidChangeNotification: new Notification<string>(),        
+        textDidChangeNotification: new Notification<string>(),
     }).current;
 
     useEffect(() => {
@@ -141,26 +146,35 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
         callIfPossible(props.textFieldInfo?.onMount, textFieldController);
     }, [alertController, props.onMount, props.textFieldInfo, textFieldController]);
 
-    function respondToTextFieldTextDidChange(newText: string){
+    function respondToTextFieldTextDidChange(newText: string) {
         setTextFieldText(newText);
         textFieldController.currentTextFieldText = newText;
         textFieldController.textDidChangeNotification.post(newText);
     }
 
-    
+
     return <div className="CustomAlert">
         <animated.div onClick={dismissAlert} style={backgroundStyle} className="background-view" />
         <animated.div style={centerContentStyle} className="vertically-centered-box">
             <div className="horizontally-centered-box">
                 <div className="title">{props.title}</div>
                 <div className="description">{props.description}</div>
-                
+
                 {(() => {
-                    if (!props.textFieldInfo){return null;}
-                    return <CustomTextField 
-                    value={textFieldText} 
-                    onTextChange={respondToTextFieldTextDidChange} 
-                    placeholderText={props.textFieldInfo?.placeholderText ?? "Type here..."}/>
+                    if (!props.textFieldInfo) { return null; }
+                    return <CustomTextField
+                        value={textFieldText}
+                        onTextChange={respondToTextFieldTextDidChange}
+                        placeholderText={props.textFieldInfo?.placeholderText ?? "Type here..."} />
+                })()}
+
+                {(() => {
+                    const _errorMessage = (errorMessage ?? "").trim();
+                    if (_errorMessage === "") { return null; }
+                    return <div className="error-message-box" >
+                        {errorIcon}
+                        <div className="text-box">{_errorMessage}</div>
+                    </div>
                 })()}
 
                 <div className="button-box">
@@ -187,7 +201,7 @@ export enum CustomAlertButtonType {
     SECONDARY,
 }
 
-export interface CustomAlertButtonController{
+export interface CustomAlertButtonController {
     setIsLoading(isLoading: boolean): void;
     setIsActive(isActive: boolean): void;
 }
@@ -204,34 +218,35 @@ export class CustomAlertButtonInfo {
 
 function CustomAlertButton(props: CustomAlertButtonInfo) {
 
-    const [, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [isActive, setIsActive] = useState(true);
-
-    function respondToClick() {
-        props.action();
-    }
 
     const controller = useRef<CustomAlertButtonController>({
         setIsActive: setIsActive,
         setIsLoading: setIsLoading,
     }).current;
 
-    const className = "CustomAlertButton " + 
-    (isActive ? "" : " deactivated ") +
-    (() => {
-        switch (props.type) {
-            case CustomAlertButtonType.PRIMARY: return 'primary';
-            case CustomAlertButtonType.PRIMARY_DESTRUCTIVE: return 'primary-destructive';
-            case CustomAlertButtonType.SECONDARY: return 'secondary';
-        }
-    })();
+    function respondToClick() {
+        props.action();
+    }
 
+    
+
+    const className = "CustomAlertButton " +
+        (isActive ? "" : " deactivated ") +
+        (() => {
+            switch (props.type) {
+                case CustomAlertButtonType.PRIMARY: return 'primary';
+                case CustomAlertButtonType.PRIMARY_DESTRUCTIVE: return 'primary-destructive';
+                case CustomAlertButtonType.SECONDARY: return 'secondary';
+            }
+        })();
     useEffect(() => {
         callIfPossible(props.onMount, controller);
     }, [controller, props.onMount]);
 
-    return <button style={{opacity: isActive ? undefined : 0.5}} className={className} onClick={respondToClick}>
+    return <LoadingButton loadingIndicatorSize="18px" shouldShowIndicator={isLoading} className={className} onClick={respondToClick}>
         {props.title}
-    </button>
+    </LoadingButton>
 }
 

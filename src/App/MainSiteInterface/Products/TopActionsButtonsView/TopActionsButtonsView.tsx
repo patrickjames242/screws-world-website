@@ -55,9 +55,15 @@ export default function TopActionButtonsView() {
 
         const dismissAlert = () => callIfPossible(controller?.dismiss);
 
+        let okButtonController: CustomAlertButtonController;
+
         const okButton = new CustomAlertButtonInfo("OK", () => {
-            dismissAlert();
-        }, CustomAlertButtonType.PRIMARY);
+            // dismissAlert();
+            callIfPossible(okButtonController?.setIsLoading, true);
+            setTimeout(() => {
+                callIfPossible(okButtonController?.setIsLoading, false);
+            }, 1500);
+        }, CustomAlertButtonType.PRIMARY, c => okButtonController = c);
 
         const alertInfo: CustomAlertInfo = {
             uniqueKey: "DASHBOARD FEATURE NOT AVAILABLE MESSAGE",

@@ -1,0 +1,11 @@
+@import 'helpers';
+
+.LoadingButton{
+
+    position: relative;
+    > .LoadingIndicator{
+        position: absolute;
+        @include setProps(top left, 50%);
+        transform: translate(-50%, -50%);
+    }
+}
