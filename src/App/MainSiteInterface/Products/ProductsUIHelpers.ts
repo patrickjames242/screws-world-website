@@ -2,9 +2,9 @@
 import React from 'react';
 import { Optional } from "jshelpers";
 import { ProductDataObject, getDataObjectForID, isProduct, isProductCategory } from './ProductsDataHelpers';
-import { useIsDashboard } from 'App/AppUIHelpers';
 import { DashboardProductsRouteURLs, MainUIProductsRouteURLs, DashboardProductsRouteMatchPaths, MainUIProductsRouteMatchPaths } from './ProductsRoutesInfo';
 import { matchPath } from 'react-router-dom';
+import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
 
 
 

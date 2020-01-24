@@ -4,6 +4,7 @@
 
 .Dashboard > .Products > .content{
     > .TopActionButtonsView{
+
         --left-and-right-padding: 1.5rem;
         @include setProps(padding-top padding-bottom, 1.2rem);
         @include setProps(padding-left padding-right, var(--left-and-right-padding));
@@ -16,7 +17,9 @@
         position: sticky;
         top: 0;
         gap: 1.7rem;
-        grid-template-columns: auto auto 1fr auto auto auto;
+        grid-template-columns: auto auto 1fr;
+        grid-auto-flow: column;
+        grid-auto-columns: auto;
         
         .TopActionButton{
             --button-size: 3.8rem;
@@ -57,13 +60,17 @@
         }
 
         @media(max-width: 360px){
-            .spacer-div{
-                display: none;
+
+            &.should-be-spread-out-on-narrow-screen{
+                .spacer-div{
+                    display: none;
+                }
+                gap: initial;
+                grid-template-columns: initial;
+                grid-auto-flow: column;
+                justify-content: space-between;
             }
-            gap: initial;
-            grid-template-columns: initial;
-            grid-auto-flow: column;
-            justify-content: space-between;
+            
         }
     }
 }

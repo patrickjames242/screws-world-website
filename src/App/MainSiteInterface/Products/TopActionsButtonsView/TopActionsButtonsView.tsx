@@ -9,9 +9,11 @@ import logOutIcon from '../icons/logout';
 import { DASHBOARD as dashboardURL } from 'topLevelRoutePaths';
 import { Link } from 'react-router-dom';
 import './TopActionsButtonsView.scss';
-import { useDashboardInfo } from 'App/AppUIHelpers';
 import { useAlertFunctionality, CustomAlertInfo, CustomAlertButtonInfo, CustomAlertButtonType, CustomAlertController, CustomAlertButtonController, CustomAlertTextFieldInfo, CustomAlertTextFieldController } from 'random-components/CustomAlert/CustomAlert';
-import { callIfPossible } from 'jshelpers';
+import { callIfPossible, Optional } from 'jshelpers';
+import { useCurrentProductsPageSubject, ProductsPageSubjectType, useCurrentProductDetailsViewItem } from '../ProductsUIHelpers';
+import { DashboardProductsRouteURLs } from '../ProductsRoutesInfo';
+import { useDashboardInfo } from 'App/Dashboard/DashboardUIHelpers';
 
 
 
@@ -21,10 +23,6 @@ export default function TopActionButtonsView() {
     const dashboardInfo = useDashboardInfo();
 
     const alertFunctionality = useAlertFunctionality();
-
-    function respondToDeleteButtonClicked(){
-        alertFunctionality.showAlert(getDeleteAlertInfo());
-    }
 
     function respondToLogOutButtonClicked() {
 
@@ -50,46 +48,66 @@ export default function TopActionButtonsView() {
         alertFunctionality.showAlert(alertInfo);
     }
 
-    // function showFeatureNotAvailableAlert() {
-    //     // let controller: CustomAlertController;
+    const currentSubject = useCurrentProductsPageSubject();
 
-    //     // const dismissAlert = () => callIfPossible(controller?.dismiss);
+    const createNewLink = DashboardProductsRouteURLs.createProductItem;
+    const createNewButtonShouldBeDisplayed = currentSubject.type !== ProductsPageSubjectType.CREATE_NEW;
 
-    //     let okButtonController: CustomAlertButtonController;
+    const editLink: Optional<string> = (() => {
+        // we can ignore the error because this hook is still being called unconditionally.
+        //eslint-disable-next-line react-hooks/rules-of-hooks
+        let item = useCurrentProductDetailsViewItem();
+        if (!item){return null;}
+        return DashboardProductsRouteURLs.editProductItem(item.id);
+    })();
+    
+    const editButtonShouldBeDisplayed = (() => {
+        switch(currentSubject.type){
+            case ProductsPageSubjectType.CATEGORY:
+            case ProductsPageSubjectType.PRODUCT:
+                return true;
+            default: return false;
+        }
+    })();
 
-    //     const okButton = new CustomAlertButtonInfo("OK", () => {
-    //         // dismissAlert();
-    //         callIfPossible(okButtonController?.setIsLoading, true);
-    //         setTimeout(() => {
-    //             callIfPossible(okButtonController?.setIsLoading, false);
-    //         }, 1500);
-    //     }, CustomAlertButtonType.PRIMARY, c => okButtonController = c);
-
-    //     const alertInfo: CustomAlertInfo = {
-    //         uniqueKey: "DASHBOARD FEATURE NOT AVAILABLE MESSAGE",
-    //         title: "Oops 😱",
-    //         description: "This feature is not available yet.",
-    //         rightButtonInfo: okButton,
-    //         // onMount: c => controller = c,
-    //     };
-    //     alertFunctionality.showAlert(alertInfo);
-    // }
-
-    function respondToEditButtonClicked(){
+    const respondToDeleteButtonClicked: Optional<() => void> = (() => {
+        switch (currentSubject.type){
+            case ProductsPageSubjectType.PRODUCT:
+            case ProductsPageSubjectType.CATEGORY:
+            case ProductsPageSubjectType.EDIT_ITEM:
+                return () => alertFunctionality.showAlert(getDeleteAlertInfo());
+            default: return null;
+        }
+    })();
         
-    }
+    const numberOfRightButtons = [
+        createNewButtonShouldBeDisplayed,
+        editButtonShouldBeDisplayed,
+        respondToDeleteButtonClicked,
+    ].filter(x => !!x).length;
 
-    function repondToCreateNewButtonClicked(){
-        
-    }
+    const className = [
+        "TopActionButtonsView",
+        (() => {
+            if (numberOfRightButtons > 1){
+                return "should-be-spread-out-on-narrow-screen";
+            } else {return "";}
+        })()
+    ].join(" ");
 
-    return <div className="TopActionButtonsView">
+    
+
+    return <div className={className}>
         <TopActionButton svgIcon={homeIcon} title="go home" link={dashboardURL} />
         <TopActionButton svgIcon={logOutIcon} title="log out" onClick={respondToLogOutButtonClicked} className="log-out-button" />
         <div className="spacer-div" />
-        <TopActionButton svgIcon={plusIcon} title="create new item" onClick={repondToCreateNewButtonClicked} />
-        <TopActionButton svgIcon={editIcon} title="edit current item" onClick={respondToEditButtonClicked} />
-        <TopActionButton svgIcon={trashIcon} title="delete current item" onClick={respondToDeleteButtonClicked} isDestructive />
+
+        {createNewButtonShouldBeDisplayed ? <TopActionButton svgIcon={plusIcon} title="create new item" link={createNewLink} /> : null}
+
+        {editButtonShouldBeDisplayed ? <TopActionButton svgIcon={editIcon} title="edit current item" link={editLink!}/> : null}
+        
+        {respondToDeleteButtonClicked ? <TopActionButton svgIcon={trashIcon} title="delete current item" onClick={respondToDeleteButtonClicked} isDestructive /> : null}
+        
     </div>
 }
 
@@ -115,17 +133,13 @@ function TopActionButton(props: { svgIcon: React.ReactElement, isDestructive?: b
 
 function getDeleteAlertInfo(): CustomAlertInfo {
 
-    let controller: CustomAlertController;
-
-    const buttonDismissAction = () => callIfPossible(controller?.dismiss)
-
-    const cancelButton = new CustomAlertButtonInfo("Cancel", buttonDismissAction, CustomAlertButtonType.SECONDARY);
+    const cancelButton = new CustomAlertButtonInfo("Cancel", dismiss => dismiss(), CustomAlertButtonType.SECONDARY);
 
     let deleteButtonController: CustomAlertButtonController;
 
     const deleteButton = new CustomAlertButtonInfo(
         "Delete",
-        buttonDismissAction,
+        dismiss => dismiss(),
         CustomAlertButtonType.PRIMARY_DESTRUCTIVE,
         c => deleteButtonController = c,
     );
@@ -155,11 +169,11 @@ function getDeleteAlertInfo(): CustomAlertInfo {
         textFieldInfo: textFieldInfo,
         leftButtonInfo: cancelButton,
         rightButtonInfo: deleteButton,
-        onMount: (c) => {
-            controller = c;
+        onMount: () => {
             refreshDeleteButtonActivation();
         },
     };
 
     return alertInfo;
 }
+

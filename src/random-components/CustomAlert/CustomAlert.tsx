@@ -24,13 +24,26 @@ export default function AlertProvider(props: { children: React.ReactNode}) {
     const [alerts, setAlerts] = useState<CustomAlertInfo[]>([]);
     document.body.style.overflow = alerts.length <= 0 ? "initial" : "hidden";
 
+    function isEqual(i1: CustomAlertInfo, i2: CustomAlertInfo): boolean{
+        return i1.uniqueKey === i2.uniqueKey || i1 === i2;
+    }
+
     const alertProviderFunctions = useRef<AlertProviderFunctions>({
         showAlert(info) {
             setAlerts((prevAlerts) => {
-                if (prevAlerts.some(a => a === info || a.uniqueKey === info.uniqueKey)) {
-                    throw new Error("tried to present an alert that is already being displayed");
+                if (prevAlerts.some(a => isEqual(a, info))) {
+                    prevAlerts.forEach((x, i) => {
+                        if (isEqual(x, info) === false){return;}
+                        if (callIfPossible(x.shouldReplaceInfo, info) === true){
+                            prevAlerts[i] = info;
+                            return [...prevAlerts];
+                        } else {
+                            throw new Error("tried to present an alert that is already being displayed");
+                        }
+                    });
+                } else {
+                    prevAlerts.push(info);
                 }
-                prevAlerts.push(info);
                 return [...prevAlerts];
             });
         },
@@ -72,6 +85,7 @@ export class CustomAlertInfo {
         readonly rightButtonInfo?: CustomAlertButtonInfo,
         readonly onMount?: (controller: CustomAlertController) => void,
         readonly onDismiss?: () => void,
+        readonly shouldReplaceInfo?: (newInfo: CustomAlertInfo) => boolean,
     ) { }
 }
 
@@ -146,8 +160,7 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
     useEffect(() => {
         callIfPossible(props.onMount, alertController);
         callIfPossible(props.textFieldInfo?.onMount, textFieldController);
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [alertController, props.onMount, props.textFieldInfo, textFieldController]);
 
     function respondToTextFieldTextDidChange(newText: string) {
         setTextFieldText(newText);
@@ -244,8 +257,7 @@ function CustomAlertButton(props: CustomAlertButtonInfo & {dismissAlertAction: (
         })();
     useEffect(() => {
         callIfPossible(props.onMount, controller);
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [controller, props.onMount]);
 
     return <LoadingButton retainsHeight retainsWidth loadingIndicatorSize="18px" shouldShowIndicator={isLoading} className={className} onClick={respondToClick}>
         {props.title}

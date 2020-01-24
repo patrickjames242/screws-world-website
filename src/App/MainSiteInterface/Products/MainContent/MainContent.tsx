@@ -4,9 +4,10 @@ import { Optional } from 'jshelpers';
 import { ProductDataObject, ProductCategory, Product, isProductCategory } from '../ProductsDataHelpers';
 import { useAllTopLevelProductItems, useCurrentProductsPageSubject, ProductsPageSubjectType } from '../ProductsUIHelpers';
 import './MainContent.scss';
-import { useIsDashboard } from 'App/AppUIHelpers';
 import ProductDetailsView from './ProductDetailsView/ProductDetailsView';
 import ProductItemsGrid from './ProductItemsGrid/ProductItemsGrid';
+import EditProductItemView from './EditProductItemView/EditProductItemView';
+import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
 
 
 
@@ -61,7 +62,8 @@ export default function MainContent() {
                     return <ProductItemsGrid products={products} />
                 case ProductsPageSubjectType.EDIT_ITEM:
                 case ProductsPageSubjectType.CREATE_NEW:
-                    return null;
+                    let item = currentSubject.associatedData as Optional<ProductDataObject>;
+                    return <EditProductItemView itemToEdit={item}/>;
             }
         })()}
     </div>

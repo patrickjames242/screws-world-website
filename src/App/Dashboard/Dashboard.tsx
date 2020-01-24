@@ -1,9 +1,9 @@
 
 import React, { useRef, useState } from "react";
-import { DashboardInfo, DashboardInfoContext } from "App/AppUIHelpers";
+
 import './Dashboard.scss';
 
-import { useSetTitleFunctionality } from "jshelpers";
+import { useSetTitleFunctionality, Notification } from "jshelpers";
 import Products from "App/MainSiteInterface/Products/Products";
 import { useHistory, Switch, Route, useRouteMatch } from "react-router-dom";
 import * as RoutePaths from 'topLevelRoutePaths';
@@ -11,6 +11,7 @@ import * as RoutePaths from 'topLevelRoutePaths';
 import LogInScreen from "./LogInScreen/LogInScreen";
 
 import { DashboardRouteURLs } from './DashboardRoutesInfo';
+import { DashboardInfo, DashboardInfoContext } from "./DashboardUIHelpers";
 
 
 
@@ -33,6 +34,13 @@ export default function Dashboard() {
 
     const [isUserLoggedIn, setUserLoggedInState] = useState(UserLoggedInPersistedState.get());
 
+    const dashboardInfo = useRef<DashboardInfo>({
+        logOut: () => {
+            setIsUserLoggedIn(false);
+        }, 
+        userWillLogOutNotification: new Notification(),
+    }).current;
+
     const pageToRedirectToAfterLoginKey = "pageToRedirectToAfterLogin";
 
     function setIsUserLoggedIn(newValue: boolean) {
@@ -44,8 +52,9 @@ export default function Dashboard() {
         })();
         UserLoggedInPersistedState.set(newValue);
         if (newValue) {
-            history.replace(redirectURL)
+            history.replace(redirectURL);
         } else {
+            dashboardInfo.userWillLogOutNotification.post({});
             history.push(DashboardRouteURLs.dashboardLogIn);
         }
         setUserLoggedInState(newValue);
@@ -65,11 +74,7 @@ export default function Dashboard() {
         }
     }
 
-    const dashboardInfo = useRef<DashboardInfo>({
-        logOut: () => {
-            setIsUserLoggedIn(false);
-        }
-    }).current;
+    
 
     function handleAuthToken(authToken: string) {
         setIsUserLoggedIn(true);

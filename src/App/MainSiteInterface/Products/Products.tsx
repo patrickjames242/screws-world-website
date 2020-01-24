@@ -13,9 +13,9 @@ import MainContent from './MainContent/MainContent';
 import DetatchedSideBar, { DetatchedSideBarFunctionsRef } from './SideBar/DetachedSideBar/DetachedSideBar';
 
 import './Products.scss';
-import { useIsDashboard } from 'App/AppUIHelpers';
 import TopActionButtonsView from './TopActionsButtonsView/TopActionsButtonsView';
 import { productsDataTree } from './ProductsDataHelpers';
+import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
 
 
 

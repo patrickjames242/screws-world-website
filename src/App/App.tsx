@@ -21,6 +21,7 @@ export default function App() {
 
 function _App() {
     const alertInfo = useAlertFunctionality();
+    
     const historyObj = useRef<History>(createBrowserHistory({
         getUserConfirmation(message, callback) {
             
@@ -33,7 +34,7 @@ function _App() {
             }
 
             const yesButtonInfo: CustomAlertButtonInfo = {
-                title: "Yes",
+                title: "Continue",
                 action: dismiss => {
                     callCallbackIfNeeded(true);
                     dismiss();
@@ -57,11 +58,15 @@ function _App() {
                 rightButtonInfo: yesButtonInfo,
                 leftButtonInfo: cancelButtonInfo,
                 onDismiss: () => callCallbackIfNeeded(false),
+                shouldReplaceInfo: () => {
+                    return true;
+                }
             };
 
             alertInfo.showAlert(info);
         },
     })).current;
+
     //eslint-disable-next-line react/jsx-pascal-case
     return <Router history={historyObj}><__App /></Router>
 }
