@@ -1,4 +1,4 @@
-import isValidDashboardRoute from "./Dashboard/DashboardRoutesValidator";
+import {isValidDashboardRoute} from "./Dashboard/DashboardRoutesInfo";
 import isValidMainSiteInterfaceRoute from "./MainSiteInterface/MainSideInterfaceRoutesValidator";
 
 export default function isValidAppRoute(route: string): boolean{

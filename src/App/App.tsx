@@ -1,91 +1,91 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 
-import { useLocation } from 'react-router-dom';
-import { animated, useTransition } from 'react-spring';
-
-
-import { ScreenDimmerFunctionsContext, ScreenDimmerFunctions } from './AppUIHelpers';
-import { Notification } from 'jshelpers';
+import { useLocation, Router } from 'react-router-dom';
+import { createBrowserHistory, History } from 'history';
 import Dashboard from './Dashboard/Dashboard';
 
 import MainSiteInterface from './MainSiteInterface/MainSiteInterface';
-import isValidDashboardRoute from './Dashboard/DashboardRoutesValidator';
+import { isValidDashboardRoute } from './Dashboard/DashboardRoutesInfo';
 import isValidMainSiteInterfaceRoute from './MainSiteInterface/MainSideInterfaceRoutesValidator';
 import HeaderAndFooterContainer from 'random-components/HeaderAndFooterContainer/HeaderAndFooterContainer';
 import NotFoundPage from 'random-components/NotFoundPage/NotFoundPage';
-import AlertProvider from 'random-components/CustomAlert/CustomAlert';
+import AlertProvider, { useAlertFunctionality, CustomAlertInfo, CustomAlertButtonInfo, CustomAlertButtonType } from 'random-components/CustomAlert/CustomAlert';
+import { ScreenDimmerProvider } from './ScreenDimmer';
 
 
 export default function App() {
-
-    const location = useLocation();
-    
-    const screenDimmerFunctionsRef = useRef<ScreenDimmerFunctions>({}).current;
-
-    return <AlertProvider>
-        <ScreenDimmerFunctionsContext.Provider value={screenDimmerFunctionsRef}>
-            <div className="App">
-                {(() => {
-                    if (isValidDashboardRoute(location.pathname)){
-                        return <Dashboard/>
-                    } else if (isValidMainSiteInterfaceRoute(location.pathname)){
-                        return <MainSiteInterface/>
-                    } else {
-                        return <HeaderAndFooterContainer>
-                            <NotFoundPage/>
-                        </HeaderAndFooterContainer>
-                    }
-                })()}
-                <ScreenDimmer functionsRef={screenDimmerFunctionsRef} />
-            </div>
-        </ScreenDimmerFunctionsContext.Provider>
-    </AlertProvider>
+    //eslint-disable-next-line react/jsx-pascal-case
+    return <AlertProvider><_App /></AlertProvider>
 }
 
+function _App() {
+    const alertInfo = useAlertFunctionality();
+    const historyObj = useRef<History>(createBrowserHistory({
+        getUserConfirmation(message, callback) {
+            
+            let callBackHasBeenCalled = false;
+            function callCallbackIfNeeded(decision: boolean){
+                if (callBackHasBeenCalled === false){
+                    callBackHasBeenCalled = true;
+                    callback(decision);
+                }
+            }
 
-function ScreenDimmer(props: { functionsRef: ScreenDimmerFunctions }) {
+            const yesButtonInfo: CustomAlertButtonInfo = {
+                title: "Yes",
+                action: dismiss => {
+                    callCallbackIfNeeded(true);
+                    dismiss();
+                },
+                type: CustomAlertButtonType.PRIMARY,
+            };
 
-    const [shouldBeVisible, setVisibilityState] = useState(false);
-    const shouldAnimateVisibilityChange = useRef(true);
+            const cancelButtonInfo: CustomAlertButtonInfo = {
+                title: "Cancel",
+                action: dismiss => {
+                    callCallbackIfNeeded(false);
+                    dismiss();
+                },
+                type: CustomAlertButtonType.SECONDARY,
+            };
 
-    function setVisibility(isVisible: boolean, animate: boolean) {
-        shouldAnimateVisibilityChange.current = animate;
-        document.body.style.overflow = isVisible ? "hidden" : "initial";
-        setVisibilityState(isVisible);
-    }
+            const info: CustomAlertInfo = {
+                uniqueKey: "GET CONFIRMATION FOR HISTORY CHANGE",
+                title: "Are you sure?",
+                description: message,
+                rightButtonInfo: yesButtonInfo,
+                leftButtonInfo: cancelButtonInfo,
+                onDismiss: () => callCallbackIfNeeded(false),
+            };
 
-    const dimmerWasClickedNotification = useRef(new Notification()).current;
+            alertInfo.showAlert(info);
+        },
+    })).current;
+    //eslint-disable-next-line react/jsx-pascal-case
+    return <Router history={historyObj}><__App /></Router>
+}
 
-    props.functionsRef.setVisibility = setVisibility;
-    props.functionsRef.dimmerWasClickedNotification = dimmerWasClickedNotification;
+function __App() {
 
-    function respondToOnClick() {
-        setVisibility(false, true);
-        dimmerWasClickedNotification.post({});
-    }
+    const location = useLocation();
 
-    const backgroundDimmerTransition = useTransition(shouldBeVisible, null, {
-        from: { opacity: 0 },
-        enter: { opacity: 1 },
-        leave: { opacity: 0 },
-        immediate: !shouldAnimateVisibilityChange,
-    });
+    return <ScreenDimmerProvider>
+        <div className="App">
+            {(() => {
+                if (isValidDashboardRoute(location.pathname)) {
+                    return <Dashboard />
+                } else if (isValidMainSiteInterfaceRoute(location.pathname)) {
+                    return <MainSiteInterface />
+                } else {
+                    return <HeaderAndFooterContainer>
+                        <NotFoundPage />
+                    </HeaderAndFooterContainer>
+                }
+            })()}
+        </div>
+    </ScreenDimmerProvider>
 
-    return <>
-        {
-            backgroundDimmerTransition.map(({ item, key, props }) => {
-                if (item === false) { return undefined; }
-                return <animated.div key={key} onClick={respondToOnClick} style={{
-                    backgroundColor: "rgba(0, 0, 0, 0.6)",
-                    position: "fixed",
-                    top: "0", left: "0", bottom: "0", right: "0",
-                    zIndex: 10,
-                    ...props,
-                }} />
-            })
-        }
-    </>
 }
 
 

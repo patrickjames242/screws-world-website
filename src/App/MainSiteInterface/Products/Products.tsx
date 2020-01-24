@@ -1,13 +1,13 @@
 
-import React, { useEffect } from 'react';
-import { Optional, useSetTitleFunctionality } from 'jshelpers';
-import { ProductDataObject, productsDataTree, getDataObjectForID } from './ProductsDataHelpers';
-import { useRouteMatch, useHistory } from 'react-router-dom';
+import React, { useEffect, useMemo } from 'react';
+import { useSetTitleFunctionality } from 'jshelpers';
+
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { useSpring } from 'react-spring';
 import showSideBarIcon from './icons/showSideBarIcon';
 import AttachedSideBar from './SideBar/AttachedSideBar/AttachedSideBar';
-import { ProductsDataContext } from './ProductsUIHelpers';
+import { ProductsInfoContext, getProductsPageSubjectForRoutePath} from './ProductsUIHelpers';
 
 import MainContent from './MainContent/MainContent';
 import DetatchedSideBar, { DetatchedSideBarFunctionsRef } from './SideBar/DetachedSideBar/DetachedSideBar';
@@ -15,24 +15,14 @@ import DetatchedSideBar, { DetatchedSideBarFunctionsRef } from './SideBar/Detach
 import './Products.scss';
 import { useIsDashboard } from 'App/AppUIHelpers';
 import TopActionButtonsView from './TopActionsButtonsView/TopActionsButtonsView';
-import * as RoutePaths from 'routePaths';
+import { productsDataTree } from './ProductsDataHelpers';
+
 
 
 export default function Products() {
 
     const isDashboard = useIsDashboard();
     useSetTitleFunctionality(isDashboard ? "Dashboard" : "Products");
-
-    const currentProductsDataTree = productsDataTree;
-
-    const selectedItem: Optional<ProductDataObject> = (() => {
-        /* eslint-disable react-hooks/rules-of-hooks */
-        const baseURL = isDashboard ? RoutePaths.DASHBOARD : RoutePaths.PRODUCTS;
-        const idRouteMatch = useRouteMatch<{ id: string }>(baseURL + "/:id");
-        const idNum = Number(idRouteMatch?.params.id);
-        return getDataObjectForID(idNum);
-        /* eslint-enable react-hooks/rules-of-hooks */
-    })();
 
     useScrollToTopOnPathChangeFunctionality();
 
@@ -44,11 +34,15 @@ export default function Products() {
         }
     }
 
+    const location = useLocation();
 
-    return <ProductsDataContext.Provider value={{
-        currentlySelectedItem: selectedItem,
-        allProductItems: currentProductsDataTree,
-    }}>
+    const contextProviderValue = useMemo(() => {
+        const subject = getProductsPageSubjectForRoutePath(location.pathname)!;
+        const allTopLevelItems = productsDataTree;
+        return {subject, allTopLevelItems};
+    }, [location.pathname ]);
+    
+    return <ProductsInfoContext.Provider value={contextProviderValue}>
         <div className="Products">
             <div className="content">
                 <AttachedSideBar />
@@ -62,10 +56,7 @@ export default function Products() {
                 {showSideBarIcon}
             </div>
         </div>
-    </ProductsDataContext.Provider>
-
-
-
+    </ProductsInfoContext.Provider>
 }
 
 

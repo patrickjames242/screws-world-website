@@ -1,7 +1,6 @@
 
 import React, { useState } from "react";
 import errorIcon from "../icons/errorIcon";
-import LoadingIndicator from "random-components/LoadingIndicator/LoadingIndicator";
 import CustomTextField from 'random-components/CustomTextField/CustomTextField';
 import './LogInScreen.scss';
 import { Optional } from "jshelpers";
@@ -25,12 +24,12 @@ export default function LogInScreen(props: {authTokenHandler: (authToken: string
             setErrorMessage("You havn't entered a code yet");
             return;
         }
-        logIn(textFieldText).then((result) => {
+        logIn(textFieldText).finally(() => {
+            setIsLoading(false);
+        }).then((result) => {
             props.authTokenHandler(result.authToken);
         }).catch((errorMessage) => {
             setErrorMessage(errorMessage);
-        }).finally(() => {
-            setIsLoading(false);
         });
         setErrorMessage(null);
         setIsLoading(true);
@@ -54,7 +53,7 @@ export default function LogInScreen(props: {authTokenHandler: (authToken: string
                         </div>
                     }
                 })()}
-                <LoadingButton className="login-button" shouldShowIndicator={isLoading} onClick={respondToLogInButtonClicked}>Log In</LoadingButton>
+                <LoadingButton className="login-button" retainsHeight shouldShowIndicator={isLoading} onClick={respondToLogInButtonClicked}>Log In</LoadingButton>
             </div>
         </div>        
     </form>

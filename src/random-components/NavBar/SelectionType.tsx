@@ -1,4 +1,4 @@
-import * as RoutePaths from 'routePaths';
+import * as RoutePaths from 'topLevelRoutePaths';
 
 export enum SelectionType {
     Home,
@@ -21,14 +21,6 @@ export function getAllSelections() {
     return [s.Home, s.AboutUs, s.Services, s.Products, s.ContactUs];
 };
 
-export function getSelectionItemForRoutePath(routePath: string): SelectionType | null {
-    return getAllSelections().filter(x => {
-        const hasSubRoutes = getInfoForSelection(x).pageRouteHasSubRoutes;
-        const selectionRoutePath = routePaths[x];
-        return (selectionRoutePath === routePath) || 
-        (hasSubRoutes && routePath.startsWith(selectionRoutePath));
-    })[0] ?? null;
-}
 
 export function getInfoForSelection(selection: SelectionType) {
 
@@ -42,15 +34,11 @@ export function getInfoForSelection(selection: SelectionType) {
         }
     })();
 
-    const pageRouteHasSubRoutes = (() => {
-        const selectionsThatHaveSubRoutes = [SelectionType.Products];
-        return selectionsThatHaveSubRoutes.some(x => x === selection);
-    })();
 
     const routePath = routePaths[selection];
 
     return {
-        routePath, textValue, pageRouteHasSubRoutes
+        routePath, textValue 
     }
 }
 

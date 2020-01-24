@@ -3,7 +3,7 @@ import React, {useMemo} from 'react';
 import { NavLink } from 'react-router-dom';
 import productPageScssVariables from '../../_products-variables.scss';
 import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct } from '../../ProductsDataHelpers';
-import { useCurrentlySelectedItem, useToURLForProductItem } from '../../ProductsUIHelpers';
+import { useCurrentProductDetailsViewItem, useToURLForProductItem } from '../../ProductsUIHelpers';
 import { Optional, useIsInitialRender } from 'jshelpers';
 import { useSpring, animated, useTransition } from 'react-spring';
 
@@ -11,7 +11,7 @@ import './SideBarLinksNode.scss';
 
 export default function SideBarLinksNode(props: { item: ProductDataObject }) {
 
-    const currentlySelectedItem = useCurrentlySelectedItem();
+    const currentlySelectedItem = useCurrentProductDetailsViewItem();
 
     const isInitialRender = useIsInitialRender();
 

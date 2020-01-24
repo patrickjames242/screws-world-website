@@ -7,7 +7,7 @@ import CustomTextField from '../CustomTextField/CustomTextField';
 import errorIcon from 'App/Dashboard/icons/errorIcon.js';
 import LoadingButton from 'random-components/LoadingButton/LoadingButton';
 
-interface AlertProviderFunctions {
+export interface AlertProviderFunctions {
     showAlert(info: CustomAlertInfo): void;
 }
 
@@ -19,7 +19,7 @@ export function useAlertFunctionality(): AlertProviderFunctions {
     return useContext(AlertContext)!;
 }
 
-export default function AlertProvider(props: { children: JSX.Element | JSX.Element[] | undefined | null }) {
+export default function AlertProvider(props: { children: React.ReactNode}) {
 
     const [alerts, setAlerts] = useState<CustomAlertInfo[]>([]);
     document.body.style.overflow = alerts.length <= 0 ? "initial" : "hidden";
@@ -71,6 +71,7 @@ export class CustomAlertInfo {
         readonly leftButtonInfo?: CustomAlertButtonInfo,
         readonly rightButtonInfo?: CustomAlertButtonInfo,
         readonly onMount?: (controller: CustomAlertController) => void,
+        readonly onDismiss?: () => void,
     ) { }
 }
 
@@ -97,6 +98,7 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
 
     function dismissAlert() {
         setShouldBePresented(false);
+        callIfPossible(props.onDismiss);
     }
 
     const backgroundStyle = useSpring({
@@ -144,7 +146,8 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
     useEffect(() => {
         callIfPossible(props.onMount, alertController);
         callIfPossible(props.textFieldInfo?.onMount, textFieldController);
-    }, [alertController, props.onMount, props.textFieldInfo, textFieldController]);
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     function respondToTextFieldTextDidChange(newText: string) {
         setTextFieldText(newText);
@@ -182,7 +185,7 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
                         return [props.leftButtonInfo, props.rightButtonInfo]
                             .map((x, i) => {
                                 if (!x) { return null; }
-                                return <CustomAlertButton key={i} {...x} />
+                                return <CustomAlertButton key={i} {...x} dismissAlertAction={dismissAlert} />
                             });
                     })()}
                 </div>
@@ -209,14 +212,14 @@ export interface CustomAlertButtonController {
 export class CustomAlertButtonInfo {
     constructor(
         readonly title: string,
-        readonly action: () => void,
+        readonly action: (dismissAlert: () => void) => void,
         readonly type: CustomAlertButtonType,
         readonly onMount?: (controller: CustomAlertButtonController) => void,
     ) { }
 }
 
 
-function CustomAlertButton(props: CustomAlertButtonInfo) {
+function CustomAlertButton(props: CustomAlertButtonInfo & {dismissAlertAction: () => void}) {
 
     const [isLoading, setIsLoading] = useState(false);
     const [isActive, setIsActive] = useState(true);
@@ -227,10 +230,8 @@ function CustomAlertButton(props: CustomAlertButtonInfo) {
     }).current;
 
     function respondToClick() {
-        props.action();
+        props.action(props.dismissAlertAction);
     }
-
-    
 
     const className = "CustomAlertButton " +
         (isActive ? "" : " deactivated ") +
@@ -243,9 +244,10 @@ function CustomAlertButton(props: CustomAlertButtonInfo) {
         })();
     useEffect(() => {
         callIfPossible(props.onMount, controller);
-    }, [controller, props.onMount]);
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    return <LoadingButton loadingIndicatorSize="18px" shouldShowIndicator={isLoading} className={className} onClick={respondToClick}>
+    return <LoadingButton retainsHeight retainsWidth loadingIndicatorSize="18px" shouldShowIndicator={isLoading} className={className} onClick={respondToClick}>
         {props.title}
     </LoadingButton>
 }

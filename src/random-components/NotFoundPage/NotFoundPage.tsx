@@ -11,8 +11,7 @@ export default function NotFoundPage() {
             <div className="title">Page Not Found</div>
             <div className="description">Sorry, but we couldn't find what you were looking for.</div>
         </div>
-
-
     </div>
 }
+
 

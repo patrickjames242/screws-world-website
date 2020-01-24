@@ -1,21 +1,9 @@
 
 import React, { useContext } from 'react';
-import {Optional, Notification } from 'jshelpers';
+import {Optional } from 'jshelpers';
 
 
-// screen dimmer context
 
-export interface ScreenDimmerFunctions{
-    setVisibility?: (isVisible: boolean, animate: boolean) => void;
-    dimmerWasClickedNotification?: Notification;
-}
-
-export const ScreenDimmerFunctionsContext = React.createContext<Optional<ScreenDimmerFunctions>>(null);
-
-
-export function useScreenDimmerFunctions(): ScreenDimmerFunctions{
-    return useContext(ScreenDimmerFunctionsContext)!;
-}
 
 
 

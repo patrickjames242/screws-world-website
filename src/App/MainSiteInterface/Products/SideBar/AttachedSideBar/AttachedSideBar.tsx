@@ -2,14 +2,15 @@
 import React, { useRef, useEffect } from 'react';
 
 import SideBarLinksNode from '../SideBarLinksNode/SideBarLinksNode';
-import { useAllProductItems } from '../../ProductsUIHelpers';
+
 import './AttachedSideBar.scss';
+import { useAllTopLevelProductItems } from '../../ProductsUIHelpers';
 
 
 
 export default function AttachedSideBar() {
-    const currentDataTree = useAllProductItems();
-
+    const allTopLevelProductItems = useAllTopLevelProductItems();
+    
     const contentHolderRef = useRef<HTMLDivElement>(null);
 
     const faderElements = useSideBarFaderFunctionality(contentHolderRef);
@@ -18,7 +19,7 @@ export default function AttachedSideBar() {
         <div className="content-holder" ref={contentHolderRef}>
             <div className="content">
                 {
-                    currentDataTree.map(x => {
+                    allTopLevelProductItems.map(x => {
                         return <SideBarLinksNode item={x} key={x.id} />
                     })
                 }

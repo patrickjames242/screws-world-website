@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 
-import { Route, Switch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 import { SelectionType as NavBarSelection, getAllSelections, getInfoForSelection } from 'random-components/NavBar/SelectionType';
 
@@ -15,18 +15,18 @@ import HeaderAndFooterContainer from 'random-components/HeaderAndFooterContainer
 
 
 export default function MainSiteInterface() {
+
+
     return <HeaderAndFooterContainer>
-        <Switch>
-            {getAllSelections().map((x, i) => {
-                const selectionInfo = getInfoForSelection(x);
-                const path = selectionInfo.routePath;
-                const isExact = selectionInfo.pageRouteHasSubRoutes === false;
-                return <Route key={i} exact={isExact} path={path}
-                    render={() => {
-                        return <ComponentForSelection selection={x} />
-                    }} />
-            })}
-        </Switch>
+        {getAllSelections().map((x, i) => {
+            const selectionInfo = getInfoForSelection(x);
+            const path = selectionInfo.routePath;
+            const isExact = path === "/";
+            return <Route key={i} exact={isExact} path={path}
+                render={() => {
+                    return <ComponentForSelection selection={x} />
+                }} />
+        })}
     </HeaderAndFooterContainer>
 }
 

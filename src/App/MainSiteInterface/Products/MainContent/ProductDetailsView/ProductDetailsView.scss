@@ -1,0 +1,92 @@
+
+
+@import 'helpers';
+@import '../../products-variables';
+
+
+.Products > .content{
+  
+    > .MainContent{
+
+        > .ProductDetailsView{
+
+            $max-width-for-vertical-layout: 750px;
+            
+
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            
+            margin-top: 2.5rem;
+            align-items: start;
+            gap: 2rem;
+        
+
+            @media(max-width: $max-width-for-vertical-layout){
+                grid-template-columns: initial;
+                max-width: 425px;
+                @include setProps(margin-left margin-right, auto);
+                > .image-section-holder{
+                    grid-row: 1;
+                }
+            }
+
+            > .description-section{
+                font-size: 18px;
+                line-height: 1.6;
+
+                @include respondToNarrowWidth{
+                    font-size: 16px;
+                }
+            }
+
+            > .image-section-holder{
+
+                > .image-section{
+                    
+                    --image-section-insets: 14px;
+                    max-width: 500px;
+                    @include setProps(margin-left margin-right, auto);
+
+                    @media (min-width: 1300px){
+                        --image-section-insets: 18px;
+                    }
+
+                    @media(max-width: $max-width-for-vertical-layout){
+                        max-width: initial;
+                    }
+                    
+                    > .content{
+                        padding-top: $product-image-height-percentage-of-width;
+                        position: relative;
+                        
+                        > .image-holder{
+                            position: absolute;
+                            @include setProps(top left, 0);
+                            @include setProps(right bottom, var(--image-section-insets));
+                        
+                            border-radius: 0.7rem;
+                            overflow: hidden;
+                            background-color: lightGray;
+    
+                            > img{
+                                height: 100%;
+                                width: 100%;
+                                object-fit: cover;
+                            }
+                        }
+                        
+                        > .background-view{
+                            background-color: $product-item-info-background-color;
+                            box-shadow:0px 0px 3.3rem 1rem rgba(colors(dark-blue), 0.9);
+                            border-radius: 1rem;
+                            position: absolute;
+                            @include setProps(top left, var(--image-section-insets));
+                            @include setProps(right bottom, 0);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

@@ -7,14 +7,14 @@ import { useTransition, animated } from 'react-spring';
 import { useLocation } from 'react-router-dom';
 import {Location} from 'history';
 
-import { useScreenDimmerFunctions } from 'App/AppUIHelpers';
-import { useAllProductItems, useCurrentlySelectedItem } from '../../ProductsUIHelpers';
+import { useAllTopLevelProductItems, useCurrentProductDetailsViewItem } from '../../ProductsUIHelpers';
 import SideBarLinksNode from '../SideBarLinksNode/SideBarLinksNode';
 import { isProduct } from '../../ProductsDataHelpers';
 import productsScssVariables from '../../_products-variables.scss';
 import { callIfPossible } from 'jshelpers';
 
 import './DetachedSideBar.scss';
+import { useScreenDimmerFunctions } from 'App/ScreenDimmer';
 
 
 export interface DetatchedSideBarFunctionsRef {
@@ -60,7 +60,7 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
         return () => minWidthForAttatchedSideBarMediaQuery.removeListener(listener);
     }, [isPresented, _setIsPresented]);
 
-    const currentlySelectedItem = useCurrentlySelectedItem();
+    const currentlySelectedItem = useCurrentProductDetailsViewItem();
     const prevLocationRef = useRef<Location>();
     const location = useLocation();
 
@@ -85,7 +85,7 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
         immediate: !shouldIsPresentedUpdateBeAnimatedRef.current,
     });
 
-    const productsDataTree = useAllProductItems();
+    const productsDataTree = useAllTopLevelProductItems();
 
 
     return <>

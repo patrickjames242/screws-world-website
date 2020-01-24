@@ -6,7 +6,7 @@ import trashIcon from '../icons/trash';
 import homeIcon from '../icons/home';
 import logOutIcon from '../icons/logout';
 
-import { DASHBOARD as dashboardURL } from 'routePaths';
+import { DASHBOARD as dashboardURL } from 'topLevelRoutePaths';
 import { Link } from 'react-router-dom';
 import './TopActionsButtonsView.scss';
 import { useDashboardInfo } from 'App/AppUIHelpers';
@@ -50,37 +50,45 @@ export default function TopActionButtonsView() {
         alertFunctionality.showAlert(alertInfo);
     }
 
-    function showFeatureNotAvailableAlert() {
-        let controller: CustomAlertController;
+    // function showFeatureNotAvailableAlert() {
+    //     // let controller: CustomAlertController;
 
-        const dismissAlert = () => callIfPossible(controller?.dismiss);
+    //     // const dismissAlert = () => callIfPossible(controller?.dismiss);
 
-        let okButtonController: CustomAlertButtonController;
+    //     let okButtonController: CustomAlertButtonController;
 
-        const okButton = new CustomAlertButtonInfo("OK", () => {
-            // dismissAlert();
-            callIfPossible(okButtonController?.setIsLoading, true);
-            setTimeout(() => {
-                callIfPossible(okButtonController?.setIsLoading, false);
-            }, 1500);
-        }, CustomAlertButtonType.PRIMARY, c => okButtonController = c);
+    //     const okButton = new CustomAlertButtonInfo("OK", () => {
+    //         // dismissAlert();
+    //         callIfPossible(okButtonController?.setIsLoading, true);
+    //         setTimeout(() => {
+    //             callIfPossible(okButtonController?.setIsLoading, false);
+    //         }, 1500);
+    //     }, CustomAlertButtonType.PRIMARY, c => okButtonController = c);
 
-        const alertInfo: CustomAlertInfo = {
-            uniqueKey: "DASHBOARD FEATURE NOT AVAILABLE MESSAGE",
-            title: "Oops 😱",
-            description: "This feature is not available yet.",
-            rightButtonInfo: okButton,
-            onMount: c => controller = c,
-        };
-        alertFunctionality.showAlert(alertInfo);
+    //     const alertInfo: CustomAlertInfo = {
+    //         uniqueKey: "DASHBOARD FEATURE NOT AVAILABLE MESSAGE",
+    //         title: "Oops 😱",
+    //         description: "This feature is not available yet.",
+    //         rightButtonInfo: okButton,
+    //         // onMount: c => controller = c,
+    //     };
+    //     alertFunctionality.showAlert(alertInfo);
+    // }
+
+    function respondToEditButtonClicked(){
+        
+    }
+
+    function repondToCreateNewButtonClicked(){
+        
     }
 
     return <div className="TopActionButtonsView">
         <TopActionButton svgIcon={homeIcon} title="go home" link={dashboardURL} />
         <TopActionButton svgIcon={logOutIcon} title="log out" onClick={respondToLogOutButtonClicked} className="log-out-button" />
         <div className="spacer-div" />
-        <TopActionButton svgIcon={plusIcon} title="create new item" onClick={showFeatureNotAvailableAlert} />
-        <TopActionButton svgIcon={editIcon} title="edit current item" onClick={showFeatureNotAvailableAlert} />
+        <TopActionButton svgIcon={plusIcon} title="create new item" onClick={repondToCreateNewButtonClicked} />
+        <TopActionButton svgIcon={editIcon} title="edit current item" onClick={respondToEditButtonClicked} />
         <TopActionButton svgIcon={trashIcon} title="delete current item" onClick={respondToDeleteButtonClicked} isDestructive />
     </div>
 }
@@ -119,7 +127,7 @@ function getDeleteAlertInfo(): CustomAlertInfo {
         "Delete",
         buttonDismissAction,
         CustomAlertButtonType.PRIMARY_DESTRUCTIVE,
-        c => deleteButtonController = c
+        c => deleteButtonController = c,
     );
 
     let textFieldController: CustomAlertTextFieldController;

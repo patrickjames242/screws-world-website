@@ -59,22 +59,16 @@
             }
     
             > .login-button{
-                $top-and-bottom-padding: 11.2px;
-                $font-size: 16px;
-                height: ($top-and-bottom-padding * 2) + $font-size;
-                
                 margin-top: 1.5rem;
                 font-weight: bold;
-                font-size: $font-size;
+                font-size: 16px;
                 line-height: 1;
-                @include setProps(padding-bottom padding-top, $top-and-bottom-padding);
+                @include setProps(padding-bottom padding-top, 11.2px);
                 background-color: colors(dark-light-blue);
                 border-radius: 1000rem;
                 @include dimOnHover;
 
                 position: relative;
-
-                
             }
         }
     }

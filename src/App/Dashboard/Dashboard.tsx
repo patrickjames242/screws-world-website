@@ -6,26 +6,27 @@ import './Dashboard.scss';
 import { useSetTitleFunctionality } from "jshelpers";
 import Products from "App/MainSiteInterface/Products/Products";
 import { useHistory, Switch, Route, useRouteMatch } from "react-router-dom";
-import * as RoutePaths from 'routePaths';
+import * as RoutePaths from 'topLevelRoutePaths';
 
 import LogInScreen from "./LogInScreen/LogInScreen";
 
-
+import { DashboardRouteURLs } from './DashboardRoutesInfo';
 
 
 
 const UserLoggedInPersistedState = {
     key: "isUserLoggedIn",
-    get(): boolean{
+    get(): boolean {
         return (localStorage.getItem(UserLoggedInPersistedState.key) ?? "0") === "1";
     },
-    set(newValue: boolean){
+    set(newValue: boolean) {
         localStorage.setItem(UserLoggedInPersistedState.key, newValue === true ? "1" : "0");
     }
 }
 
+
 export default function Dashboard() {
-    
+
     useSetTitleFunctionality("Dashboard");
 
     const history = useHistory();
@@ -34,50 +35,54 @@ export default function Dashboard() {
 
     const pageToRedirectToAfterLoginKey = "pageToRedirectToAfterLogin";
 
-    function setIsUserLoggedIn(newValue: boolean){
+    function setIsUserLoggedIn(newValue: boolean) {
         const redirectURL = (() => {
-            if (history.location.state && history.location.state[pageToRedirectToAfterLoginKey]){
+            if (history.location.state && history.location.state[pageToRedirectToAfterLoginKey]) {
                 return history.location.state[pageToRedirectToAfterLoginKey];
             }
             return RoutePaths.DASHBOARD;
         })();
         UserLoggedInPersistedState.set(newValue);
-        if (newValue){
+        if (newValue) {
             history.replace(redirectURL)
         } else {
-            history.push(RoutePaths.DASHBOARD_LOGIN);
+            history.push(DashboardRouteURLs.dashboardLogIn);
         }
         setUserLoggedInState(newValue);
     }
 
     const dashboardRouteMatch = useRouteMatch(RoutePaths.DASHBOARD);
-    const dashboardLoginRouteMatch = useRouteMatch(RoutePaths.DASHBOARD_LOGIN);
+    const dashboardLoginRouteMatch = useRouteMatch(DashboardRouteURLs.dashboardLogIn);
 
-    if (dashboardRouteMatch){
-        if (dashboardLoginRouteMatch?.isExact === true && isUserLoggedIn){
-            history.replace(RoutePaths.DASHBOARD);    
-        } else if (history.location.pathname !== RoutePaths.DASHBOARD_LOGIN && 
+
+    if (dashboardRouteMatch) {
+        if (dashboardLoginRouteMatch?.isExact === true && isUserLoggedIn) {
+            history.replace(RoutePaths.DASHBOARD);
+        } else if (history.location.pathname !== DashboardRouteURLs.dashboardLogIn &&
             isUserLoggedIn === false) {
-            history.replace(RoutePaths.DASHBOARD_LOGIN, 
-                    {[pageToRedirectToAfterLoginKey]: history.location.pathname})
+            history.replace(DashboardRouteURLs.dashboardLogIn,
+                { [pageToRedirectToAfterLoginKey]: history.location.pathname });
         }
     }
 
-    const dashboardInfo = useRef<DashboardInfo>({logOut: () => {
-        setIsUserLoggedIn(false);
-    }}).current;
+    const dashboardInfo = useRef<DashboardInfo>({
+        logOut: () => {
+            setIsUserLoggedIn(false);
+        }
+    }).current;
 
-    function handleAuthToken(authToken: string){
+    function handleAuthToken(authToken: string) {
         setIsUserLoggedIn(true);
     }
+
 
     return <DashboardInfoContext.Provider value={dashboardInfo}>
         <div className="Dashboard">
             <Switch>
-                <Route exact path={RoutePaths.DASHBOARD_LOGIN}>
-                    <LogInScreen authTokenHandler={handleAuthToken}/>
+                <Route exact path={DashboardRouteURLs.dashboardLogIn}>
+                    <LogInScreen authTokenHandler={handleAuthToken} />
                 </Route>
-                <Route path="*" component={Products}/>
+                <Route path="*" component={Products} />
             </Switch>
         </div>
     </DashboardInfoContext.Provider>

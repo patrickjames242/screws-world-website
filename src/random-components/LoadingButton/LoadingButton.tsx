@@ -9,8 +9,11 @@ export interface LoadingButtonProps{
     children?: React.ReactNode,
     loadingIndicatorSize?: string,
     onClick?: () => void,
-}
 
+    // these determine whether or not the buttons set their height based on their computed height after the first render
+    retainsHeight?: boolean,
+    retainsWidth?: boolean,
+}
 
 export default function LoadingButton(props: LoadingButtonProps){
 
@@ -20,9 +23,16 @@ export default function LoadingButton(props: LoadingButtonProps){
         const button = buttonRef.current
         if (!button){return;}
         const computedStyle = getComputedStyle(button)
-        button.style.height = computedStyle.height;
-        button.style.width = computedStyle.width;
-    });
+        
+        if (props.retainsHeight){
+            button.style.height = computedStyle.height;
+        }
+        
+        if (props.retainsWidth){
+            button.style.width = computedStyle.width;
+        }
+
+    }, [props.retainsHeight, props.retainsWidth]);
 
     const className = props.className + " LoadingButton";
 

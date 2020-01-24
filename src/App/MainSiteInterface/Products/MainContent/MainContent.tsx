@@ -1,64 +1,72 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Optional } from 'jshelpers';
-import { ProductDataObject, ProductCategory, ProductDataType, isProductCategory, Product, isProduct } from '../ProductsDataHelpers';
-import { useCurrentlySelectedItem, useToURLForProductItem, useAllProductItems } from '../ProductsUIHelpers';
+import { ProductDataObject, ProductCategory, Product, isProductCategory } from '../ProductsDataHelpers';
+import { useAllTopLevelProductItems, useCurrentProductsPageSubject, ProductsPageSubjectType } from '../ProductsUIHelpers';
 import './MainContent.scss';
 import { useIsDashboard } from 'App/AppUIHelpers';
+import ProductDetailsView from './ProductDetailsView/ProductDetailsView';
+import ProductItemsGrid from './ProductItemsGrid/ProductItemsGrid';
+
 
 
 export default function MainContent() {
 
-    const currentDataTree = useAllProductItems();
-    const currentlySelectedItem = useCurrentlySelectedItem();
+    const allTopLevelProductItems = useAllTopLevelProductItems();
+    const currentSubject = useCurrentProductsPageSubject();
 
-    const shouldDisplayProductsIntro = currentlySelectedItem == null;
-    
-    const products = (shouldDisplayProductsIntro ? currentDataTree : (currentlySelectedItem as ProductCategory)?.children) ?? []
     const isDashboard = useIsDashboard();
 
-    const title = (() => {
-        if (shouldDisplayProductsIntro) {
-            if (isDashboard){
-                return "Welcome to the Products Dashboard";
-            } else {
-                return "Browse Our Products";
-            } 
-            
-        } else if (currentlySelectedItem != null) {
-            return getCompleteTitleForProductItem(currentlySelectedItem);
-        } else {
-            return "NO TITLE PROVIDED";
+    const {title, description}: {title: string, description: Optional<string>} = (() => {
+        switch (currentSubject.type){
+            case ProductsPageSubjectType.INTRO_PAGE:
+                return {
+                    title: isDashboard ? "Welcome to the Products Dashboard" : "Browse Our Products",
+                    description: isDashboard ? 
+                    "Here you can create, edit, and delete products displayed on the Screws World products page." : 
+                    "Here you can browse a catalogue of our top selling products to see exactly what we have to offer.",
+                };
+            case ProductsPageSubjectType.CATEGORY:
+            case ProductsPageSubjectType.PRODUCT:
+                let item = currentSubject.associatedData as ProductDataObject;
+                return {
+                    title: getCompleteTitleForProductItem(item),
+                    description: isProductCategory(item) ? item.description : null,
+                };
+            case ProductsPageSubjectType.CREATE_NEW:
+                return {
+                    title: "Create a new item",
+                    description: null,
+                };
+            case ProductsPageSubjectType.EDIT_ITEM:
+                const itemName = (currentSubject.associatedData as ProductDataObject).name;
+                return {
+                    title: "Edit '" + itemName + "'", 
+                    description: null,
+                };
         }
     })();
 
-    const description = (() => {
-        if (shouldDisplayProductsIntro) {
-            if (isDashboard){
-                return "Here you can create, edit, and delete products displayed on the Screws World products page."
-            } else {
-                return "Here you can browse a catalogue of our top selling products to see exactly what we have to offer.";
-            }
-            
-        } else if (isProductCategory(currentlySelectedItem)) {
-            return currentlySelectedItem.description;
-        } else {
-            return null;
-        }
-    })();
 
     return <div className="MainContent">
         <TitleBox title={title} description={description} />
         {(() => {
-            if (isProduct(currentlySelectedItem)) {
-                return <ProductDetailsView product={currentlySelectedItem} />
-            } else {
-                return <ProductItemsGrid products={products} />
+            switch (currentSubject.type){
+                case ProductsPageSubjectType.INTRO_PAGE:
+                    return <ProductItemsGrid products={allTopLevelProductItems} />
+                case ProductsPageSubjectType.PRODUCT:
+                    return <ProductDetailsView product={currentSubject.associatedData as Product} />
+                case ProductsPageSubjectType.CATEGORY: 
+                    const products = (currentSubject.associatedData as ProductCategory).children;
+                    return <ProductItemsGrid products={products} />
+                case ProductsPageSubjectType.EDIT_ITEM:
+                case ProductsPageSubjectType.CREATE_NEW:
+                    return null;
             }
         })()}
     </div>
 }
+
 
 function getCompleteTitleForProductItem(productItem: ProductDataObject): string {
     let names = [productItem.name];
@@ -82,62 +90,6 @@ function TitleBox(props: { title: string, description: Optional<string> }) {
 }
 
 
-function ProductItemsGrid(props: { products: ProductDataObject[] }) {
-    return <div className="ProductItemsGrid">
-        {props.products.map(x => {
-            return <ProductOrCategoryItem dataObject={x} key={x.id} />
-        })}
-    </div>
-}
-
-function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
-
-    const productOrCategoryText = (() => {
-        switch (props.dataObject.dataType) {
-            case ProductDataType.Product: return "product";
-            case ProductDataType.ProductCategory: return "category";
-        }
-    })();
-
-    const path = useToURLForProductItem(props.dataObject);
-
-    return <Link to={path} className="ProductOrCategoryItem">
-        <div className="background-view" />
-        <div className="content-box">
-            <div className="image-box">
-                <div className="content">
-                    <img src={props.dataObject.imageURL} alt="" />
-                    <div className="product-or-category">{productOrCategoryText}</div>
-                </div>
-            </div>
-            <div className="under-image-content">
-                <div className="text-box">
-                    <div className="title">{props.dataObject.name}</div>
-                    <div className="description">{props.dataObject.description}</div>
-                </div>
-            </div>
-        </div>
-    </Link>
-}
 
 
-function ProductDetailsView(props: { product: Product }) {
-    return <div className="ProductDetailsView">
-        <div className="description-section">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates temporibus, earum voluptas minus facere error quam saepe similique doloremque est suscipit perferendis facilis eius, assumenda repellat ab, praesentium qui itaque?
-        <br /><br />
-            Aliquid suscipit quidem deleniti adipisci a officia excepturi dicta culpa aspernatur, perferendis sint ipsam molestias soluta provident totam omnis animi magni recusandae numquam laudantium ducimus possimus aperiam ab nisi.
-        </div>
-        <div className="image-section-holder">
-            <div className="image-section">
-                <div className="content">
-                    <div className="background-view" />
-                    <div className="image-holder">
-                        <img src={props.product.imageURL} alt="" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
 

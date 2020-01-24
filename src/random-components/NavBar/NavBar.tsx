@@ -14,8 +14,9 @@ import menuIcon from 'assets/nav-bar-icons/menu-icon.js';
 import scssVariables from '_helpers.scss';
 
 import { SelectionType, getInfoForSelection } from './SelectionType';
-import { useScreenDimmerFunctions } from 'App/AppUIHelpers';
+
 import { Optional, callIfPossible } from 'jshelpers';
+import { useScreenDimmerFunctions } from 'App/ScreenDimmer';
 
 
 
@@ -157,9 +158,9 @@ function getAllNavBarLinks() {
 
 
 function NavBarLink(props: { item: SelectionType, image: React.ReactElement<any, any>, text: string }) {
-    const { routePath, pageRouteHasSubRoutes } = getInfoForSelection(props.item);
+    const { routePath } = getInfoForSelection(props.item);
 
-    return <NavLink className="NavBarLink" exact={!pageRouteHasSubRoutes} to={routePath} activeClassName="selected">
+    return <NavLink className="NavBarLink" to={routePath} activeClassName="selected">
         <div className="icon-container">{props.image}</div>
         <div className="text-box">{props.text}</div>
     </NavLink>
