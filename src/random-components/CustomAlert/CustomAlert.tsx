@@ -246,20 +246,22 @@ function CustomAlertButton(props: CustomAlertButtonInfo & {dismissAlertAction: (
         props.action(props.dismissAlertAction);
     }
 
-    const className = "CustomAlertButton " +
-        (isActive ? "" : " deactivated ") +
+    const className = [
+        "CustomAlertButton",
         (() => {
             switch (props.type) {
                 case CustomAlertButtonType.PRIMARY: return 'primary';
                 case CustomAlertButtonType.PRIMARY_DESTRUCTIVE: return 'primary-destructive';
                 case CustomAlertButtonType.SECONDARY: return 'secondary';
             }
-        })();
+        })(),
+    ].join(" ");
+       
     useEffect(() => {
         callIfPossible(props.onMount, controller);
     }, [controller, props.onMount]);
 
-    return <LoadingButton retainsHeight retainsWidth loadingIndicatorSize="18px" shouldShowIndicator={isLoading} className={className} onClick={respondToClick}>
+    return <LoadingButton isActive={isActive} loadingIndicatorSize="18px" shouldShowIndicator={isLoading} className={className} onClick={respondToClick}>
         {props.title}
     </LoadingButton>
 }

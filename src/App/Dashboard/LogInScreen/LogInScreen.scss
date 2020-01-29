@@ -15,7 +15,7 @@
         
         > .horizontally-centered-content{
             padding: 3rem;
-            max-width: 21rem;
+            max-width: 23rem;
             @include setProps(margin-left margin-right, auto);
             border-radius: 20px;
             background-color: colors(light-dark-blue);
@@ -29,10 +29,14 @@
                 font-size: 2rem;
                 font-weight: bold;
                 text-align: center;
-                margin-bottom: 2rem;
+                
             }
 
             $text-field-side-padding: 17.6px;
+
+            display: grid;
+            
+
 
             > .CustomTextField{
                 .text-input{
@@ -40,9 +44,20 @@
                 }
             }
 
+            > .username-text-field{
+                margin-top: 2rem;
+            }
+
+            > .password-text-field{
+                margin-top: 1.3rem;
+            }
+
+            $login-button-top-margin: 1.75rem;
+
             > .error-message-box{
-                margin-top: 1.2rem;
-                margin-bottom: -0.3rem;
+                $error-message-top-and-bottom-margin: 1.2rem;
+                margin-top: $error-message-top-and-bottom-margin;
+                margin-bottom: -($login-button-top-margin - $error-message-top-and-bottom-margin);
                 font-size: 14px;
                 
                 $red-color: colors(destructive-red);
@@ -59,7 +74,7 @@
             }
     
             > .login-button{
-                margin-top: 1.5rem;
+                margin-top: 1.75rem;
                 font-weight: bold;
                 font-size: 16px;
                 line-height: 1;

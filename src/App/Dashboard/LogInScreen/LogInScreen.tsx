@@ -8,54 +8,55 @@ import { logIn } from "API";
 import LoadingButton from "random-components/LoadingButton/LoadingButton";
 
 
-export default function LogInScreen(props: {authTokenHandler: (authToken: string) => void}){
+export default function LogInScreen(props: { authTokenHandler: (authToken: string) => void }) {
 
-    const [textFieldText, setTextFieldText] = useState("");
+    const [passwordText, setPasswordText] = useState("");
+    const [usernameText, setUsernameText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<Optional<string>>(null);
 
-    function respondToTextFieldTextChange(text: string){
-        setTextFieldText(text);
-    }
-
-    function respondToLogInButtonClicked(){
-        const text = textFieldText.trim();
-        if (text === ""){
-            setErrorMessage("You havn't entered a code yet");
+    
+    function respondToOnSubmit(formEvent: React.FormEvent<HTMLFormElement>) {
+        formEvent.preventDefault();
+        if (passwordText === "" || usernameText === "") {
+            setErrorMessage("You must enter both a username and a password to log in.");
             return;
         }
-        logIn(textFieldText).finally(() => {
+        
+        logIn(usernameText, passwordText).finally(() => {
             setIsLoading(false);
         }).then((result) => {
             props.authTokenHandler(result.authToken);
-        }).catch((errorMessage) => {
-            setErrorMessage(errorMessage);
+        }).catch((error) => {
+            setErrorMessage(error.message);
         });
         setErrorMessage(null);
         setIsLoading(true);
     }
 
-    function respondToOnSubmit(formEvent: React.FormEvent<HTMLFormElement>){
-        respondToLogInButtonClicked();
-        formEvent.preventDefault();
-    }
-    
     return <form className="LogInScreen" onSubmit={respondToOnSubmit}>
         <div className="vertically-centered-content">
             <div className="horizontally-centered-content">
                 <div className="title">Log In</div>
-                <CustomTextField isPassword placeholderText="Enter your passcode" value={textFieldText} onTextChange={respondToTextFieldTextChange}/>
+
+                <CustomTextField className="username-text-field" topText="Username" placeholderText="Enter your username"  value={usernameText} onTextChange={setUsernameText} />
+                <CustomTextField className="password-text-field" isPassword topText="Password" placeholderText="Enter your passcode" value={passwordText} onTextChange={setPasswordText} />
+
                 {(() => {
-                    if (errorMessage){
+                    if (errorMessage) {
                         return <div className="error-message-box" >
                             {errorIcon}
                             <div className="text-box">{errorMessage}</div>
                         </div>
                     }
                 })()}
-                <LoadingButton className="login-button" retainsHeight shouldShowIndicator={isLoading} onClick={respondToLogInButtonClicked}>Log In</LoadingButton>
+
+                <LoadingButton className="login-button" shouldShowIndicator={isLoading}>
+                    Log In
+                </LoadingButton>
+
             </div>
-        </div>        
+        </div>
     </form>
 }
 

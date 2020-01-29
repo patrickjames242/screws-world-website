@@ -1,5 +1,5 @@
 
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import './CustomTextField.scss';
 import { callIfPossible } from 'jshelpers';
 
@@ -20,16 +20,14 @@ export interface TextFieldProps{
 
 export default function TextField(props: TextFieldProps) {
 
-    const textFieldRef = useRef<HTMLDivElement>(null);
-
-    const activeClassName = "active";
+    const [isInFocus, setIsInFocus] = useState(false);
 
     function respondToOnFocus() {
-        textFieldRef.current?.classList.add(activeClassName);
+        setIsInFocus(true);
     }
 
     function respondToOnBlur() {
-        textFieldRef.current?.classList.remove(activeClassName);
+        setIsInFocus(false)
     }
 
     function handleChange(event: Event){
@@ -60,7 +58,13 @@ export default function TextField(props: TextFieldProps) {
         return React.createElement(elementType, propDict);
     })();
 
-    return <div className="CustomTextField" ref={textFieldRef}>
+    const className = [
+        "CustomTextField",
+        (isInFocus ? "active" : ""),  
+        props.className ?? "", 
+    ].join(" ");
+
+    return <div className={className}>
         {(() => {
             if (props.topText !== undefined){
                 return <div className="top-text">{props.topText}</div>;

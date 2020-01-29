@@ -40,7 +40,7 @@ export default function Products() {
         const subject = getProductsPageSubjectForRoutePath(location.pathname)!;
         const allTopLevelItems = productsDataTree;
         return {subject, allTopLevelItems};
-    }, [location.pathname ]);
+    }, [location.pathname]);
     
     return <ProductsInfoContext.Provider value={contextProviderValue}>
         <div className="Products">
