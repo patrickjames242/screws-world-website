@@ -1,13 +1,10 @@
 
 import React from 'react';
 import { Optional } from "jshelpers";
-import { ProductDataObject, getDataObjectForID, isProduct, isProductCategory } from './ProductsDataHelpers';
+import { ProductDataObject, isProduct, isProductCategory, ProductsDataFetchResult } from './ProductsDataHelpers';
 import { DashboardProductsRouteURLs, MainUIProductsRouteURLs, DashboardProductsRouteMatchPaths, MainUIProductsRouteMatchPaths } from './ProductsRoutesInfo';
 import { matchPath } from 'react-router-dom';
 import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
-
-
-
 
 
 
@@ -17,17 +14,19 @@ export enum ProductsPageSubjectType {
     PRODUCT,
     EDIT_ITEM,
     CREATE_NEW,
+    ERROR,
 }
 
-type ProductsPageSubjectAssociatedData = ProductDataObject[] | ProductDataObject | null;
 
-
-export interface ProductsPageSubject {
-    type: ProductsPageSubjectType,
-    associatedData: ProductsPageSubjectAssociatedData,
+export class ProductsPageSubject{
+    constructor(
+        readonly type: ProductsPageSubjectType,
+        readonly associatedData: Optional<ProductDataObject | ProductDataObject[]>
+    ){}
 }
 
-export function getProductsPageSubjectForRoutePath(routePath: string): Optional<ProductsPageSubject> {
+
+function getProductsPageSubjectForRoutePath(routePath: string, productsDataFetchResult: ProductsDataFetchResult): ProductsPageSubject {
 
     const match = matchPath<{ id?: string }>(routePath, {
         path: [
@@ -41,52 +40,75 @@ export function getProductsPageSubjectForRoutePath(routePath: string): Optional<
     });
 
     const productItem: Optional<ProductDataObject> = (() => {
-        const id = Number(match?.params.id);
-        if (isNaN(id)) { return null; }
-        return getDataObjectForID(id);
+        const id = match?.params.id;
+        if (id){
+            return productsDataFetchResult.getObjectForUniqueID(id);
+        } else { return null; }
     })();
 
-    if (!match?.isExact) { return null; }
 
     return (() => {
-        switch (match.path) {
+        switch (match?.path) {
             case DashboardProductsRouteMatchPaths.editProductItem:
-                return {type: ProductsPageSubjectType.EDIT_ITEM, associatedData: productItem};
-                
+                if (isProduct(productItem) === false){break;}
+                return new ProductsPageSubject(ProductsPageSubjectType.EDIT_ITEM, productItem);
+
             case DashboardProductsRouteMatchPaths.createProductItem:
-                return {type: ProductsPageSubjectType.CREATE_NEW, associatedData: null};
+                return new ProductsPageSubject(ProductsPageSubjectType.CREATE_NEW, null);
 
             case DashboardProductsRouteMatchPaths.productDetailsView:
             case MainUIProductsRouteMatchPaths.productDetailsView:
                 if (isProduct(productItem)) {
-                    return {type: ProductsPageSubjectType.PRODUCT, associatedData: productItem};
+                    return new ProductsPageSubject(ProductsPageSubjectType.PRODUCT, productItem);
                 } else if (isProductCategory(productItem)){
-                    return {type: ProductsPageSubjectType.CATEGORY, associatedData: productItem};
+                    return new ProductsPageSubject(ProductsPageSubjectType.CATEGORY, productItem);
                 } else {break;}
 
             case DashboardProductsRouteMatchPaths.root:
             case MainUIProductsRouteMatchPaths.root:
-                return {type: ProductsPageSubjectType.INTRO_PAGE, associatedData: null};
+                return new ProductsPageSubject(ProductsPageSubjectType.INTRO_PAGE, productsDataFetchResult.tree);
         }
-        throw new Error("there must be a subject type at this point. CHECK LOGIC");
+        return new ProductsPageSubject(ProductsPageSubjectType.ERROR, null);
     })();
 }
 
 
-
-
-
-
-
-type ProductsInfoContextValue = {
-    subject: ProductsPageSubject, 
-    allTopLevelItems: ProductDataObject[]
+export interface ProductsInfoContextValue {
+    loadingIsFinished: boolean,
+    error: Optional<Error>,
+    data: Optional<{
+        subject: ProductsPageSubject,
+        allTopLevelItems: ProductDataObject[],
+    }>
 }
+
+// assumes the products data has not been loaded yet if the fetchResult and fetchError parameters are null.
+export function computeProductsInfoContextValueFromFetchResult(routePath: string, fetchResult: Optional<ProductsDataFetchResult>, fetchError: Optional<Error>): ProductsInfoContextValue{
+    if (fetchResult){
+        return {
+            loadingIsFinished: true,
+            data: {
+                subject: getProductsPageSubjectForRoutePath(routePath, fetchResult),
+                allTopLevelItems: fetchResult.tree,
+            },
+            error: null,
+        }
+    } else if (fetchError){
+        return {loadingIsFinished: true, data: null, error: fetchError};
+    } else {
+        return {loadingIsFinished: false, data: null, error: null};
+    }
+}
+
+
+
+
+
 
 export const ProductsInfoContext = React.createContext<Optional<ProductsInfoContextValue>>(null);
 
 
-function useProductsInfoContextValue(): ProductsInfoContextValue{
+export function useProductsInfoContextValue(): ProductsInfoContextValue{
     const value = React.useContext(ProductsInfoContext);
     if (!value){
         throw new Error("tried to access the projects page subject outside of the Products component. This is not allowed.");
@@ -94,17 +116,18 @@ function useProductsInfoContextValue(): ProductsInfoContextValue{
     return value;
 }
 
-export function useCurrentProductsPageSubject(): ProductsPageSubject{
-    return useProductsInfoContextValue().subject;
+export function useCurrentProductsPageSubject(): Optional<ProductsPageSubject>{
+    return useProductsInfoContextValue().data?.subject ?? null;
 }
 
 export function useAllTopLevelProductItems(): ProductDataObject[]{
-    return useProductsInfoContextValue().allTopLevelItems;
+    return useProductsInfoContextValue().data?.allTopLevelItems ?? [];
 }
 
-// returns null if the products page isn't currently displaying the details view for a product or category
+// returns null if the products page isn't currently displaying the details view for a product or category, or if the products information hasn't been loaded from the server yet.
 export function useCurrentProductDetailsViewItem(): Optional<ProductDataObject>{
     const subject = useCurrentProductsPageSubject();
+    if (!subject){return null;}
     if (subject.type !== ProductsPageSubjectType.CATEGORY && 
         subject.type !== ProductsPageSubjectType.PRODUCT){
             return null;
@@ -116,8 +139,9 @@ export function useCurrentProductDetailsViewItem(): Optional<ProductDataObject>{
 export function useToURLForProductItem(productsItem: ProductDataObject): string {
     const isDashboard = useIsDashboard();
     return isDashboard ? 
-    DashboardProductsRouteURLs.productDetailsView(productsItem.id) : MainUIProductsRouteURLs.productDetailsView(productsItem.id);
+    DashboardProductsRouteURLs.productDetailsView(productsItem.uniqueProductItemID) : MainUIProductsRouteURLs.productDetailsView(productsItem.uniqueProductItemID);
 }
+
 
 
 

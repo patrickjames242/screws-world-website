@@ -1,5 +1,9 @@
 
 
+
+import { Optional } from "jshelpers";
+
+
 enum HTTPMethod {
     GET,
     POST,
@@ -56,32 +60,30 @@ export function logIn(username: string, password: string): Promise<LoginRequestR
     return fetchDataFromAPI(baseURL + "/login", HTTPMethod.POST, body);
 }
 
+export interface ProductItemNetworkResponse{
+    id: number, 
+    title: string,
+    description: Optional<string>,
+    parent_category: Optional<number>,
+}
 
-
-export function fetchAllCategories(): Promise<object> {
+export function fetchAllCategories(): Promise<ProductItemNetworkResponse[]> {
     return fetchDataFromAPI(categoriesURL);
 }
 
-export function fetchCategoryForID(id: number): Promise<object>{
+export function fetchCategoryForID(id: number): Promise<ProductItemNetworkResponse>{
     return fetchDataFromAPI(categoriesURL + "/" + id);
 }
 
 
 
-export function fetchAllProducts(): Promise<object>{
+export function fetchAllProducts(): Promise<ProductItemNetworkResponse[]>{
     return fetchDataFromAPI(productsURL);
 }
 
 export function fetchProductForID(id: number): Promise<object>{
     return fetchDataFromAPI(productsURL + "/" + id);
 }
-
-
-
-
-
-
-
 
 
 

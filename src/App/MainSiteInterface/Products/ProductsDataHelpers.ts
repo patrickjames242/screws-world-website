@@ -1,95 +1,210 @@
 
 
 
-import { getIntegerArray, Optional } from "jshelpers";
+import { Optional } from "jshelpers";
 import image1 from './icons/screwProductImage1.jpg';
 import image2 from './icons/screwProductImage2.jpg';
 import image3 from './icons/screwProductImage3.jpg';
+import { fetchAllCategories, fetchAllProducts, ProductItemNetworkResponse } from "API";
+
+
+// PUBLIC STUFF
+
 
 export enum ProductDataType {
     Product,
     ProductCategory,
 }
 
-export interface ProductDataObject {
-    readonly id: number,
-    readonly name: string,
-    readonly description: string,
-    readonly dataType: ProductDataType,
-    readonly imageURL: string,
-    parent: Optional<ProductCategory>,
+export const ProductItemUniqueIDGenerator = Object.freeze({
+
+    productText: "product",
+    categoryText: "category",
+
+    getForItem(item: ProductDataObject): string{
+        return [
+            (() => {
+                switch (item.dataType){
+                    case ProductDataType.Product: return ProductItemUniqueIDGenerator.productText;
+                    case ProductDataType.ProductCategory: return ProductItemUniqueIDGenerator.categoryText;
+                }
+            })(),
+            item.id,
+        ].join("-");
+    },
+
+    regex: /^(product|category)-[0-9]+$/,
+
+    isValidUniqueID(string: string): boolean{
+        return ProductItemUniqueIDGenerator.regex.test(string);
+    },
+
+    parseFromString(string: string): Optional<[ProductDataType, number]>{
+        if (ProductItemUniqueIDGenerator.isValidUniqueID(string) === false){return null;}
+        const split = string.split("-");
+        const dataType = (() => {
+            switch(split[0]){
+                case ProductItemUniqueIDGenerator.productText: return ProductDataType.Product;
+                case ProductItemUniqueIDGenerator.categoryText: return ProductDataType.ProductCategory;
+            }
+            throw new Error("this point should not be reached. Check logic");
+        })();
+        const id = Number(split[1]);
+        return [dataType, id];
+    },
+
+});
+
+export abstract class ProductDataObject {
+    
+    protected _parent: Optional<ProductCategory> = null;
+    abstract readonly dataType: ProductDataType;
+
+    constructor(
+        readonly id: number,
+        readonly name: string,
+        readonly description: Optional<string>,
+        readonly imageURL: string,
+    ){}
+
+    get parent(): Optional<ProductCategory>{
+        return this._parent;
+    }
+
+    get uniqueProductItemID(): string{
+        return ProductItemUniqueIDGenerator.getForItem(this);
+    }
 }
 
-export class Product implements ProductDataObject {
+export class Product extends ProductDataObject {
 
     readonly dataType: ProductDataType.Product = ProductDataType.Product;
-    parent: Optional<ProductCategory> = null;
 
-    constructor(
-        readonly id: number,
-        readonly name: string,
-        readonly description: string,
-        readonly imageURL: string,
-    ) { }
 }
 
-export class ProductCategory implements ProductDataObject {
+export class ProductCategory extends ProductDataObject {
 
     readonly dataType: ProductDataType.ProductCategory = ProductDataType.ProductCategory;
-    parent: Optional<ProductCategory> = null;
 
     constructor(
-        readonly id: number,
-        readonly name: string,
-        readonly description: string,
+        id: number,
+        name: string,
+        description: Optional<string>,
+        imageURL: string,
         readonly children: ProductDataObject[] = [],
-        readonly imageURL: string,
     ) {
-        this.children.forEach(x => {
-            x.parent = this;
-        })
+        super(id, name, description, imageURL);
+        this.children.forEach(x => (x as ProductCategory)._parent = this);
     }
 }
 
 export function isProduct(x: any): x is Product {
-    if (!x || typeof x !== "object"){return false;}
+    if (!x || typeof x !== "object") { return false; }
     return x.dataType === ProductDataType.Product;
 }
 
 export function isProductCategory(x: any): x is ProductCategory {
-    if (!x || typeof x !== "object"){return false;}
+    if (!x || typeof x !== "object") { return false; }
     return x.dataType === ProductDataType.ProductCategory;
 }
 
 // returns true if the item IS the category. works as expected otherwise
 export function doesProductCategoryRecursivelyContainItem(item: ProductDataObject, category: ProductCategory): boolean {
     if (item.id === category.id) { return true; }
-    if (item.parent != null){
+    if (item.parent != null) {
         return doesProductCategoryRecursivelyContainItem(item.parent, category);
     }
     return false;
 }
 
 
-function getProductsDataTreeInfo(): [ProductDataObject[], { [itemIndex: number]: ProductDataObject }] {
 
-    const names = [
-        "Hex bolts", "Flange bolts", "Roofing screws", "Socket screws", "Set screws", "Nuts", "Washers", "Threaded inserts", "Elevator bolts", "Thumb screws"
-    ];
 
-    const descriptions = [
-        "The most common type of bolt used in structural connections offering a larger diameter hex head.",
-        "A hexagonal head for use with a wrench. These bolts are sometimes called Frame bolts.",
-        "Screws with coarse threads and a pointed end for use in sheet metal sometimes also used in plastic, fiberglass, or wood.",
-        "Screws with coarse threads and a drill point end for use in thicker gauge steel.",
-    ];
 
+export type ProductObjectsByUniqueID = {[itemIndex: string]: ProductDataObject};
+
+export class ProductsDataFetchResult{
+    constructor(
+        readonly tree: ProductDataObject[],
+        private readonly objectsByUniqueID: ProductObjectsByUniqueID,
+    ){}
+
+    getObjectForUniqueID(productsItemUniqueID: string): Optional<ProductDataObject>{
+        return this.objectsByUniqueID[productsItemUniqueID] ?? null;
+    }
+}
+
+export async function startFetchingProductsDataTree(): Promise<ProductsDataFetchResult> {
+    return await _getProductsDataTreePromise();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// PRIVATE STUFF
+
+async function _getProductsDataTreeInfo(): Promise<ProductsDataFetchResult> {
+    const results = await Promise.all([fetchAllProducts(), fetchAllCategories()]);
+    const products = (results[0] as ProductItemNetworkResponse[]);
+    const categories = (results[1] as ProductItemNetworkResponse[]);
+    return _parseProductsAndCategoriesNetworkData(categories, products);
+}
+
+function _sortProductDataObjectsByName(items: ProductDataObject[]): ProductDataObject[]{
+    return items.sort((x1, x2) => x1.name.localeCompare(x2.name));
+}
+
+function _parseProductsAndCategoriesNetworkData(categories: ProductItemNetworkResponse[], products: ProductItemNetworkResponse[]): ProductsDataFetchResult{
+
+    const itemsObject: { [itemIndex: string]: ProductDataObject } = {};
+
+    const productsOrganizedByParentID: {[parentID: number]: Product[]} = [];
+
+    let tree: ProductDataObject[] = [];
+    
+    for (const product of products){
+        const item = new Product(product.id, product.title, product.description, _getRandomImageURL());
+        if (product.parent_category){
+            const prevArray = productsOrganizedByParentID[product.parent_category];
+            if (prevArray){
+                prevArray.push(item);
+            } else {
+                productsOrganizedByParentID[product.parent_category] = [item]; 
+            }
+        } else {
+            tree.push(item);
+            itemsObject[item.uniqueProductItemID] = item;
+        }
+    }
+
+    for (const category of categories){
+        const children = _sortProductDataObjectsByName((productsOrganizedByParentID[category.id] ?? []));
+        const item = new ProductCategory(category.id, category.title, category.description, _getRandomImageURL(), children);
+        tree.push(item);
+        itemsObject[item.uniqueProductItemID] = item;
+    }
+
+    tree = _sortProductDataObjectsByName(tree);
+
+    return new ProductsDataFetchResult(tree, itemsObject);
+}
+
+
+const _getRandomImageURL = (() => {
     const images = [image1, image2, image3];
 
     const getRandomDecimal = (() => {
 
         let currentRandomDecimalIndex = -1;
-        const randomDecimals = [0.7, 0.1, 0.4, 0.6, 0.3, 0.9, 1, 0, 0.2, 0.5, 0.25, 0.57, 0.43, 0.22, 0.1, 0.87, 0.81, 0.65, 0.45, 0.35, 0.95];
+        const randomDecimals = [0.7, 0.1, 0.4, 0.6, 0.3, 0.9, 1, 0, 0.2, 0.5, 0.8];
 
         return () => {
             currentRandomDecimalIndex = (currentRandomDecimalIndex + 1) % randomDecimals.length
@@ -104,42 +219,17 @@ function getProductsDataTreeInfo(): [ProductDataObject[], { [itemIndex: number]:
         return array[randomIndex];
     }
 
-    const getRandomName = () => getRandomElementFrom(names)!;
-    const getRandomDescription = () => getRandomElementFrom(descriptions)!;
-    const getRandomImage = () => getRandomElementFrom(images)!;
+    return () => getRandomElementFrom(images)!;
+})();
 
-    let nextAvailableID = 0;
 
-    const itemsObject: { [itemIndex: number]: ProductDataObject } = {};
+let _productsDataTreePromise: Optional<Promise<ProductsDataFetchResult>> = null;
 
-    const categories = getIntegerArray(1, 20).map(() => {
-        const subCategories = getIntegerArray(1, 5).map(() => {
-            const upper = Math.round(getRandomDecimal() * 15) + 3;
-            const products = getIntegerArray(1, upper).map(() => {
-                const newProduct = new Product(nextAvailableID++, getRandomName(), getRandomDescription(), getRandomImage());
-                itemsObject[newProduct.id] = newProduct;
-                return newProduct;
-            });
-            const newCategory = new ProductCategory(nextAvailableID++, getRandomName(), getRandomDescription(), products, getRandomImage());
-            itemsObject[newCategory.id] = newCategory;
-            return newCategory;
-        });
-        const newCategory = new ProductCategory(nextAvailableID++, getRandomName(), getRandomDescription(), subCategories, getRandomImage());
-        itemsObject[newCategory.id] = newCategory;
-        return newCategory;
-    });
-    return [categories, itemsObject];
+
+
+function _getProductsDataTreePromise(): Promise<ProductsDataFetchResult>{
+    return _productsDataTreePromise ?? (_productsDataTreePromise = _getProductsDataTreeInfo());
 }
 
 
-const productsDataTreeInfo = getProductsDataTreeInfo();
-
-
-
-export const productsDataTree = productsDataTreeInfo[0];
-const productsDataObjectIds = productsDataTreeInfo[1];
-
-export function getDataObjectForID(id: number): Optional<ProductDataObject> {
-    return productsDataObjectIds[id] ?? null;
-}
 

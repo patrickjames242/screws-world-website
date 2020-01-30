@@ -2,7 +2,7 @@
 import React from 'react';
 import { Optional } from 'jshelpers';
 import { ProductDataObject, ProductCategory, Product, isProductCategory } from '../ProductsDataHelpers';
-import { useAllTopLevelProductItems, useCurrentProductsPageSubject, ProductsPageSubjectType } from '../ProductsUIHelpers';
+import { useAllTopLevelProductItems, ProductsPageSubjectType, useProductsInfoContextValue } from '../ProductsUIHelpers';
 import './MainContent.scss';
 import ProductDetailsView from './ProductDetailsView/ProductDetailsView';
 import ProductItemsGrid from './ProductItemsGrid/ProductItemsGrid';
@@ -14,11 +14,23 @@ import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
 export default function MainContent() {
 
     const allTopLevelProductItems = useAllTopLevelProductItems();
-    const currentSubject = useCurrentProductsPageSubject();
+    const productInfo = useProductsInfoContextValue();
 
     const isDashboard = useIsDashboard();
 
     const {title, description}: {title: string, description: Optional<string>} = (() => {
+
+        if (productInfo.loadingIsFinished === false){
+            return {
+                title: "Loading...",
+                description: null,
+            }
+        } else if (!productInfo.data){
+            throw new Error("this should't be null at this point");
+        }
+
+        const currentSubject = productInfo.data.subject;
+
         switch (currentSubject.type){
             case ProductsPageSubjectType.INTRO_PAGE:
                 return {
@@ -45,6 +57,11 @@ export default function MainContent() {
                     title: "Edit '" + itemName + "'", 
                     description: null,
                 };
+            case ProductsPageSubjectType.ERROR:
+                return {
+                    title: "ERROR",
+                    description: null,
+                }
         }
     })();
 
@@ -52,6 +69,12 @@ export default function MainContent() {
     return <div className="MainContent">
         <TitleBox title={title} description={description} />
         {(() => {
+            if (!productInfo.data){
+                return null;
+            }
+            
+            const currentSubject = productInfo.data.subject;
+
             switch (currentSubject.type){
                 case ProductsPageSubjectType.INTRO_PAGE:
                     return <ProductItemsGrid products={allTopLevelProductItems} />

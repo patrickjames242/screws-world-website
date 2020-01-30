@@ -1,21 +1,21 @@
 
-import React, { useEffect, useMemo } from 'react';
-import { useSetTitleFunctionality } from 'jshelpers';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useSetTitleFunctionality, Optional } from 'jshelpers';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { useSpring } from 'react-spring';
 import showSideBarIcon from './icons/showSideBarIcon';
 import AttachedSideBar from './SideBar/AttachedSideBar/AttachedSideBar';
-import { ProductsInfoContext, getProductsPageSubjectForRoutePath} from './ProductsUIHelpers';
+import { ProductsInfoContext, computeProductsInfoContextValueFromFetchResult } from './ProductsUIHelpers';
 
 import MainContent from './MainContent/MainContent';
 import DetatchedSideBar, { DetatchedSideBarFunctionsRef } from './SideBar/DetachedSideBar/DetachedSideBar';
 
 import './Products.scss';
 import TopActionButtonsView from './TopActionsButtonsView/TopActionsButtonsView';
-import { productsDataTree } from './ProductsDataHelpers';
 import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
+import { ProductsDataFetchResult, startFetchingProductsDataTree } from './ProductsDataHelpers';
 
 
 
@@ -36,12 +36,29 @@ export default function Products() {
 
     const location = useLocation();
 
+    const [productsInfoFetchResult, setProductsInfoFetchResult] = useState<Optional<ProductsDataFetchResult>>(null);
+    const [productsInfoFetchError, setProductsInfoFetchError] = useState<Optional<Error>>(null);
+
     const contextProviderValue = useMemo(() => {
-        const subject = getProductsPageSubjectForRoutePath(location.pathname)!;
-        const allTopLevelItems = productsDataTree;
-        return {subject, allTopLevelItems};
-    }, [location.pathname]);
-    
+        return computeProductsInfoContextValueFromFetchResult(location.pathname, productsInfoFetchResult, productsInfoFetchError);
+    }, [location.pathname, productsInfoFetchResult, productsInfoFetchError]);
+
+    useEffect(() => {
+        let shouldRespondToFetchResult = true;
+        startFetchingProductsDataTree()
+        .then(result => {
+            if (shouldRespondToFetchResult === false){return;}
+            setProductsInfoFetchResult(result);
+            setProductsInfoFetchError(null);
+        })
+        .catch(error => {
+            if (shouldRespondToFetchResult === false){return;}
+            setProductsInfoFetchResult(null);
+            setProductsInfoFetchError(error);
+        });
+        return () => {shouldRespondToFetchResult = false};
+    }, []);
+
     return <ProductsInfoContext.Provider value={contextProviderValue}>
         <div className="Products">
             <div className="content">

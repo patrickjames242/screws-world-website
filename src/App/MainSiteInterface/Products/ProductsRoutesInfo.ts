@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { matchPath, match } from "react-router-dom";
 import * as RoutePaths from 'topLevelRoutePaths';
-import { getDataObjectForID } from "./ProductsDataHelpers";
+import { ProductItemUniqueIDGenerator } from "./ProductsDataHelpers";
 
 const dashboardBaseURL = RoutePaths.DASHBOARD;
 const productsBaseURL = RoutePaths.PRODUCTS;
@@ -20,8 +20,8 @@ export const MainUIProductsRouteMatchPaths = {
 
 export const MainUIProductsRouteURLs = {
     root: MainUIProductsRouteMatchPaths.root,
-    productDetailsView(id: number){
-        return productsBaseURL + "/" + id;
+    productDetailsView(productItemUniqueID: string){
+        return productsBaseURL + "/" + productItemUniqueID;
     }    
 }
 
@@ -50,12 +50,12 @@ export const DashboardProductsRouteMatchPaths = {
 
 export const DashboardProductsRouteURLs = {
     root: DashboardProductsRouteMatchPaths.root,
-    productDetailsView(id: number){
-        return dashboardBaseURL + "/" + id;
+    productDetailsView(productItemUniqueID: string){
+        return dashboardBaseURL + "/" + productItemUniqueID;
     },
     createProductItem: DashboardProductsRouteMatchPaths.createProductItem,
-    editProductItem(id: number){
-        return editProductItemBaseURL + "/" + id;
+    editProductItem(productItemUniqueID: number){
+        return editProductItemBaseURL + "/" + productItemUniqueID;
     }
 }
 
@@ -75,8 +75,7 @@ export function isValidDashboardProductsRoute(route: string): boolean{
 function isMatchValid(match: match<{id?: string}> | null): boolean{
     if (!match?.isExact) { return false; }
     if (match?.params.id) {
-        const num = Number(match?.params.id);
-        return isNaN(num) === false && !!getDataObjectForID(num);
+        return ProductItemUniqueIDGenerator.isValidUniqueID(match?.params.id);
     } else {
         return true;
     }

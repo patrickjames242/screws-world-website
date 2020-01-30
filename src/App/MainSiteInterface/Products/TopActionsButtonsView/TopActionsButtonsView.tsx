@@ -51,7 +51,7 @@ export default function TopActionButtonsView() {
     const currentSubject = useCurrentProductsPageSubject();
 
     const createNewLink = DashboardProductsRouteURLs.createProductItem;
-    const createNewButtonShouldBeDisplayed = currentSubject.type !== ProductsPageSubjectType.CREATE_NEW;
+    const createNewButtonShouldBeDisplayed = currentSubject?.type !== ProductsPageSubjectType.CREATE_NEW;
 
     const editLink: Optional<string> = (() => {
         // we can ignore the error because this hook is still being called unconditionally.
@@ -62,7 +62,7 @@ export default function TopActionButtonsView() {
     })();
     
     const editButtonShouldBeDisplayed = (() => {
-        switch(currentSubject.type){
+        switch(currentSubject?.type){
             case ProductsPageSubjectType.CATEGORY:
             case ProductsPageSubjectType.PRODUCT:
                 return true;
@@ -71,7 +71,7 @@ export default function TopActionButtonsView() {
     })();
 
     const respondToDeleteButtonClicked: Optional<() => void> = (() => {
-        switch (currentSubject.type){
+        switch (currentSubject?.type){
             case ProductsPageSubjectType.PRODUCT:
             case ProductsPageSubjectType.CATEGORY:
             case ProductsPageSubjectType.EDIT_ITEM:
