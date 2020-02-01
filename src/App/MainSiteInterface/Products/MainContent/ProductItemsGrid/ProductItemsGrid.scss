@@ -10,34 +10,41 @@
 
         > .ProductItemsGrid{
 
-            
+            // $column-config: auto;
+
+            $column-config: minmax(0, 315px);
 
             margin-left: -$product-grid-insets;
             margin-top: $product-grid-insets;
             display: grid;
             gap: $product-grid-insets;
-            grid-template-columns: auto;
+            grid-template-columns: $column-config;
             justify-content: center;
-            justify-items: center;
+            justify-items: stretch;
 
             @media(min-width: 550px){
-                grid-template-columns: auto auto;
+                // grid-template-columns: auto auto;
+                grid-template-columns: repeat(2, $column-config);
             }
 
             @media(min-width: 850px){
-                grid-template-columns: auto auto auto ;
+                // grid-template-columns: auto auto auto ;
+                grid-template-columns: repeat(3, $column-config) ;
             }
 
             @media(min-width: $min-width-for-displaying-side-bar){
-                grid-template-columns: auto auto;
+                // grid-template-columns: auto auto;
+                grid-template-columns: repeat(2, $column-config);
             }
 
             @media(min-width: 1250px){
-                grid-template-columns: auto auto auto;
+                // grid-template-columns: auto auto auto;
+                grid-template-columns: repeat(3, $column-config);
             }
 
             @media(min-width: 1600px){
-                grid-template-columns: auto auto auto auto;
+                // grid-template-columns: auto auto auto auto;
+                grid-template-columns: repeat(4, $column-config);
             }
 
             > .ProductOrCategoryItem{
@@ -47,7 +54,7 @@
                     transition-duration: 0.2s;
                 }
 
-                max-width: 315px;
+                // max-width: 315px;
 
                 padding: $product-grid-insets;
                 position: relative;

@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 import editIcon from '../icons/edit';
@@ -58,7 +59,7 @@ export default function TopActionButtonsView() {
         //eslint-disable-next-line react-hooks/rules-of-hooks
         let item = useCurrentProductDetailsViewItem();
         if (!item){return null;}
-        return DashboardProductsRouteURLs.editProductItem(item.id);
+        return DashboardProductsRouteURLs.editProductItem(item.uniqueProductItemID);
     })();
     
     const editButtonShouldBeDisplayed = (() => {

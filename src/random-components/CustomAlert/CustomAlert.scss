@@ -57,22 +57,10 @@
             }
         }
 
-        > .error-message-box{
-            // margin-top: 1.2rem;
-            // margin-bottom: -0.3rem;
-            font-size: 14px;
+        > .ErrorMessageBox{
             
-            $red-color: colors(destructive-red);
-            color: $red-color;
-
             @include setProps(padding-left padding-right, 0.5rem);
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 0.5rem;
-
-            svg{
-                fill: $red-color;
-            }
+            
         }
 
         > .button-box{

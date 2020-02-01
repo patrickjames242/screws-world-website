@@ -8,6 +8,7 @@ import * as RoutePaths from 'topLevelRoutePaths';
 import LogInScreen from "./LogInScreen/LogInScreen";
 import { DashboardRouteURLs } from './DashboardRoutesInfo';
 import { DashboardInfo, DashboardInfoContext } from "./DashboardUIHelpers";
+import { RequestsRequiringAuthentication } from "API";
 
 
 
@@ -37,7 +38,8 @@ export default function Dashboard() {
     const dashboardInfo = useRef<DashboardInfo>({
         logOut: () => {
             setAuthToken(null);
-        }, 
+        },
+        requestsRequiringAuth: new RequestsRequiringAuthentication(UserPersistedAuthToken.get),
         userWillLogOutNotification: new Notification(),
     }).current;
 

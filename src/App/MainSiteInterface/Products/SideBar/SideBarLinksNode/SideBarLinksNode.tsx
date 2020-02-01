@@ -2,12 +2,14 @@
 import React, {useMemo} from 'react';
 import { NavLink } from 'react-router-dom';
 import productPageScssVariables from '../../_products-variables.scss';
-import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct } from '../../ProductsDataHelpers';
+import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct, ProductCategory } from '../../ProductsDataHelpers';
 import { useCurrentProductDetailsViewItem, useToURLForProductItem } from '../../ProductsUIHelpers';
 import { Optional, useIsInitialRender } from 'jshelpers';
 import { useSpring, animated, useTransition } from 'react-spring';
 
 import './SideBarLinksNode.scss';
+
+console.warn("checking the length of the children might not be enough for useMemo for shouldNodeBeExpanded")
 
 export default function SideBarLinksNode(props: { item: ProductDataObject }) {
 
@@ -15,15 +17,17 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
 
     const isInitialRender = useIsInitialRender();
 
+    
+
     const desiredHeight = useMemo(() => {
         return getHeightForNodeElement(props.item, currentlySelectedItem)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.item.id, currentlySelectedItem?.id]); 
+    }, [props.item.id, currentlySelectedItem?.id, (props.item as ProductCategory).children?.length]); 
 
     const _shouldNodeBeExpanded = useMemo(() => {
-        return shouldNodeBeExpanded(props.item, currentlySelectedItem);
+        return shouldNodeBeExpanded(props.item, currentlySelectedItem)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.item.id, currentlySelectedItem?.id]);
+    }, [props.item.id, currentlySelectedItem?.id, (props.item as ProductCategory).children?.length]); 
 
     const springNodeProps = useSpring({
         to: { height:  desiredHeight},
@@ -49,9 +53,9 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
                     if (isProductCategory(componentProps.item)) {
                         return componentProps.item.children.map((x, i) => {
                             if (isProduct(x)) {
-                                return <SideBarLink category={x} key={i} />
+                                return <SideBarLink category={x} key={x.uniqueProductItemID} />
                             } else {
-                                return <SideBarLinksNode item={x} key={i} />
+                                return <SideBarLinksNode item={x} key={x.uniqueProductItemID} />
                             }
                         })
                     } else { return null; }

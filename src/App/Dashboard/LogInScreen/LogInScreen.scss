@@ -54,23 +54,11 @@
 
             $login-button-top-margin: 1.75rem;
 
-            > .error-message-box{
+            > .ErrorMessageBox{
                 $error-message-top-and-bottom-margin: 1.2rem;
                 margin-top: $error-message-top-and-bottom-margin;
                 margin-bottom: -($login-button-top-margin - $error-message-top-and-bottom-margin);
-                font-size: 14px;
-                
-                $red-color: colors(destructive-red);
-                color: $red-color;
-
                 @include setProps(padding-left padding-right, 0.5rem);
-                display: grid;
-                grid-template-columns: auto 1fr;
-                gap: 0.5rem;
-
-                svg{
-                    fill: $red-color;
-                }
             }
     
             > .login-button{

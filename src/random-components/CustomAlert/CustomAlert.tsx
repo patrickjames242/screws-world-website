@@ -4,8 +4,9 @@ import './CustomAlert.scss';
 import { Optional, callIfPossible, Notification } from 'jshelpers';
 import { animated, useSpring } from 'react-spring';
 import CustomTextField from '../CustomTextField/CustomTextField';
-import errorIcon from 'App/Dashboard/icons/errorIcon.js';
+
 import LoadingButton from 'random-components/LoadingButton/LoadingButton';
+import ErrorMessageBox from 'random-components/ErrorMessageBox/ErrorMessageBox';
 
 export interface AlertProviderFunctions {
     showAlert(info: CustomAlertInfo): void;
@@ -187,10 +188,7 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
                 {(() => {
                     const _errorMessage = (errorMessage ?? "").trim();
                     if (_errorMessage === "") { return null; }
-                    return <div className="error-message-box" >
-                        {errorIcon}
-                        <div className="text-box">{_errorMessage}</div>
-                    </div>
+                    return <ErrorMessageBox errorMessage={_errorMessage}/>
                 })()}
 
                 <div className="button-box">

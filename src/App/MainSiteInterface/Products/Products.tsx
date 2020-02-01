@@ -16,6 +16,7 @@ import './Products.scss';
 import TopActionButtonsView from './TopActionsButtonsView/TopActionsButtonsView';
 import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
 import { ProductsDataFetchResult, startFetchingProductsDataTree } from './ProductsDataHelpers';
+import { apiInfoDidChangeNotification } from 'API';
 
 
 
@@ -58,6 +59,16 @@ export default function Products() {
         });
         return () => {shouldRespondToFetchResult = false};
     }, []);
+
+    useEffect(() => {
+        apiInfoDidChangeNotification.addListener((change) => {
+            const fetchResult = productsInfoFetchResult;
+            if (fetchResult){
+                fetchResult.updateWithAPIChange(change);
+                setProductsInfoFetchResult(fetchResult.getCopy());   
+            }
+        })
+    })
 
     return <ProductsInfoContext.Provider value={contextProviderValue}>
         <div className="Products">

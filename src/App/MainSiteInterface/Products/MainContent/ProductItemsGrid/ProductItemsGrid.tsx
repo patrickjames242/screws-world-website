@@ -10,7 +10,7 @@ import './ProductItemsGrid.scss';
 export default function ProductItemsGrid(props: { products: ProductDataObject[] }) {
     return <div className="ProductItemsGrid">
         {props.products.map(x => {
-            return <ProductOrCategoryItem dataObject={x} key={x.id} />
+            return <ProductOrCategoryItem dataObject={x} key={x.uniqueProductItemID} />
         })}
     </div>
 }

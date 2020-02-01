@@ -1,11 +1,11 @@
 
 import React, { useState } from "react";
-import errorIcon from "../icons/errorIcon";
 import CustomTextField from 'random-components/CustomTextField/CustomTextField';
 import './LogInScreen.scss';
 import { Optional } from "jshelpers";
 import { logIn } from "API";
 import LoadingButton from "random-components/LoadingButton/LoadingButton";
+import ErrorMessageBox from "random-components/ErrorMessageBox/ErrorMessageBox";
 
 
 export default function LogInScreen(props: { authTokenHandler: (authToken: string) => void }) {
@@ -44,10 +44,7 @@ export default function LogInScreen(props: { authTokenHandler: (authToken: strin
 
                 {(() => {
                     if (errorMessage) {
-                        return <div className="error-message-box" >
-                            {errorIcon}
-                            <div className="text-box">{errorMessage}</div>
-                        </div>
+                        return <ErrorMessageBox errorMessage={errorMessage}/>
                     }
                 })()}
 

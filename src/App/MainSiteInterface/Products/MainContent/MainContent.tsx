@@ -18,75 +18,82 @@ export default function MainContent() {
 
     const isDashboard = useIsDashboard();
 
-    const {title, description}: {title: string, description: Optional<string>} = (() => {
+    const { title, description }: { title: string, description: Optional<string> } = (() => {
 
-        if (productInfo.loadingIsFinished === false){
+        if (productInfo.loadingIsFinished === false) {
             return {
                 title: "Loading...",
                 description: null,
             }
-        } else if (!productInfo.data){
-            throw new Error("this should't be null at this point");
+        } else if (productInfo.data) {
+            const currentSubject = productInfo.data.subject;
+
+            switch (currentSubject.type) {
+                case ProductsPageSubjectType.INTRO_PAGE:
+                    return {
+                        title: isDashboard ? "Welcome to the Products Dashboard" : "Browse Our Products",
+                        description: isDashboard ?
+                            "Here you can create, edit, and delete products displayed on the Screws World products page." :
+                            "Here you can browse a catalogue of our top selling products to see exactly what we have to offer.",
+                    };
+                case ProductsPageSubjectType.CATEGORY:
+                case ProductsPageSubjectType.PRODUCT:
+                    let item = currentSubject.associatedData as ProductDataObject;
+                    return {
+                        title: getCompleteTitleForProductItem(item),
+                        description: isProductCategory(item) ? item.description : null,
+                    };
+                case ProductsPageSubjectType.CREATE_NEW:
+                    return {
+                        title: "Create a new item",
+                        description: null,
+                    };
+                case ProductsPageSubjectType.EDIT_ITEM:
+                    const itemName = (currentSubject.associatedData as ProductDataObject).name;
+                    return {
+                        title: "Edit '" + itemName + "'",
+                        description: null,
+                    };
+                case ProductsPageSubjectType.ERROR:
+                    return {
+                        title: "ERROR",
+                        description: null,
+                    }
+            }
+        } else if (productInfo.error){
+            return {
+                title: "ERROR",
+                description: productInfo.error.message,
+            }
+        } else {
+            throw new Error("this point should never be reached! Check logic!");
         }
 
-        const currentSubject = productInfo.data.subject;
-
-        switch (currentSubject.type){
-            case ProductsPageSubjectType.INTRO_PAGE:
-                return {
-                    title: isDashboard ? "Welcome to the Products Dashboard" : "Browse Our Products",
-                    description: isDashboard ? 
-                    "Here you can create, edit, and delete products displayed on the Screws World products page." : 
-                    "Here you can browse a catalogue of our top selling products to see exactly what we have to offer.",
-                };
-            case ProductsPageSubjectType.CATEGORY:
-            case ProductsPageSubjectType.PRODUCT:
-                let item = currentSubject.associatedData as ProductDataObject;
-                return {
-                    title: getCompleteTitleForProductItem(item),
-                    description: isProductCategory(item) ? item.description : null,
-                };
-            case ProductsPageSubjectType.CREATE_NEW:
-                return {
-                    title: "Create a new item",
-                    description: null,
-                };
-            case ProductsPageSubjectType.EDIT_ITEM:
-                const itemName = (currentSubject.associatedData as ProductDataObject).name;
-                return {
-                    title: "Edit '" + itemName + "'", 
-                    description: null,
-                };
-            case ProductsPageSubjectType.ERROR:
-                return {
-                    title: "ERROR",
-                    description: null,
-                }
-        }
+        
     })();
 
 
     return <div className="MainContent">
         <TitleBox title={title} description={description} />
         {(() => {
-            if (!productInfo.data){
+            if (!productInfo.data) {
                 return null;
             }
-            
+
             const currentSubject = productInfo.data.subject;
 
-            switch (currentSubject.type){
+            switch (currentSubject.type) {
                 case ProductsPageSubjectType.INTRO_PAGE:
                     return <ProductItemsGrid products={allTopLevelProductItems} />
                 case ProductsPageSubjectType.PRODUCT:
                     return <ProductDetailsView product={currentSubject.associatedData as Product} />
-                case ProductsPageSubjectType.CATEGORY: 
+                case ProductsPageSubjectType.CATEGORY:
                     const products = (currentSubject.associatedData as ProductCategory).children;
                     return <ProductItemsGrid products={products} />
                 case ProductsPageSubjectType.EDIT_ITEM:
                 case ProductsPageSubjectType.CREATE_NEW:
                     let item = currentSubject.associatedData as Optional<ProductDataObject>;
-                    return <EditProductItemView itemToEdit={item}/>;
+                    return <EditProductItemView itemToEdit={item} />;
             }
         })()}
     </div>

@@ -54,7 +54,7 @@ export const DashboardProductsRouteURLs = {
         return dashboardBaseURL + "/" + productItemUniqueID;
     },
     createProductItem: DashboardProductsRouteMatchPaths.createProductItem,
-    editProductItem(productItemUniqueID: number){
+    editProductItem(productItemUniqueID: string){
         return editProductItemBaseURL + "/" + productItemUniqueID;
     }
 }

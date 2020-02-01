@@ -20,7 +20,7 @@ export default function AttachedSideBar() {
             <div className="content">
                 {
                     allTopLevelProductItems.map(x => {
-                        return <SideBarLinksNode item={x} key={x.id} />
+                        return <SideBarLinksNode item={x} key={x.uniqueProductItemID} />
                     })
                 }
             </div>

@@ -2,12 +2,15 @@
 @import 'helpers';
 
 .EditProductItemView{
-    .container{
-        $spacing: 3rem;
-        margin-top: $spacing;
-
+    > .container{
+        
+        margin-top: 3rem;
         display: grid;
-        gap: 3rem;
+        gap: 2rem;
+
+        .ErrorMessageBox{
+            font-size: 1.1rem;
+        }
 
         .submit-button{
             justify-self: start;

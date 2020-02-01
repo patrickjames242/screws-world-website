@@ -50,7 +50,7 @@ function getProductsPageSubjectForRoutePath(routePath: string, productsDataFetch
     return (() => {
         switch (match?.path) {
             case DashboardProductsRouteMatchPaths.editProductItem:
-                if (isProduct(productItem) === false){break;}
+                if (!productItem){break;}
                 return new ProductsPageSubject(ProductsPageSubjectType.EDIT_ITEM, productItem);
 
             case DashboardProductsRouteMatchPaths.createProductItem:

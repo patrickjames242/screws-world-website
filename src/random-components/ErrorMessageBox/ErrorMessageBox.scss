@@ -1,0 +1,19 @@
+@import 'helpers';
+
+
+.ErrorMessageBox{
+    
+    font-size: 14px;
+    line-height: 1;
+    
+    $red-color: colors(destructive-red);
+    color: $red-color;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem;
+
+    svg{
+        @include setProps(width height, 1.1em);
+        fill: $red-color;
+    }
+}
