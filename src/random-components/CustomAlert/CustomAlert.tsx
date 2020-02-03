@@ -3,7 +3,7 @@ import React, { useState, useRef, useContext, useEffect } from 'react';
 import './CustomAlert.scss';
 import { Optional, callIfPossible, Notification } from 'jshelpers';
 import { animated, useSpring } from 'react-spring';
-import CustomTextField from '../CustomTextField/CustomTextField';
+import CustomTextField from '../CustomInputs/CustomTextField/CustomTextField';
 
 import LoadingButton from 'random-components/LoadingButton/LoadingButton';
 import ErrorMessageBox from 'random-components/ErrorMessageBox/ErrorMessageBox';

@@ -10,7 +10,7 @@ import './ProductItemsGrid.scss';
 export default function ProductItemsGrid(props: { products: ProductDataObject[] }) {
     return <div className="ProductItemsGrid">
         {props.products.map(x => {
-            return <ProductOrCategoryItem dataObject={x} key={x.uniqueProductItemID} />
+            return <ProductOrCategoryItem dataObject={x} key={x.id.stringVersion} />
         })}
     </div>
 }
@@ -19,7 +19,7 @@ export default function ProductItemsGrid(props: { products: ProductDataObject[] 
 function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
 
     const productOrCategoryText = (() => {
-        switch (props.dataObject.dataType) {
+        switch (props.dataObject.id.objectType) {
             case ProductDataType.Product: return "product";
             case ProductDataType.ProductCategory: return "category";
         }

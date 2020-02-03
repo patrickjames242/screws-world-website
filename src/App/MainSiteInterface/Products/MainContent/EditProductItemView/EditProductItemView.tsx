@@ -4,7 +4,7 @@ import { ProductDataObject, isProduct, isProductCategory } from '../../ProductsD
 import { Optional, callIfPossible } from 'jshelpers';
 import { useHistory } from 'react-router-dom';
 import { useDashboardInfo, useRequestsRequiringAuth } from 'App/Dashboard/DashboardUIHelpers';
-import TextField, { TextFieldType } from 'random-components/CustomTextField/CustomTextField';
+import TextField, { CustomTextFieldType } from 'random-components/CustomInputs/CustomTextField/CustomTextField';
 import LoadingButton from 'random-components/LoadingButton/LoadingButton';
 import ErrorMessageBox from 'random-components/ErrorMessageBox/ErrorMessageBox';
 import { FetchItemType } from 'API';
@@ -33,6 +33,7 @@ export default function EditProductItemView(props: {itemToEdit: Optional<Product
     const apiRequests = useRequestsRequiringAuth();
 
     function respondToSubmitButtonClicked(){
+        setErrorMessage(null);
         setIsLoading(true);
         const promise = (() => {
             const objectProps = {title, description};
@@ -48,7 +49,7 @@ export default function EditProductItemView(props: {itemToEdit: Optional<Product
                     }
                 })();
 
-                return apiRequests.editItem(fetchItemType, props.itemToEdit.id, objectProps)
+                return apiRequests.editItem(fetchItemType, props.itemToEdit.id.databaseID, objectProps)
             } else {
                 return apiRequests.createNewItem(FetchItemType.PRODUCT, objectProps);
             }
@@ -58,7 +59,7 @@ export default function EditProductItemView(props: {itemToEdit: Optional<Product
             setIsLoading(false);
         })
         .then((result) => {
-            console.log(result);
+           
         })
         .catch((error) => {
             setErrorMessage(error.message);
@@ -70,7 +71,7 @@ export default function EditProductItemView(props: {itemToEdit: Optional<Product
     return <div className="EditProductItemView">
         <div className="container">
             <TextField className="title" topText="Title" placeholderText="What is the name of the item?" value={title} onTextChange={setTitle}/>
-            <TextField className="description" topText="Description" placeholderText="Give some information on the item." type={TextFieldType.MultipleLine} value={description} onTextChange={setDescription}/>
+            <TextField className="description" topText="Description" placeholderText="Give some information on the item." type={CustomTextFieldType.MultipleLine} value={description} onTextChange={setDescription}/>
             {errorMessage ? <ErrorMessageBox errorMessage={errorMessage}/> : null}
             <LoadingButton isActive={areThereChangesToBeSaved} className="submit-button" loadingIndicatorSize="1.8rem" shouldShowIndicator={isLoading} onClick={respondToSubmitButtonClicked}>
                 {submitButtonText}

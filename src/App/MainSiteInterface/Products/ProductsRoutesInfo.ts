@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { matchPath, match } from "react-router-dom";
 import * as RoutePaths from 'topLevelRoutePaths';
-import { ProductItemUniqueIDGenerator } from "./ProductsDataHelpers";
+import { ProductsDataObjectID } from "./ProductsDataHelpers";
 
 const dashboardBaseURL = RoutePaths.DASHBOARD;
 const productsBaseURL = RoutePaths.PRODUCTS;
@@ -75,7 +75,7 @@ export function isValidDashboardProductsRoute(route: string): boolean{
 function isMatchValid(match: match<{id?: string}> | null): boolean{
     if (!match?.isExact) { return false; }
     if (match?.params.id) {
-        return ProductItemUniqueIDGenerator.isValidUniqueID(match?.params.id);
+        return ProductsDataObjectID.isValidObjectIDString(match?.params.id);
     } else {
         return true;
     }

@@ -59,7 +59,7 @@ export default function TopActionButtonsView() {
         //eslint-disable-next-line react-hooks/rules-of-hooks
         let item = useCurrentProductDetailsViewItem();
         if (!item){return null;}
-        return DashboardProductsRouteURLs.editProductItem(item.uniqueProductItemID);
+        return DashboardProductsRouteURLs.editProductItem(item.id.stringVersion);
     })();
     
     const editButtonShouldBeDisplayed = (() => {

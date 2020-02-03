@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import CustomTextField from 'random-components/CustomTextField/CustomTextField';
+import CustomTextField from 'random-components/CustomInputs/CustomTextField/CustomTextField';
 import './LogInScreen.scss';
 import { Optional } from "jshelpers";
 import { logIn } from "API";

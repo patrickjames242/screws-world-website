@@ -15,7 +15,7 @@ import DetatchedSideBar, { DetatchedSideBarFunctionsRef } from './SideBar/Detach
 import './Products.scss';
 import TopActionButtonsView from './TopActionsButtonsView/TopActionsButtonsView';
 import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
-import { ProductsDataFetchResult, startFetchingProductsDataTree } from './ProductsDataHelpers';
+import { ProductsDataObjectsManager, startFetchingProductsDataTree } from './ProductsDataHelpers';
 import { apiInfoDidChangeNotification } from 'API';
 
 
@@ -37,24 +37,24 @@ export default function Products() {
 
     const location = useLocation();
 
-    const [productsInfoFetchResult, setProductsInfoFetchResult] = useState<Optional<ProductsDataFetchResult>>(null);
+    const [productsObjectsManager, setProductsObjectsManager] = useState<Optional<ProductsDataObjectsManager>>(null);
     const [productsInfoFetchError, setProductsInfoFetchError] = useState<Optional<Error>>(null);
 
     const contextProviderValue = useMemo(() => {
-        return computeProductsInfoContextValueFromFetchResult(location.pathname, productsInfoFetchResult, productsInfoFetchError);
-    }, [location.pathname, productsInfoFetchResult, productsInfoFetchError]);
+        return computeProductsInfoContextValueFromFetchResult(location.pathname, productsObjectsManager, productsInfoFetchError);
+    }, [location.pathname, productsObjectsManager, productsInfoFetchError]);
 
     useEffect(() => {
         let shouldRespondToFetchResult = true;
         startFetchingProductsDataTree()
         .then(result => {
             if (shouldRespondToFetchResult === false){return;}
-            setProductsInfoFetchResult(result);
+            setProductsObjectsManager(result);
             setProductsInfoFetchError(null);
         })
         .catch(error => {
             if (shouldRespondToFetchResult === false){return;}
-            setProductsInfoFetchResult(null);
+            setProductsObjectsManager(null);
             setProductsInfoFetchError(error);
         });
         return () => {shouldRespondToFetchResult = false};
@@ -62,10 +62,10 @@ export default function Products() {
 
     useEffect(() => {
         apiInfoDidChangeNotification.addListener((change) => {
-            const fetchResult = productsInfoFetchResult;
-            if (fetchResult){
-                fetchResult.updateWithAPIChange(change);
-                setProductsInfoFetchResult(fetchResult.getCopy());   
+            const objectsManager = productsObjectsManager;
+            if (objectsManager){
+                objectsManager.updateAccordingToAPIChange(change);
+                setProductsObjectsManager(objectsManager.getCopy());   
             }
         })
     })

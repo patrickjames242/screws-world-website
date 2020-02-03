@@ -1,0 +1,14 @@
+@import 'helpers';
+
+.CustomTextField{
+    
+    > input, textarea{
+        &::placeholder{
+            color: var(--input-placeholder-color);
+        }
+    }
+
+    > textarea{
+        height: 9rem;
+    }
+}

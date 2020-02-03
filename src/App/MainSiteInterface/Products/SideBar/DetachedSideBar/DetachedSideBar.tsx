@@ -96,7 +96,7 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
                     <div className="links-container-holder">
                         <div className="links-container">
                             {productsDataTree.map(x => {
-                                return <SideBarLinksNode item={x} key={x.uniqueProductItemID} />
+                                return <SideBarLinksNode item={x} key={x.id.stringVersion} />
                             })}
                         </div>
                     </div>

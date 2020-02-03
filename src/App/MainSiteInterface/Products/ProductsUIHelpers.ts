@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Optional } from "jshelpers";
-import { ProductDataObject, isProduct, isProductCategory, ProductsDataFetchResult } from './ProductsDataHelpers';
+import { ProductDataObject, isProduct, isProductCategory, ProductsDataObjectsManager, ProductsDataObjectID } from './ProductsDataHelpers';
 import { DashboardProductsRouteURLs, MainUIProductsRouteURLs, DashboardProductsRouteMatchPaths, MainUIProductsRouteMatchPaths } from './ProductsRoutesInfo';
 import { matchPath } from 'react-router-dom';
 import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
@@ -26,7 +26,7 @@ export class ProductsPageSubject{
 }
 
 
-function getProductsPageSubjectForRoutePath(routePath: string, productsDataFetchResult: ProductsDataFetchResult): ProductsPageSubject {
+function getProductsPageSubjectForRoutePath(routePath: string, productsObjectsManager: ProductsDataObjectsManager): ProductsPageSubject {
 
     const match = matchPath<{ id?: string }>(routePath, {
         path: [
@@ -41,8 +41,10 @@ function getProductsPageSubjectForRoutePath(routePath: string, productsDataFetch
 
     const productItem: Optional<ProductDataObject> = (() => {
         const id = match?.params.id;
-        if (id){
-            return productsDataFetchResult.getObjectForUniqueID(id);
+        
+        if (id && ProductsDataObjectID.isValidObjectIDString(id)){
+            const parsedID = ProductsDataObjectID.parseFromString(id)!;
+            return productsObjectsManager.getObjectForObjectID(parsedID) ?? null;
         } else { return null; }
     })();
 
@@ -66,8 +68,10 @@ function getProductsPageSubjectForRoutePath(routePath: string, productsDataFetch
 
             case DashboardProductsRouteMatchPaths.root:
             case MainUIProductsRouteMatchPaths.root:
-                return new ProductsPageSubject(ProductsPageSubjectType.INTRO_PAGE, productsDataFetchResult.tree);
+                return new ProductsPageSubject(ProductsPageSubjectType.INTRO_PAGE, productsObjectsManager.getTopLevelItems());
         }
+
+        
         return new ProductsPageSubject(ProductsPageSubjectType.ERROR, null);
     })();
 }
@@ -83,13 +87,13 @@ export interface ProductsInfoContextValue {
 }
 
 // assumes the products data has not been loaded yet if the fetchResult and fetchError parameters are null.
-export function computeProductsInfoContextValueFromFetchResult(routePath: string, fetchResult: Optional<ProductsDataFetchResult>, fetchError: Optional<Error>): ProductsInfoContextValue{
-    if (fetchResult){
+export function computeProductsInfoContextValueFromFetchResult(routePath: string, objectsManager: Optional<ProductsDataObjectsManager>, fetchError: Optional<Error>): ProductsInfoContextValue{
+    if (objectsManager){
         return {
             loadingIsFinished: true,
             data: {
-                subject: getProductsPageSubjectForRoutePath(routePath, fetchResult),
-                allTopLevelItems: fetchResult.tree,
+                subject: getProductsPageSubjectForRoutePath(routePath, objectsManager),
+                allTopLevelItems: objectsManager.getTopLevelItems(),
             },
             error: null,
         }
@@ -139,7 +143,7 @@ export function useCurrentProductDetailsViewItem(): Optional<ProductDataObject>{
 export function useToURLForProductItem(productsItem: ProductDataObject): string {
     const isDashboard = useIsDashboard();
     return isDashboard ? 
-    DashboardProductsRouteURLs.productDetailsView(productsItem.uniqueProductItemID) : MainUIProductsRouteURLs.productDetailsView(productsItem.uniqueProductItemID);
+    DashboardProductsRouteURLs.productDetailsView(productsItem.id.stringVersion) : MainUIProductsRouteURLs.productDetailsView(productsItem.id.stringVersion);
 }
 
 

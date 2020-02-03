@@ -19,8 +19,6 @@ body{
     background-color: colors(dark-blue);
     color: white;
     font-family: Rubik;
-    // because transition animation between pages would cause the bottom scroll bar to flash.
-    overflow-x: hidden;
 }
 
 a{
@@ -37,14 +35,27 @@ button{
 }
 
 
-button:focus, input:focus, textarea:focus{
+button:focus, input:focus, textarea:focus, select:focus{
     outline: none;
 }   
 
-textarea{
-    resize: none;
+textarea, input, select{
+    border: none;
     font-family: inherit;
 }
+
+textarea{
+    resize: none;
+}
+
+select{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+}
+
+
 
 
 

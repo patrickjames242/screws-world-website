@@ -4,7 +4,7 @@ import './ContactUs.scss';
 import { SCREWS_WORLD_EMAIL, SCREWS_WORLD_NUMBER, useSetTitleFunctionality } from 'jshelpers';
 import PageHeader from 'random-components/PageHeader/PageHeader';
 
-import CustomTextField, {TextFieldType} from 'random-components/CustomTextField/CustomTextField';
+import CustomTextField, {CustomTextFieldType} from 'random-components/CustomInputs/CustomTextField/CustomTextField';
 
 
 
@@ -28,7 +28,7 @@ export default function ContactUs() {
         {
             topText: "Full description",
             placeholderText: "Please include as much information as possible.",
-            type: TextFieldType.MultipleLine,
+            type: CustomTextFieldType.MultipleLine,
         },
     ];
 

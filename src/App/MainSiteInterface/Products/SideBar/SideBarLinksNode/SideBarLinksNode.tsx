@@ -51,11 +51,13 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
             return <animated.div style={props} key={key} className="children-holder">
                 {(() => {
                     if (isProductCategory(componentProps.item)) {
-                        return componentProps.item.children.map((x, i) => {
+                        return componentProps.item.children.map(x => {
                             if (isProduct(x)) {
-                                return <SideBarLink category={x} key={x.uniqueProductItemID} />
+                                return <SideBarLink category={x} key={x.id.stringVersion} />;
                             } else {
-                                return <SideBarLinksNode item={x} key={x.uniqueProductItemID} />
+                                // because without this, typescript starts freaking out
+                                const category = x as ProductCategory;
+                                return <SideBarLinksNode item={category} key={category.id.stringVersion} />;
                             }
                         })
                     } else { return null; }
