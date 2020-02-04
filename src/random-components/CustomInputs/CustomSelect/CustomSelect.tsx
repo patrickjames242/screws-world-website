@@ -5,7 +5,7 @@ import './CustomSelect.scss';
 import CustomInput, { CustomInputProps } from '../CustomInput';
 import { callIfPossible } from 'jshelpers';
 
-interface CustomSelectChild {
+export interface CustomSelectChild {
     readonly stringValue: string,
     readonly uniqueID: string,
 }

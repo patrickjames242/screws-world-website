@@ -1,8 +1,8 @@
 
 
 import './EditProductItemView.scss';
-import React, { useEffect, useState, useRef } from 'react';
-import { ProductDataObject, isProduct, isProductCategory, ProductsDataObjectID, ProductDataType } from '../../ProductsDataHelpers';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import { ProductDataObject, isProduct, isProductCategory, ProductsDataObjectID, ProductDataType, ProductCategory } from '../../ProductsDataHelpers';
 import { Optional, useBlockHistoryWhileMounted } from 'jshelpers';
 import { useHistory } from 'react-router-dom';
 import { useRequestsRequiringAuth } from 'App/Dashboard/DashboardUIHelpers';
@@ -10,7 +10,7 @@ import TextField, { CustomTextFieldType } from 'random-components/CustomInputs/C
 import LoadingButton from 'random-components/LoadingButton/LoadingButton';
 import ErrorMessageBox from 'random-components/ErrorMessageBox/ErrorMessageBox';
 import { FetchItemType, ProductItemNetworkResponse, ProductItemProps } from 'API';
-import CustomSelect from 'random-components/CustomInputs/CustomSelect/CustomSelect';
+import CustomSelect, { CustomSelectChild } from 'random-components/CustomInputs/CustomSelect/CustomSelect';
 import { DashboardProductsRouteURLs } from '../../ProductsRoutesInfo';
 import { useProductsInfoContextValue } from '../../ProductsUIHelpers';
 
@@ -245,6 +245,27 @@ function useSelectParentCategoryFunctionality(props: EditProductItemViewProps) {
 
     const allCategories = useProductsInfoContextValue().data?.allCategories ?? [];
 
+    const customSelectChildren = useMemo(() => {
+        let children: CustomSelectChild[] = [];
+
+        allCategories.forEach(x => {
+            if (x.id.databaseID === props.itemToEdit?.id.databaseID){return;}
+
+            const title = (function getRecursiveTitleFor(category: ProductCategory): string{
+                const titleItems = [category.name];
+                if (category.parent != null){
+                    titleItems.unshift(getRecursiveTitleFor(category.parent));
+                }
+                return titleItems.join(", ");
+            })(x);
+
+            children.push({ uniqueID: String(x.id.databaseID), stringValue: title });
+        });
+        children.unshift({ uniqueID: String(NULL_PARENT_CATEGORY_ID), stringValue: "None (should be top level)" });
+        return children.sort((x1, x2) => x1.stringValue.localeCompare(x2.stringValue));
+    }, [allCategories, props.itemToEdit]);
+
+
     function respondToValueDidChange(stringValue: string) {
         const num = Number(stringValue);
         if (isNaN(num)) {
@@ -259,13 +280,9 @@ function useSelectParentCategoryFunctionality(props: EditProductItemViewProps) {
             return selectedParentCategoryID + ""; // to coerce the number to a string;
         })();
 
-        let children = allCategories.map(x => {
-            return { uniqueID: x.id.databaseID + "", stringValue: x.name };
-        });
-        children.unshift({ uniqueID: String(NULL_PARENT_CATEGORY_ID), stringValue: "None (should be top level)" });
-
+        
         return <CustomSelect isEnabled={isEnabled} topText={topText} value={value} placeholderText="What is the parent category?" onValueChange={respondToValueDidChange}>
-            {children}
+            {customSelectChildren}
         </CustomSelect>
     };
 
