@@ -20,8 +20,8 @@ export const MainUIProductsRouteMatchPaths = {
 
 export const MainUIProductsRouteURLs = {
     root: MainUIProductsRouteMatchPaths.root,
-    productDetailsView(productItemUniqueID: string){
-        return productsBaseURL + "/" + productItemUniqueID;
+    productDetailsView(id: ProductsDataObjectID){
+        return productsBaseURL + "/" + id.stringVersion;
     }    
 }
 
@@ -50,12 +50,12 @@ export const DashboardProductsRouteMatchPaths = {
 
 export const DashboardProductsRouteURLs = {
     root: DashboardProductsRouteMatchPaths.root,
-    productDetailsView(productItemUniqueID: string){
-        return dashboardBaseURL + "/" + productItemUniqueID;
+    productDetailsView(id: ProductsDataObjectID){
+        return dashboardBaseURL + "/" + id.stringVersion;
     },
     createProductItem: DashboardProductsRouteMatchPaths.createProductItem,
-    editProductItem(productItemUniqueID: string){
-        return editProductItemBaseURL + "/" + productItemUniqueID;
+    editProductItem(id: ProductsDataObjectID){
+        return editProductItemBaseURL + "/" + id.stringVersion;
     }
 }
 

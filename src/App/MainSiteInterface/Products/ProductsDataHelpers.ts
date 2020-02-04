@@ -150,13 +150,22 @@ export class ProductsDataObjectsManager {
 
     private static _categoryIDForObjectsWithNoCategory = new ProductsDataObjectID(-1, ProductDataType.ProductCategory);
 
+    // look, the reason we maintain all these maps is because this data is being requested at every render of our app. For example, having to find all the children for a particular category at every render is going to negatively impact performance when the amount of categories and products start growing. 
+    
+
     private constructor(
         // objects that don't have a parent are stored as an array in this map with the databaseID for the above id as the key
         private readonly _categoryChildrenByCategoryID: Map<number, ProductDataObject[]>,
         private readonly _objectParentsByObjectID: Map<string, Optional<number>>,
         private readonly _objectsByObjectIDs: Map<string, ProductDataObject>,
-    ) { }
 
+        // any cached values are recalculated from scratch after any api chnages. If is null, it means either the value hasn't been calculated yet, or the value has been cleared and needs to be recalculated
+        private _cachedCategories: Optional<ProductCategory[]>,
+    ) { 
+        if (_cachedCategories == null){
+            this._invalidateCache();
+        }
+    }
 
     static getFor(
         networkCategoriesResponse: ProductItemNetworkResponse[],
@@ -167,7 +176,7 @@ export class ProductsDataObjectsManager {
         const _objectParentsByObjectID = new Map<string, Optional<number>>();
         const _objectsByObjectIDs = new Map<string, ProductDataObject>();
 
-        const manager = new ProductsDataObjectsManager(_categoryChildrenByCategoryID, _objectParentsByObjectID, _objectsByObjectIDs);
+        const manager = new ProductsDataObjectsManager(_categoryChildrenByCategoryID, _objectParentsByObjectID, _objectsByObjectIDs, null);
 
         networkCategoriesResponse.forEach(x => {
             const category = new ProductCategory(x.id, x.title, x.description, _getRandomImageURL(), manager._getObjectParentForObjectWithID, manager._getCategoryChildenForCategoryID);
@@ -184,25 +193,41 @@ export class ProductsDataObjectsManager {
             const convertedObject = objectByIdsMapValues.next().value as ProductDataObject;
             _objectParentsByObjectID.set(convertedObject.id.stringVersion, x.parent_category);
             const categoryIDForParentChildrenArray = x.parent_category ?? ProductsDataObjectsManager._categoryIDForObjectsWithNoCategory.databaseID;
-            let previousParentChildrenArray = _categoryChildrenByCategoryID.get(categoryIDForParentChildrenArray) ?? [];
-            _categoryChildrenByCategoryID.set(categoryIDForParentChildrenArray, [...previousParentChildrenArray, convertedObject]);
+            const previousParentChildrenArray = _categoryChildrenByCategoryID.get(categoryIDForParentChildrenArray) ?? [];
+            previousParentChildrenArray.push(convertedObject);
+            _categoryChildrenByCategoryID.set(categoryIDForParentChildrenArray, previousParentChildrenArray);
         });
 
         for (const [key, value] of _categoryChildrenByCategoryID.entries()) {
             _categoryChildrenByCategoryID.set(key, ProductsDataObjectsManager._sortObjects(value));
         }
 
+        manager._invalidateCache();
         return manager;
     }
 
 
 
     getCopy: () => ProductsDataObjectsManager = () => {
-        return new ProductsDataObjectsManager(this._categoryChildrenByCategoryID, this._objectParentsByObjectID, this._objectsByObjectIDs);
+        return new ProductsDataObjectsManager(this._categoryChildrenByCategoryID, this._objectParentsByObjectID, this._objectsByObjectIDs, this._cachedCategories);
     }
 
+    // the array returned is sorted by name
     getTopLevelItems: () => ProductDataObject[] = () => {
         return this._categoryChildrenByCategoryID.get(ProductsDataObjectsManager._categoryIDForObjectsWithNoCategory.databaseID) ?? [];
+    }
+
+    getAllCategories: () => ProductCategory[] = () => {
+        if (this._cachedCategories != null){
+            return this._cachedCategories;
+        } else {
+            this._invalidateCache();
+            const cachedCategories = this._cachedCategories;
+            if (cachedCategories == null){
+                throw new Error("this shouldn't be null! Check logic!!");
+            }
+            return cachedCategories;
+        }
     }
 
     getObjectForObjectID: (objectID: ProductsDataObjectID) => Optional<ProductDataObject> =
@@ -213,16 +238,19 @@ export class ProductsDataObjectsManager {
     private _getObjectParentForObjectWithID: (objectID: ProductsDataObjectID) => Optional<ProductCategory> =
         (objectID: ProductsDataObjectID) => {
             const categoryID = this._objectParentsByObjectID.get(objectID.stringVersion) ?? null;
-            if (!categoryID){return null;}
+            if (categoryID == null){return null;}
             const id = new ProductsDataObjectID(categoryID, ProductDataType.ProductCategory);
             return (this._objectsByObjectIDs.get(id.stringVersion) ?? null) as Optional<ProductCategory>;
         }
 
+    // the returned array is sorted by name
     private _getCategoryChildenForCategoryID: (categoryID: number) => ProductDataObject[] =
         (categoryID: number) => {
             return this._categoryChildrenByCategoryID.get(categoryID) ?? [];
         }
 
+
+    // instead of recalculating the keys and values of all of our maps from scratch every time a change occurs, we simply make the appropriate changes to the existing maps for performance reasons
     updateAccordingToAPIChange: (change: APIChange) => void =
         (change: APIChange) => {
             const networkResponse = change.info;
@@ -261,8 +289,10 @@ export class ProductsDataObjectsManager {
                     this._objectsByObjectIDs.delete(existingObject2.id.stringVersion);
                     break;
             }
+            this._invalidateCache();
         }
 
+    // removes all records of the provided child
     private _resetParentAndChildrenInformationForChild(child: ProductDataObject, categoryID: Optional<number>) {
 
         this._deleteParentAndChildrenInformationAboutChild(child);
@@ -272,7 +302,7 @@ export class ProductsDataObjectsManager {
         const categoryIDForChildrenArray = categoryID ?? ProductsDataObjectsManager._categoryIDForObjectsWithNoCategory.databaseID;
 
         let previousChildrenArray = this._categoryChildrenByCategoryID.get(categoryIDForChildrenArray);
-        if (previousChildrenArray) {
+        if (previousChildrenArray != null) {
             previousChildrenArray.push(child);
             previousChildrenArray = ProductsDataObjectsManager._sortObjects(previousChildrenArray);
             this._categoryChildrenByCategoryID.set(categoryIDForChildrenArray, previousChildrenArray);
@@ -288,12 +318,23 @@ export class ProductsDataObjectsManager {
         this._objectParentsByObjectID.set(child.id.stringVersion, null);
 
         let childrenArray = this._categoryChildrenByCategoryID.get(parentCategoryID);
-        if (!childrenArray) { return; }
+        if (childrenArray == null) { return; }
         childrenArray = childrenArray.filter(x => x.id.isEqualTo(child.id) === false);
         this._categoryChildrenByCategoryID.set(parentCategoryID, childrenArray);
     }
 
-
+    // recalculates any cached values... right now this only includes _cachedCategories
+    private _invalidateCache(){
+        let newCategories: ProductCategory[] = [];
+        for (const object of this._objectsByObjectIDs.values()){
+                        
+            if (isProductCategory(object)){
+                newCategories.push(object);
+            }
+        }
+        newCategories = ProductsDataObjectsManager._sortObjects(newCategories) as ProductCategory[];
+        this._cachedCategories = newCategories;
+    }
 
     private static _sortObjects(objects: ProductDataObject[]): ProductDataObject[] {
         return objects.sort((x1, x2) => x1.name.localeCompare(x2.name));
@@ -303,16 +344,20 @@ export class ProductsDataObjectsManager {
 }
 
 
-
-
 export function isProduct(x: any): x is Product {
     if (!x || typeof x !== "object") { return false; }
-    return x.id.objectType === ProductDataType.Product
+    if (x.id && x.id.objectType !== undefined){
+        return (x.id.objectType as ProductDataType) === ProductDataType.Product;    
+    }
+    return false;
 }
 
 export function isProductCategory(x: any): x is ProductCategory {
     if (!x || typeof x !== "object") { return false; }
-    return x.id.objectType === ProductDataType.ProductCategory;
+    if (x.id && x.id.objectType !== undefined){
+        return (x.id.objectType as ProductDataType) === ProductDataType.ProductCategory;
+    }
+    return false
 }
 
 // returns true if the item IS the category. works as expected otherwise

@@ -24,7 +24,7 @@ export default function CustomTextField(props: CustomTextFieldProps) {
     }
 
     const inputElement = 
-    (inputProps: {className: string, onFocus: () => void, onBlur: () => void}) => {
+    (inputProps: {className: string, onFocus: () => void, onBlur: () => void, style: React.CSSProperties}) => {
         let elementType, typeProp;
 
         switch (props.type) {    
@@ -38,6 +38,7 @@ export default function CustomTextField(props: CustomTextFieldProps) {
         }
 
         const propDict = {
+            required: props.isRequired ?? false,
             value: props.value,
             className: inputProps.className,
             placeholder: props.placeholderText,
@@ -45,6 +46,7 @@ export default function CustomTextField(props: CustomTextFieldProps) {
             onBlur: inputProps.onBlur,
             type: typeProp,
             onChange: handleChange,
+            style: inputProps.style,
         };
 
         return React.createElement(elementType, propDict);
@@ -55,7 +57,7 @@ export default function CustomTextField(props: CustomTextFieldProps) {
         props.className ?? "",
     ].join(" ");
 
-    return <CustomInput topText={props.topText} className={className}>
+    return <CustomInput isEnabled={props.isEnabled} topText={props.topText} className={className}>
         {inputElement}
     </CustomInput>
 

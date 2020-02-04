@@ -17,8 +17,6 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
 
     const isInitialRender = useIsInitialRender();
 
-    
-
     const desiredHeight = useMemo(() => {
         return getHeightForNodeElement(props.item, currentlySelectedItem)
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,6 +31,7 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
         to: { height:  desiredHeight},
         immediate: isInitialRender,
     });
+
 
     const transitionItems = useTransition(_shouldNodeBeExpanded, null, {
         from: { opacity: 0, transform: "translateX(75px)", },
@@ -100,7 +99,9 @@ function getHeightForNodeElement(nodeItem: ProductDataObject, currentlySelectedI
                 }
             })(nodeItem);
         }
+        throw new Error("this point should not be reached!!");
     })();
+
     return heightAsNum + "px";
 }
 

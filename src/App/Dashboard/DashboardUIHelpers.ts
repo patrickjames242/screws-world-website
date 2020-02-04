@@ -1,6 +1,6 @@
 
 import React, { useContext } from 'react';
-import { Optional, Notification } from 'jshelpers';
+import { Optional } from 'jshelpers';
 import { RequestsRequiringAuthentication } from 'API';
 
 
@@ -11,7 +11,6 @@ import { RequestsRequiringAuthentication } from 'API';
 
 export interface DashboardInfo{
     logOut(): void;
-    userWillLogOutNotification: Notification;
     requestsRequiringAuth: RequestsRequiringAuthentication;
 }
 

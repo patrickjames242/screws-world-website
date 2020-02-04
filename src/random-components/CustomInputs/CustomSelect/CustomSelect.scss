@@ -3,7 +3,7 @@
 .CustomInput{
 
     > select{
-        &:invalid{
+        &:invalid {
             color: var(--input-placeholder-color);
         }
     }

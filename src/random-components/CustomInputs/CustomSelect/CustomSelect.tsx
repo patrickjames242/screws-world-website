@@ -36,17 +36,17 @@ export default function CustomSelect(props: CustomSelectProps) {
     const placeholderText = props.placeholderText ?? "Please select an option";
     const componentProps = props;
 
-    return <CustomInput className={className} topText={componentProps.topText}>
+    return <CustomInput className={className} isEnabled={props.isEnabled} topText={componentProps.topText}>
         {(props) => {
             return <select
-                defaultValue=""
                 value={componentProps.value}
                 required
                 className={props.className}
                 onFocus={props.onFocus}
                 onBlur={props.onBlur}
+                style={props.style}
                 onChange={respondToValueChange}>
-                <option disabled value="" hidden>{placeholderText}</option>
+                <option disabled value="">{placeholderText}</option>
                 {/* providing a default value because apparently typescript isn't forcing callers to provide the children array as a child of this component 🤷🏽‍♂️ */}
                 {(componentProps.children ?? []).map(x => {
                     return <option key={x.uniqueID} value={x.uniqueID}>

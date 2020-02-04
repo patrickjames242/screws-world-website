@@ -8,13 +8,15 @@ import homeIcon from '../icons/home';
 import logOutIcon from '../icons/logout';
 
 import { DASHBOARD as dashboardURL } from 'topLevelRoutePaths';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import './TopActionsButtonsView.scss';
 import { useAlertFunctionality, CustomAlertInfo, CustomAlertButtonInfo, CustomAlertButtonType, CustomAlertController, CustomAlertButtonController, CustomAlertTextFieldInfo, CustomAlertTextFieldController } from 'random-components/CustomAlert/CustomAlert';
 import { callIfPossible, Optional } from 'jshelpers';
 import { useCurrentProductsPageSubject, ProductsPageSubjectType, useCurrentProductDetailsViewItem } from '../ProductsUIHelpers';
 import { DashboardProductsRouteURLs } from '../ProductsRoutesInfo';
-import { useDashboardInfo } from 'App/Dashboard/DashboardUIHelpers';
+import { useDashboardInfo, useRequestsRequiringAuth } from 'App/Dashboard/DashboardUIHelpers';
+import { isProduct, isProductCategory, ProductDataObject } from '../ProductsDataHelpers';
+import { FetchItemType } from 'API';
 
 
 
@@ -59,7 +61,7 @@ export default function TopActionButtonsView() {
         //eslint-disable-next-line react-hooks/rules-of-hooks
         let item = useCurrentProductDetailsViewItem();
         if (!item){return null;}
-        return DashboardProductsRouteURLs.editProductItem(item.id.stringVersion);
+        return DashboardProductsRouteURLs.editProductItem(item.id);
     })();
     
     const editButtonShouldBeDisplayed = (() => {
@@ -71,12 +73,17 @@ export default function TopActionButtonsView() {
         }
     })();
 
+    const deleteAlertInfo = useDeleteAlertInfo();
+
     const respondToDeleteButtonClicked: Optional<() => void> = (() => {
         switch (currentSubject?.type){
             case ProductsPageSubjectType.PRODUCT:
             case ProductsPageSubjectType.CATEGORY:
             case ProductsPageSubjectType.EDIT_ITEM:
-                return () => alertFunctionality.showAlert(getDeleteAlertInfo());
+                return () => {
+                    if (deleteAlertInfo == null){return;}
+                    alertFunctionality.showAlert(deleteAlertInfo);
+                };
             default: return null;
         }
     })();
@@ -132,7 +139,31 @@ function TopActionButton(props: { svgIcon: React.ReactElement, isDestructive?: b
 
 
 
-function getDeleteAlertInfo(): CustomAlertInfo {
+function useDeleteAlertInfo(): Optional<CustomAlertInfo> {
+
+    const currentlyDisplayedItem = useCurrentProductsPageSubject()?.associatedData;
+    const history = useHistory();
+    const apiRequests = useRequestsRequiringAuth();
+
+    if (isProductCategory(currentlyDisplayedItem) === false && isProduct(currentlyDisplayedItem) === false){return null;}
+
+    const itemType = (() => {
+        if (isProductCategory(currentlyDisplayedItem)){
+            return FetchItemType.CATEGORY;
+        } else if (isProduct(currentlyDisplayedItem)){
+            return FetchItemType.PRODUCT;
+        } else {
+            throw new Error("this point should not be reached!! Check logic");
+        }
+    })();
+
+    
+
+    
+
+    const willChildrenBeDeleted = isProductCategory(currentlyDisplayedItem) && currentlyDisplayedItem.children.length >= 1;
+
+    let alertController: CustomAlertController;
 
     const cancelButton = new CustomAlertButtonInfo("Cancel", dismiss => dismiss(), CustomAlertButtonType.SECONDARY);
 
@@ -140,38 +171,62 @@ function getDeleteAlertInfo(): CustomAlertInfo {
 
     const deleteButton = new CustomAlertButtonInfo(
         "Delete",
-        dismiss => dismiss(),
+        dismiss => {
+            
+            if (itemType == null){dismiss(); return;}
+
+            deleteButtonController?.setIsLoading(true);
+            apiRequests.deleteItem(itemType, (currentlyDisplayedItem as ProductDataObject).id.databaseID)
+            .finally(() => {
+                deleteButtonController?.setIsLoading(false);
+            }).then(() => {
+                dismiss();
+                history.replace(DashboardProductsRouteURLs.root);
+            }).catch((error) => {
+                alertController.showErrorMessage(error.message);
+            });
+        },
         CustomAlertButtonType.PRIMARY_DESTRUCTIVE,
         c => deleteButtonController = c,
     );
 
-    let textFieldController: CustomAlertTextFieldController;
+    let textFieldController: Optional<CustomAlertTextFieldController> = null;
 
-    function refreshDeleteButtonActivation() {
+    const refreshDeleteButtonActivation = willChildrenBeDeleted ? () => {
         const text = (textFieldController?.currentTextFieldText ?? "").trim();
         callIfPossible(deleteButtonController?.setIsActive, text === confirmationMessage);
-    }
+    } : null;
 
-    const textFieldInfo: CustomAlertTextFieldInfo = {
+    const textFieldInfo: Optional<CustomAlertTextFieldInfo> = willChildrenBeDeleted ? {
         onMount: c => {
             textFieldController = c
             c.textDidChangeNotification.addListener(() => {
-                refreshDeleteButtonActivation();
+                callIfPossible(refreshDeleteButtonActivation);
             });
         },
-    }
+    } : null;
 
     const confirmationMessage = "DELETE ALL";
+
+    const description = (() => {
+        if (willChildrenBeDeleted){
+            return "If you delete this category, ALL products and categories under it will also be deleted. Are you sure you want to continue?\n\nPlease type " + confirmationMessage + " to confirm.";
+        } else {
+            return `Are you sure you want to delete "${currentlyDisplayedItem.name}"? Once deleted, it cannot be recovered.`;
+        }
+    })();
+
 
     const alertInfo: CustomAlertInfo = {
         uniqueKey: "DASHBOARD DELETE WARNING MESSAGE",
         title: "Are you sure? 🧐",
-        description: "If you delete this category, ALL products and categories under it will also be deleted. Are you sure you want to continue?\n\nPlease type " + confirmationMessage + " to confirm.",
-        textFieldInfo: textFieldInfo,
+        description: description,
+        textFieldInfo: textFieldInfo ?? undefined,
         leftButtonInfo: cancelButton,
         rightButtonInfo: deleteButton,
-        onMount: () => {
-            refreshDeleteButtonActivation();
+        onMount: (c) => {
+            alertController = c;
+            callIfPossible(refreshDeleteButtonActivation);
         },
     };
 

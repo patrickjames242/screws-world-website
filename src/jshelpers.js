@@ -1,6 +1,6 @@
 
 import { useRef, useEffect } from 'react';
-
+import {useHistory} from 'react-router-dom';
 
 // The title will be set when the component mounts. if you pass null or undefined, the title will be set to simply "Screws World". If you pass anything else, the title will be "Screws World | <the string you passed>"
 export function useSetTitleFunctionality(titleString) {
@@ -45,6 +45,24 @@ export function useUpdateEffect(effect, dependencies) {
     }, dependencies);
 }
 
+export function useBlockHistoryWhileMounted(message, shouldBlock = true) {
+
+    const history = useHistory();
+
+    useEffect(() => {
+        if (shouldBlock === false){return;}
+        const unblock = history.block(message);
+        const unlistenToNotification = allHistoryBlocksShouldBeRemoved.addListener(() => {
+            unblock();
+        });
+        const func = () => {
+            callIfPossible(unlistenToNotification);
+            unblock();
+        }
+        return func;
+    }, [history, message, shouldBlock]);
+}
+
 export function getIntegerArray(upper, lower) {
     upper = Math.round(upper); lower = Math.round(lower);
     const numbers = [];
@@ -53,7 +71,6 @@ export function getIntegerArray(upper, lower) {
     }
     return numbers;
 }
-
 
 
 export class Notification{
@@ -71,6 +88,9 @@ export class Notification{
         }
     }
 }
+
+export const allHistoryBlocksShouldBeRemoved = new Notification();
+
 
 export function callIfPossible(func, ...rest){
     if (func){

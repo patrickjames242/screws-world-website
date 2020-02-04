@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Optional } from "jshelpers";
-import { ProductDataObject, isProduct, isProductCategory, ProductsDataObjectsManager, ProductsDataObjectID } from './ProductsDataHelpers';
+import { ProductDataObject, isProduct, isProductCategory, ProductsDataObjectsManager, ProductsDataObjectID, ProductCategory } from './ProductsDataHelpers';
 import { DashboardProductsRouteURLs, MainUIProductsRouteURLs, DashboardProductsRouteMatchPaths, MainUIProductsRouteMatchPaths } from './ProductsRoutesInfo';
 import { matchPath } from 'react-router-dom';
 import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
@@ -83,6 +83,7 @@ export interface ProductsInfoContextValue {
     data: Optional<{
         subject: ProductsPageSubject,
         allTopLevelItems: ProductDataObject[],
+        allCategories: ProductCategory[],
     }>
 }
 
@@ -94,6 +95,7 @@ export function computeProductsInfoContextValueFromFetchResult(routePath: string
             data: {
                 subject: getProductsPageSubjectForRoutePath(routePath, objectsManager),
                 allTopLevelItems: objectsManager.getTopLevelItems(),
+                allCategories: objectsManager.getAllCategories(),
             },
             error: null,
         }
@@ -143,7 +145,7 @@ export function useCurrentProductDetailsViewItem(): Optional<ProductDataObject>{
 export function useToURLForProductItem(productsItem: ProductDataObject): string {
     const isDashboard = useIsDashboard();
     return isDashboard ? 
-    DashboardProductsRouteURLs.productDetailsView(productsItem.id.stringVersion) : MainUIProductsRouteURLs.productDetailsView(productsItem.id.stringVersion);
+    DashboardProductsRouteURLs.productDetailsView(productsItem.id) : MainUIProductsRouteURLs.productDetailsView(productsItem.id);
 }
 
 

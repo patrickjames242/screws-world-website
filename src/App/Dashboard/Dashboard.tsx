@@ -1,7 +1,7 @@
 
 import React, { useRef, useState } from "react";
 import './Dashboard.scss';
-import { useSetTitleFunctionality, Notification, Optional } from "jshelpers";
+import { useSetTitleFunctionality, Optional, allHistoryBlocksShouldBeRemoved } from "jshelpers";
 import Products from "App/MainSiteInterface/Products/Products";
 import { useHistory, Switch, Route, useRouteMatch } from "react-router-dom";
 import * as RoutePaths from 'topLevelRoutePaths';
@@ -40,7 +40,6 @@ export default function Dashboard() {
             setAuthToken(null);
         },
         requestsRequiringAuth: new RequestsRequiringAuthentication(UserPersistedAuthToken.get),
-        userWillLogOutNotification: new Notification(),
     }).current;
 
     const pageToRedirectToAfterLoginKey = "pageToRedirectToAfterLogin";
@@ -59,7 +58,7 @@ export default function Dashboard() {
         if (newValue) {
             history.replace(redirectURL);
         } else {
-            dashboardInfo.userWillLogOutNotification.post({});
+            allHistoryBlocksShouldBeRemoved.post({});
             history.push(DashboardRouteURLs.dashboardLogIn);
         }
         setUserLoggedInState(!!newValue);

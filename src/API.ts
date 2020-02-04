@@ -68,8 +68,8 @@ function urlForFetchItemType(fetchItemType: FetchItemType): string {
 }
 
 
-// const baseURL = "https://screws-world-backend.herokuapp.com"
-const baseURL = "http://localhost:5000";
+const baseURL = "https://screws-world-backend.herokuapp.com";
+// const baseURL = "http://localhost:5000";
 
 const categoriesURL = baseURL + "/categories";
 const productsURL = baseURL + "/products";
@@ -99,7 +99,7 @@ export function fetchAllItems(itemType: FetchItemType): Promise<ProductItemNetwo
 export interface ProductItemProps {
     title: string,
     description?: string,
-    parentCategoryID?: number,
+    parentCategoryID?: Optional<number>,
 }
 
 export enum APIChangeType {
