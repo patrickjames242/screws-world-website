@@ -56,6 +56,18 @@
         
         }
 
+        > .LoadingIndicatorBox{
+            $top-and-bottom-margin: 5rem;
+            margin-top: $top-and-bottom-margin;
+            margin-bottom: calc(#{$top-and-bottom-margin} - var(--main-content-padding));
+
+            > .LoadingIndicator{
+                @include setProps(width height, 4rem);
+                @include setProps(margin-right margin-left, auto);
+
+            }
+        }
+
         > .ProductItemsGrid{
 
             margin-left: -$product-grid-insets;
@@ -71,7 +83,7 @@
             }
 
             @media(min-width: 850px){
-                grid-template-columns: auto auto  auto ;
+                grid-template-columns: auto auto auto;
             }
 
             @media(min-width: $min-width-for-displaying-side-bar){

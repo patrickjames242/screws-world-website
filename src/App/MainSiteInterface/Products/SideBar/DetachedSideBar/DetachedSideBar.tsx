@@ -7,7 +7,7 @@ import { useTransition, animated } from 'react-spring';
 import { useLocation } from 'react-router-dom';
 import {Location} from 'history';
 
-import { useAllTopLevelProductItems, useCurrentProductDetailsViewItem } from '../../ProductsUIHelpers';
+import { useAllTopLevelProductItems, useCurrentProductDetailsViewItem, useProductsInfoContextValue } from '../../ProductsUIHelpers';
 import SideBarLinksNode from '../SideBarLinksNode/SideBarLinksNode';
 import { isProduct } from '../../ProductsDataHelpers';
 import productsScssVariables from '../../_products-variables.scss';
@@ -15,6 +15,7 @@ import { callIfPossible } from 'jshelpers';
 
 import './DetachedSideBar.scss';
 import { useScreenDimmerFunctions } from 'App/ScreenDimmer';
+import SideBarLoadingIndicator from '../SideBarLoadingIndicator/SideBarLoadingIndicator';
 
 
 export interface DetatchedSideBarFunctionsRef {
@@ -86,7 +87,7 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
     });
 
     const productsDataTree = useAllTopLevelProductItems();
-
+    const productInfo = useProductsInfoContextValue();
 
     return <>
         {transitionProps.map(({ item, key, props }) => {
@@ -94,6 +95,11 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
             return <animated.div key={key} className="DetatchedSideBar SideBar" style={props}>
                 <div className="content">
                     <div className="links-container-holder">
+                        {(() => {
+                            if (productInfo.loadingIsFinished === false){
+                                return <SideBarLoadingIndicator/>
+                            }
+                        })()}
                         <div className="links-container">
                             {productsDataTree.map(x => {
                                 return <SideBarLinksNode item={x} key={x.id.stringVersion} />

@@ -1,3 +1,4 @@
+
 import './ErrorMessageBox.scss';
 import React from 'react';
 import errorIcon from 'assets/errorIcon';

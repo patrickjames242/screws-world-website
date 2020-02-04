@@ -4,25 +4,31 @@ import React, { useRef, useEffect } from 'react';
 import SideBarLinksNode from '../SideBarLinksNode/SideBarLinksNode';
 
 import './AttachedSideBar.scss';
-import { useAllTopLevelProductItems } from '../../ProductsUIHelpers';
+import { useAllTopLevelProductItems, useProductsInfoContextValue } from '../../ProductsUIHelpers';
+import SideBarLoadingIndicator from '../SideBarLoadingIndicator/SideBarLoadingIndicator';
 
 
 
 export default function AttachedSideBar() {
     const allTopLevelProductItems = useAllTopLevelProductItems();
-    
+
+    const productInfo = useProductsInfoContextValue();
+
     const contentHolderRef = useRef<HTMLDivElement>(null);
 
     const faderElements = useSideBarFaderFunctionality(contentHolderRef);
 
     return <div className="AttachedSideBar SideBar">
         <div className="content-holder" ref={contentHolderRef}>
-            <div className="content">
-                {
-                    allTopLevelProductItems.map(x => {
-                        return <SideBarLinksNode item={x} key={x.id.stringVersion} />
-                    })
+            {(() => {
+                if (productInfo.loadingIsFinished === false) {
+                    return <SideBarLoadingIndicator />
                 }
+            })()}
+            <div className="content">
+                {allTopLevelProductItems.map(x => {
+                    return <SideBarLinksNode item={x} key={x.id.stringVersion} />
+                })}
             </div>
         </div>
         {faderElements}

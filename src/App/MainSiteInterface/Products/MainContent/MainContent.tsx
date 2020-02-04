@@ -8,6 +8,7 @@ import ProductDetailsView from './ProductDetailsView/ProductDetailsView';
 import ProductItemsGrid from './ProductItemsGrid/ProductItemsGrid';
 import EditProductItemView from './EditProductItemView/EditProductItemView';
 import { useIsDashboard } from 'App/Dashboard/DashboardUIHelpers';
+import LoadingIndicator from 'random-components/LoadingIndicator/LoadingIndicator';
 
 
 
@@ -20,22 +21,24 @@ export default function MainContent() {
 
     const { title, description }: { title: string, description: Optional<string> } = (() => {
 
+        const introTitleInfo = {
+            title: isDashboard ? "Welcome to the Products Dashboard" : "Browse Our Products",
+            description: isDashboard ?
+                "Here you can create, edit, and delete products displayed on the Screws World products page." :
+                "Here you can browse a catalogue of our top selling products to see exactly what we have to offer.",
+        }
+
         if (productInfo.loadingIsFinished === false) {
-            return {
-                title: "Loading...",
-                description: null,
-            }
+            
+            return introTitleInfo;
+
         } else if (productInfo.data) {
             const currentSubject = productInfo.data.subject;
 
             switch (currentSubject.type) {
                 case ProductsPageSubjectType.INTRO_PAGE:
-                    return {
-                        title: isDashboard ? "Welcome to the Products Dashboard" : "Browse Our Products",
-                        description: isDashboard ?
-                            "Here you can create, edit, and delete products displayed on the Screws World products page." :
-                            "Here you can browse a catalogue of our top selling products to see exactly what we have to offer.",
-                    };
+                    return introTitleInfo;
+
                 case ProductsPageSubjectType.CATEGORY:
                 case ProductsPageSubjectType.PRODUCT:
                     let item = currentSubject.associatedData as ProductDataObject;
@@ -51,25 +54,24 @@ export default function MainContent() {
                 case ProductsPageSubjectType.EDIT_ITEM:
                     const itemName = (currentSubject.associatedData as ProductDataObject).name;
                     return {
-                        title: "Edit '" + itemName + "'",
+                        title: `Edit '${itemName}'`,
                         description: null,
                     };
                 case ProductsPageSubjectType.ERROR:
                     return {
-                        title: "ERROR",
-                        description: null,
+                        title: "Page Not Found",
+                        description: "Sorry, but we couldn't find what you were looking for.",
                     }
             }
         } else if (productInfo.error){
             return {
-                title: "ERROR",
+                title: "Oops! An error occured",
                 description: productInfo.error.message,
             }
         } else {
             throw new Error("this point should never be reached! Check logic!");
         }
 
-        
     })();
 
 
@@ -77,7 +79,11 @@ export default function MainContent() {
         <TitleBox title={title} description={description} />
         {(() => {
             if (!productInfo.data) {
-                return null;
+                if (productInfo.loadingIsFinished){
+                    return null;
+                } else {
+                    return <LoadingIndicatorBox/>
+                }
             }
 
             const currentSubject = productInfo.data.subject;
@@ -122,6 +128,10 @@ function TitleBox(props: { title: string, description: Optional<string> }) {
 }
 
 
-
+function LoadingIndicatorBox(){
+    return <div className="LoadingIndicatorBox">
+        <LoadingIndicator/>
+    </div>
+}
 
 

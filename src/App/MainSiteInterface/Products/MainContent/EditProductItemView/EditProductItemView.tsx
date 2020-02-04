@@ -78,7 +78,7 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
             .some(x => x);
     })();
 
-    useBlockHistoryWhileMounted("Are you sure you want to leave this page. If you do, all the changes you have made will be lost.",
+    useBlockHistoryWhileMounted("Are you sure you want to leave this page? If you do, all the changes you have made will be lost.",
         areThereChangesToBeSaved && creationOrUpdateHasCompleted === false);
 
     const apiRequests = useRequestsRequiringAuth();
