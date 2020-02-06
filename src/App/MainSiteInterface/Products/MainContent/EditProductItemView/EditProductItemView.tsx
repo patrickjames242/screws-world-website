@@ -261,8 +261,9 @@ function useSelectParentCategoryFunctionality(props: EditProductItemViewProps) {
 
             children.push({ uniqueID: String(x.id.databaseID), stringValue: title });
         });
+        children = children.sort((x1, x2) => x1.stringValue.localeCompare(x2.stringValue));
         children.unshift({ uniqueID: String(NULL_PARENT_CATEGORY_ID), stringValue: "None (should be top level)" });
-        return children.sort((x1, x2) => x1.stringValue.localeCompare(x2.stringValue));
+        return children;
     }, [allCategories, props.itemToEdit]);
 
 

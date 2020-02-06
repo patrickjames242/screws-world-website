@@ -9,7 +9,7 @@ export default function SideBarLoadingIndicator(){
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        width: "4rem",
-        height: "4rem",
+        width: "3.5rem",
+        height: "3.5rem",
     }}/>
 }

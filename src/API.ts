@@ -11,44 +11,86 @@ enum HTTPMethod {
     DELETE,
 }
 
+enum BodyInfoContentType {
+    JSON,
+    FORM_DATA,
+}
+
+interface BodyInfo {
+    data: object,
+    type: BodyInfoContentType,
+}
 
 interface FetchDataFromAPIProps {
     url: string,
     method?: HTTPMethod,
-    body?: object,
-    headers?: { [key: string]: string },
+    bodyInfo?: BodyInfo,
+    headers?: Map<string, string>,
+}
+
+function getFormDataForObject(object: object): FormData {
+    const formData = new FormData();
+    for (const key in object) {
+        formData.append(key, (object as any)[key]);
+    }
+    return formData;
 }
 
 async function fetchDataFromAPI<ResultType>(props: FetchDataFromAPIProps): Promise<ResultType> {
 
-    const methodText = (() => {
+    const method = (() => {
         switch (props.method ?? HTTPMethod.GET) {
             case HTTPMethod.GET: return "GET";
             case HTTPMethod.POST: return "POST";
             case HTTPMethod.PUT: return "PUT";
             case HTTPMethod.DELETE: return "DELETE";
+            default: throw new Error("the http method value provided is not valid");
         }
     })();
 
     const headers = (() => {
-        let x: { [x: string]: string } = {}
-        if (props.body) {
-            x['Content-Type'] = "application/json";
+        const x: { [key: string]: string } = {}
+
+        if (props.bodyInfo) {
+            switch (props.bodyInfo.type) {
+                case BodyInfoContentType.JSON:
+                    x["Content-Type"] = "application/json";
+                    break;
+                case BodyInfoContentType.FORM_DATA:
+                    // the browser will set the content type for us when form data is submitted as the body
+                    break;
+            }
         }
-        return { ...x, ...props.headers }
+
+        for (const key of props.headers?.keys() ?? []) {
+            const value = props.headers?.get(key);
+            if (value) {
+                x[key] = value;
+            }
+        }
+
+        return x;
     })();
 
-    const result = await fetch(props.url, {
-        method: methodText,
-        headers: headers,
-        body: props.body ? JSON.stringify(props.body) : undefined,
+    const body = (() => {
+        if (props.bodyInfo == null) { return undefined; }
+        switch (props.bodyInfo.type) {
+            case BodyInfoContentType.JSON: return JSON.stringify(props.bodyInfo.data);
+            case BodyInfoContentType.FORM_DATA: return getFormDataForObject(props.bodyInfo.data);
+        }
+    })();
+
+    const fetchResult = await fetch(props.url, {
+        method, headers, body,
     });
-    const result_1 = await result.json();
-    if (result_1.status === "success") {
-        return result_1.data;
+
+    const resultJsonBody = await fetchResult.json() as any;
+
+    if (resultJsonBody.status === "success") {
+        return resultJsonBody.data;
     }
-    else if (result_1.status === "failure") {
-        return Promise.reject(new Error(result_1.errorMessage));
+    else if (resultJsonBody.status === "failure" && resultJsonBody.errorMessage != null) {
+        return Promise.reject(new Error(resultJsonBody.errorMessage));
     }
     else {
         return Promise.reject(new Error("An unknown error occured."));
@@ -68,8 +110,22 @@ function urlForFetchItemType(fetchItemType: FetchItemType): string {
 }
 
 
-const baseURL = "https://screws-world-backend.herokuapp.com";
-// const baseURL = "http://localhost:5000";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const baseURL = "https://screws-world-backend.herokuapp.com";
+const baseURL = "http://localhost:5000";
 
 const categoriesURL = baseURL + "/categories";
 const productsURL = baseURL + "/products";
@@ -79,8 +135,11 @@ export interface LoginRequestResult {
 }
 
 export function logIn(username: string, password: string): Promise<LoginRequestResult> {
-    const body = { username, password };
-    return fetchDataFromAPI({ url: baseURL + "/login", method: HTTPMethod.POST, body });
+    const bodyInfo: BodyInfo = {
+        type: BodyInfoContentType.JSON,
+        data: { username, password },
+    }
+    return fetchDataFromAPI({ url: baseURL + "/login", method: HTTPMethod.POST, bodyInfo });
 }
 
 
@@ -100,7 +159,28 @@ export interface ProductItemProps {
     title: string,
     description?: string,
     parentCategoryID?: Optional<number>,
+    image?: Optional<File>,
 }
+
+function getBodyInfoForProductItemProps(props: ProductItemProps): BodyInfo{
+    const bodyInfo: BodyInfo = {
+        type: BodyInfoContentType.FORM_DATA,
+        data: { 
+            json_data: new File([JSON.stringify({
+                title: props.title, 
+                description: props.description, 
+                parent_category: props.parentCategoryID, 
+            })], "json_data.json", {type: "application/json"}),
+        },
+    }
+
+    if (props.image != null){
+        (bodyInfo.data as any).image_data = props.image;
+    }
+    return bodyInfo;
+}
+
+
 
 export enum APIChangeType {
     DELETE,
@@ -130,16 +210,18 @@ export class RequestsRequiringAuthentication {
     ) { }
 
     async createNewItem(itemType: FetchItemType, props: ProductItemProps): Promise<ProductItemNetworkResponse> {
-        const body = { title: props.title, description: props.description, parent_category: props.parentCategoryID };
-        const result = await this.performRequestRequiringAuth<ProductItemNetworkResponse>({ url: urlForFetchItemType(itemType), method: HTTPMethod.POST, body });
+        const bodyInfo = getBodyInfoForProductItemProps(props);
+        const result = await this.performRequestRequiringAuth<ProductItemNetworkResponse>({ url: urlForFetchItemType(itemType), method: HTTPMethod.POST, bodyInfo });
         apiInfoDidChangeNotification.post(new APIChange(APIChangeType.INSERTION, itemType, result));
         return result;
     }
 
     async editItem(itemType: FetchItemType, id: number, props: ProductItemProps): Promise<ProductItemNetworkResponse> {
-        const body = { title: props.title, description: props.description, parent_category: props.parentCategoryID };
         const url = urlForFetchItemType(itemType) + "/" + id;
-        const result = await this.performRequestRequiringAuth<ProductItemNetworkResponse>({ url, body: body, method: HTTPMethod.PUT });
+
+        const bodyInfo = getBodyInfoForProductItemProps(props);
+
+        const result = await this.performRequestRequiringAuth<ProductItemNetworkResponse>({ url, bodyInfo, method: HTTPMethod.PUT });
         apiInfoDidChangeNotification.post(new APIChange(APIChangeType.UPDATE, itemType, result));
         return result;
     }
@@ -152,13 +234,12 @@ export class RequestsRequiringAuthentication {
 
     private performRequestRequiringAuth<ResultType>(props: FetchDataFromAPIProps): Promise<ResultType> {
         const authToken = this.authTokenProvider();
-        if (!authToken) {
+        if (authToken == null) {
             return Promise.reject(new Error("An authentication error has occured. Please log out and log back in to complete this action."));
         }
-        props.headers = {
-            "auth-token": authToken,
-            ...props.headers,
-        }
+        const headers = props.headers ?? new Map<string, string>();
+        headers.set("auth-token", authToken);
+        props.headers = headers;
         return fetchDataFromAPI(props);
     }
 
