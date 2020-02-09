@@ -54,26 +54,11 @@
                     @media(max-width: $max-width-for-vertical-layout){
                         max-width: initial;
                     }
+
                     
                     > .content{
-                        padding-top: $product-image-height-percentage-of-width;
+                        
                         position: relative;
-                        
-                        > .image-holder{
-                            position: absolute;
-                            @include setProps(top left, 0);
-                            @include setProps(right bottom, var(--image-section-insets));
-                        
-                            border-radius: 0.7rem;
-                            overflow: hidden;
-                            background-color: lightGray;
-    
-                            > img{
-                                height: 100%;
-                                width: 100%;
-                                object-fit: cover;
-                            }
-                        }
                         
                         > .background-view{
                             background-color: $product-item-info-background-color;
@@ -82,6 +67,11 @@
                             position: absolute;
                             @include setProps(top left, var(--image-section-insets));
                             @include setProps(right bottom, 0);
+                        }
+                        
+                        > .ProductItemImageView{
+                            @include setProps(margin-right margin-bottom, var(--image-section-insets));
+                            border-radius: 0.7rem;
                         }
                     }
                 }

@@ -85,7 +85,7 @@
                                     @include applyBlueThemeTextGradient;
                                 }
                             }
-                            > .image-box > .content > img {
+                            > .image-box > .ProductItemImageView {
                                 transform: scale(1.1);
                             }
                         }
@@ -98,36 +98,31 @@
                     
                     > .image-box{
                         
-                        padding-top: $product-image-height-percentage-of-width;
-                        background-color: lightGray;
+                        
+
                         border-radius: 0.55rem;
                         position: relative;
                         overflow: hidden;
 
-                        > .content{
-                            
-                            position: absolute;
-                            @include setProps(top bottom left right, 0);
-        
-                            > img{
-                                width: 100%; height: 100%;
-                                object-fit: contain;
-                                @include configureTransition(transform);
-                            }
-                            
-                            > .product-or-category{
-                                position: absolute;
-                                @include setProps(right top, 0.5rem);
-                                text-transform: uppercase;
-                                justify-self: start;
-                                font-weight: bold;
-                                font-size: 11.2px;
-                                padding: 0.265rem 0.4rem 0.2rem;
-                                border-radius: 0.3rem;
-                                background-color: colors(light-blue);
-                            }
+                        
 
+                        > .ProductItemImageView{
+                            @include configureTransition(transform);
                         }
+                        
+                        > .product-or-category{
+                            position: absolute;
+                            @include setProps(right top, 0.5rem);
+                            text-transform: uppercase;
+                            justify-self: start;
+                            font-weight: bold;
+                            font-size: 11.2px;
+                            padding: 0.265rem 0.4rem 0.2rem;
+                            border-radius: 0.3rem;
+                            background-color: colors(light-blue);
+                        }
+
+                        
                 
                     }
 

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ProductDataObject, ProductDataType, } from '../../ProductsDataHelpers';
 import { useToURLForProductItem } from '../../ProductsUIHelpers';
 import './ProductItemsGrid.scss';
+import ProductItemImageView from 'random-components/ProductItemImageView/ProductItemImageView';
 
 
 
@@ -31,10 +32,8 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
         <div className="background-view" />
         <div className="content-box">
             <div className="image-box">
-                <div className="content">
-                    <img src={props.dataObject.imageURL} alt="" />
-                    <div className="product-or-category">{productOrCategoryText}</div>
-                </div>
+                <ProductItemImageView imageSource={props.dataObject} />
+                <div className="product-or-category">{productOrCategoryText}</div>
             </div>
             <div className="under-image-content">
                 <div className="text-box">

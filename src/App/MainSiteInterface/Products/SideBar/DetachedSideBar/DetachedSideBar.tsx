@@ -11,7 +11,6 @@ import { useAllTopLevelProductItems, useCurrentProductDetailsViewItem, useProduc
 import SideBarLinksNode from '../SideBarLinksNode/SideBarLinksNode';
 import { isProduct } from '../../ProductsDataHelpers';
 import productsScssVariables from '../../_products-variables.scss';
-import { callIfPossible } from 'jshelpers';
 
 import './DetachedSideBar.scss';
 import { useScreenDimmerFunctions } from 'App/ScreenDimmer';
@@ -34,7 +33,7 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
 
     const _setIsPresented = useCallback(function (isPresented: boolean, isAnimated: boolean) {
         shouldIsPresentedUpdateBeAnimatedRef.current = isAnimated;
-        callIfPossible(dimmer.setVisibility, isPresented, isAnimated);
+        dimmer.setVisibility?.(isPresented, isAnimated);
 
         // screenDimmerFunctions.setScreenDimmerVisibility(isPresented, isAniamted);
         setIsPresented(isPresented);
@@ -45,7 +44,7 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
 
     useEffect(() => {
         if (isPresented === false) { return; }
-        const unListen = callIfPossible(dimmer.dimmerWasClickedNotification?.addListener, () => {
+        const unListen = dimmer.dimmerWasClickedNotification?.addListener?.(() => {
             _setIsPresented(false, true);
         });
         if (unListen){return unListen;}

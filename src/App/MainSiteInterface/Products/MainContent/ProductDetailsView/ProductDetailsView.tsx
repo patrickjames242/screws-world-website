@@ -1,7 +1,10 @@
+
+
 import './ProductDetailsView.scss';
 
 import React from 'react';
 import { Product } from '../../ProductsDataHelpers';
+import ProductItemImageView from 'random-components/ProductItemImageView/ProductItemImageView';
 
 
 
@@ -14,9 +17,7 @@ export default function ProductDetailsView(props: { product: Product }) {
             <div className="image-section">
                 <div className="content">
                     <div className="background-view" />
-                    <div className="image-holder">
-                        <img src={props.product.imageURL} alt="" />
-                    </div>
+                    <ProductItemImageView imageSource={props.product}/>
                 </div>
             </div>
         </div>

@@ -11,7 +11,7 @@ import { DASHBOARD as dashboardURL } from 'topLevelRoutePaths';
 import { Link, useHistory } from 'react-router-dom';
 import './TopActionsButtonsView.scss';
 import { useAlertFunctionality, CustomAlertInfo, CustomAlertButtonInfo, CustomAlertButtonType, CustomAlertController, CustomAlertButtonController, CustomAlertTextFieldInfo, CustomAlertTextFieldController } from 'random-components/CustomAlert/CustomAlert';
-import { callIfPossible, Optional } from 'jshelpers';
+import { Optional } from 'jshelpers';
 import { useCurrentProductsPageSubject, ProductsPageSubjectType, useCurrentProductDetailsViewItem } from '../ProductsUIHelpers';
 import { DashboardProductsRouteURLs } from '../ProductsRoutesInfo';
 import { useDashboardInfo, useRequestsRequiringAuth } from 'App/Dashboard/DashboardUIHelpers';
@@ -31,7 +31,7 @@ export default function TopActionButtonsView() {
 
         let controller: CustomAlertController;
 
-        const dismissAlert = () => callIfPossible(controller?.dismiss);
+        const dismissAlert = () => controller?.dismiss();
 
         const cancelButton = new CustomAlertButtonInfo("Cancel", dismissAlert, CustomAlertButtonType.SECONDARY);
 
@@ -194,14 +194,14 @@ function useDeleteAlertInfo(): Optional<CustomAlertInfo> {
 
     const refreshDeleteButtonActivation = willChildrenBeDeleted ? () => {
         const text = (textFieldController?.currentTextFieldText ?? "").trim();
-        callIfPossible(deleteButtonController?.setIsActive, text === confirmationMessage);
+        deleteButtonController?.setIsActive(text === confirmationMessage);
     } : null;
 
     const textFieldInfo: Optional<CustomAlertTextFieldInfo> = willChildrenBeDeleted ? {
         onMount: c => {
             textFieldController = c
             c.textDidChangeNotification.addListener(() => {
-                callIfPossible(refreshDeleteButtonActivation);
+                refreshDeleteButtonActivation?.();
             });
         },
     } : null;
@@ -226,7 +226,7 @@ function useDeleteAlertInfo(): Optional<CustomAlertInfo> {
         rightButtonInfo: deleteButton,
         onMount: (c) => {
             alertController = c;
-            callIfPossible(refreshDeleteButtonActivation);
+            refreshDeleteButtonActivation?.();
         },
     };
 

@@ -30,7 +30,7 @@ declare module jshelpers{
     export const allHistoryBlocksShouldBeRemoved: Notification<{}>;
 
 
-    export function callIfPossible<FunctionType extends Function>(func: FunctionType | null | undefined, ...params: Parameters<FunctionType>): Optional<ReturnType<FunctionType>>;
+   
 
 }
 

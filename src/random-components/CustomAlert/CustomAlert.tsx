@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import './CustomAlert.scss';
-import { Optional, callIfPossible, Notification } from 'jshelpers';
+import { Optional, Notification } from 'jshelpers';
 import { animated, useSpring } from 'react-spring';
 import CustomTextField from '../CustomInputs/CustomTextField/CustomTextField';
 
@@ -35,7 +35,7 @@ export default function AlertProvider(props: { children: React.ReactNode}) {
                 if (prevAlerts.some(a => isEqual(a, info))) {
                     prevAlerts.forEach((x, i) => {
                         if (isEqual(x, info) === false){return;}
-                        if (callIfPossible(x.shouldReplaceInfo, info) === true){
+                        if (x.shouldReplaceInfo?.(info) === true){
                             prevAlerts[i] = info;
                             return [...prevAlerts];
                         } else {
@@ -113,7 +113,7 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
 
     function dismissAlert() {
         setShouldBePresented(false);
-        callIfPossible(props.onDismiss);
+        props.onDismiss?.();
     }
 
     const backgroundStyle = useSpring({
@@ -159,8 +159,8 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
     }).current;
 
     useEffect(() => {
-        callIfPossible(props.onMount, alertController);
-        callIfPossible(props.textFieldInfo?.onMount, textFieldController);
+        props.onMount?.(alertController);
+        props.textFieldInfo?.onMount?.(textFieldController);
     }, [alertController, props.onMount, props.textFieldInfo, textFieldController]);
 
     function respondToTextFieldTextDidChange(newText: string) {
@@ -256,7 +256,7 @@ function CustomAlertButton(props: CustomAlertButtonInfo & {dismissAlertAction: (
     ].join(" ");
        
     useEffect(() => {
-        callIfPossible(props.onMount, controller);
+        props.onMount?.(controller);
     }, [controller, props.onMount]);
 
     return <LoadingButton isActive={isActive} loadingIndicatorSize="18px" shouldShowIndicator={isLoading} className={className} onClick={respondToClick}>

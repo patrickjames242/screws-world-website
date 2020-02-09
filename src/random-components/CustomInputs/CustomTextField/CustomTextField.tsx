@@ -1,6 +1,5 @@
 import React from 'react';
 import './CustomTextField.scss';
-import { callIfPossible } from 'jshelpers';
 import CustomInput, { CustomInputProps } from '../CustomInput';
 
 
@@ -20,7 +19,7 @@ export interface CustomTextFieldProps extends CustomInputProps {
 
 export default function CustomTextField(props: CustomTextFieldProps) {
     function handleChange(event: Event) {
-        callIfPossible(props.onTextChange, (event.target as any).value ?? "");
+        props.onTextChange?.((event.target as any).value ?? "");
     }
 
     const inputElement = 

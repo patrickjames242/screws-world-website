@@ -2,9 +2,7 @@
 
 
 import { Optional } from "jshelpers";
-import image1 from './icons/screwProductImage1.jpg';
-import image2 from './icons/screwProductImage2.jpg';
-import image3 from './icons/screwProductImage3.jpg';
+
 import { fetchAllItems, ProductItemNetworkResponse, FetchItemType, APIChange, APIChangeType } from "API";
 
 
@@ -75,7 +73,7 @@ export abstract class ProductDataObject {
 
     protected _name: string;
     protected _description: Optional<string>;
-    protected _imageURL: string;
+    protected _imageURL: Optional<string>;
     protected _parentGetter: (id: ProductsDataObjectID) => Optional<ProductCategory>;
 
     constructor(
@@ -83,7 +81,7 @@ export abstract class ProductDataObject {
         databaseID: number,
         name: string,
         description: Optional<string>,
-        imageURL: string,
+        imageURL: Optional<string>,
         parentGetter: (id: ProductsDataObjectID) => Optional<ProductCategory>,
     ) {
         this.id = new ProductsDataObjectID(databaseID, objectType);
@@ -107,7 +105,7 @@ export class Product extends ProductDataObject {
         id: number,
         name: string,
         description: Optional<string>,
-        imageURL: string,
+        imageURL: Optional<string>,
         parentGetter: (id: ProductsDataObjectID) => Optional<ProductCategory>,
     ) {
         super(ProductDataType.Product, id, name, description, imageURL, parentGetter);
@@ -127,7 +125,7 @@ export class ProductCategory extends ProductDataObject {
         id: number,
         name: string,
         description: Optional<string>,
-        imageURL: string,
+        imageURL: Optional<string>,
         parentGetter: (id: ProductsDataObjectID) => Optional<ProductCategory>,
         childrenGetter: (categoryID: number) => ProductDataObject[],
     ) {
@@ -179,11 +177,11 @@ export class ProductsDataObjectsManager {
         const manager = new ProductsDataObjectsManager(_categoryChildrenByCategoryID, _objectParentsByObjectID, _objectsByObjectIDs, null);
 
         networkCategoriesResponse.forEach(x => {
-            const category = new ProductCategory(x.id, x.title, x.description, _getRandomImageURL(), manager._getObjectParentForObjectWithID, manager._getCategoryChildenForCategoryID);
+            const category = new ProductCategory(x.id, x.title, x.description, x.image_url, manager._getObjectParentForObjectWithID, manager._getCategoryChildenForCategoryID);
             _objectsByObjectIDs.set(category.id.stringVersion, category);
         });
         networkProductsResponse.forEach(x => {
-            const product = new Product(x.id, x.title, x.description, _getRandomImageURL(), manager._getObjectParentForObjectWithID);
+            const product = new Product(x.id, x.title, x.description, x.image_url, manager._getObjectParentForObjectWithID);
             _objectsByObjectIDs.set(product.id.stringVersion, product);
         });
 
@@ -262,9 +260,9 @@ export class ProductsDataObjectsManager {
                     const convertedNetworkReponse = (() => {
                         switch (itemType) {
                             case ProductDataType.Product:
-                                return new Product(networkResponse.id, networkResponse.title, networkResponse?.description, _getRandomImageURL(), this._getObjectParentForObjectWithID);
+                                return new Product(networkResponse.id, networkResponse.title, networkResponse.description, networkResponse.image_url, this._getObjectParentForObjectWithID);
                             case ProductDataType.ProductCategory:
-                                return new ProductCategory(networkResponse.id, networkResponse.title, networkResponse.description, _getRandomImageURL(), this._getObjectParentForObjectWithID, this._getCategoryChildenForCategoryID);
+                                return new ProductCategory(networkResponse.id, networkResponse.title, networkResponse.description, networkResponse.image_url, this._getObjectParentForObjectWithID, this._getCategoryChildenForCategoryID);
                         }
                     })();
 
@@ -385,23 +383,6 @@ export async function startFetchingProductsDataTree(): Promise<ProductsDataObjec
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // PRIVATE STUFF
 
 function _getProductsDataTypeFromAPIItemType(itemType: FetchItemType): ProductDataType {
@@ -418,30 +399,6 @@ async function _getProductsDataTreeInfo(): Promise<ProductsDataObjectsManager> {
     return ProductsDataObjectsManager.getFor(categories, products);
 }
 
-
-const _getRandomImageURL = (() => {
-    const images = [image1, image2, image3];
-
-    const getRandomDecimal = (() => {
-
-        let currentRandomDecimalIndex = -1;
-        const randomDecimals = [0.7, 0.1, 0.4, 0.6, 0.3, 0.9, 1, 0, 0.2, 0.5, 0.8];
-
-        return () => {
-            currentRandomDecimalIndex = (currentRandomDecimalIndex + 1) % randomDecimals.length
-            const selectedDecimal = randomDecimals[currentRandomDecimalIndex];
-            return selectedDecimal;
-        }
-    })();
-
-    function getRandomElementFrom<Element>(array: Element[]): Optional<Element> {
-        if (array.length <= 0) { return null; }
-        const randomIndex = Math.round((array.length - 1) * getRandomDecimal());
-        return array[randomIndex];
-    }
-
-    return () => getRandomElementFrom(images)!;
-})();
 
 let _productsDataTreePromise: Optional<Promise<ProductsDataObjectsManager>> = null;
 

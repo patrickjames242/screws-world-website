@@ -56,7 +56,10 @@ export function useBlockHistoryWhileMounted(message, shouldBlock = true) {
             unblock();
         });
         const func = () => {
-            callIfPossible(unlistenToNotification);
+            if (unlistenToNotification){
+                unlistenToNotification();
+            }
+            
             unblock();
         }
         return func;
@@ -92,12 +95,6 @@ export class Notification{
 export const allHistoryBlocksShouldBeRemoved = new Notification();
 
 
-export function callIfPossible(func, ...rest){
-    if (func){
-        return func(...rest);
-    }
-    return null;
-}
 
 
 // export function fixScrollingIssueBecauseOfTransitionAnimation() {

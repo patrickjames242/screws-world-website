@@ -15,7 +15,7 @@ import scssVariables from '_helpers.scss';
 
 import { SelectionType, getInfoForSelection } from './SelectionType';
 
-import { Optional, callIfPossible } from 'jshelpers';
+import { Optional } from 'jshelpers';
 import { useScreenDimmerFunctions } from 'App/ScreenDimmer';
 
 
@@ -70,13 +70,13 @@ function useExpandCollapseFunctionality(navBarRef: React.MutableRefObject<Option
 
         if (typeof isExpanded === "boolean") {
             updateIsAnimated();
-            callIfPossible(dimmer.setVisibility, isExpanded, isAnimated);
+            dimmer.setVisibility?.(isExpanded, isAnimated);
             setIsExpanded(isExpanded);
         } else {
             setIsExpanded((prevProp) => {
                 const shouldExpand = (isExpanded as (prev: boolean) => boolean)(prevProp);
                 updateIsAnimated();
-                callIfPossible(dimmer.setVisibility, shouldExpand, isAnimated);
+                dimmer.setVisibility?.(shouldExpand, isAnimated);
                 return shouldExpand;
             });
         }
@@ -84,7 +84,7 @@ function useExpandCollapseFunctionality(navBarRef: React.MutableRefObject<Option
 
     useEffect(() => {
         if (isExpanded === false) { return; }
-        const removeListener = callIfPossible(dimmer.dimmerWasClickedNotification?.addListener, () => {
+        const removeListener = dimmer.dimmerWasClickedNotification?.addListener?.(() => {
             _setExpanded(false, true);
         });
         if (removeListener){return removeListener;}

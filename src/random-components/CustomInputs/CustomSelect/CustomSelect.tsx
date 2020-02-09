@@ -3,7 +3,6 @@
 import React from 'react';
 import './CustomSelect.scss';
 import CustomInput, { CustomInputProps } from '../CustomInput';
-import { callIfPossible } from 'jshelpers';
 
 export interface CustomSelectChild {
     readonly stringValue: string,
@@ -25,7 +24,7 @@ export interface CustomSelectProps extends CustomInputProps{
 export default function CustomSelect(props: CustomSelectProps) {
 
     function respondToValueChange(event: React.ChangeEvent<HTMLSelectElement>){
-        callIfPossible(props.onValueChange, event.target.value);
+        props.onValueChange?.(event.target.value);
     };
 
     const className = [

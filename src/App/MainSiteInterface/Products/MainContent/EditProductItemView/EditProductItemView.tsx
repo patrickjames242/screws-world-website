@@ -21,62 +21,233 @@ interface EditProductItemViewProps {
     itemToEdit: Optional<ProductDataObject>,
 }
 
-const NULL_PARENT_CATEGORY_ID = -1
+
+const FieldTitles = {
+    itemType: "Item Type",
+    title: "Title",
+    description: "Description",
+    parentCategory: "Parent Category",
+    image: "Image",
+}
+
+
+// undefined means no value should be pushed to server. null means current value in server database should be deleted.
+type OptionalDatabaseValue<Type> = Type | null | undefined;
+type RequiredDatabaseValue<Type> = Type | undefined;
+
+interface StateProps {
+    itemType: RequiredDatabaseValue<ProductDataType>,
+    parentCategoryID: OptionalDatabaseValue<number>,
+    title: RequiredDatabaseValue<string>,
+    description: OptionalDatabaseValue<string>,
+    imageFile: OptionalDatabaseValue<File>,
+}
+
+
+function getDefaultUpdatePropertyStates(props: EditProductItemViewProps): StateProps {
+    return {
+        itemType: undefined,
+        title: props.itemToEdit?.name ?? undefined,
+        description: (() => {
+            if (props.itemToEdit == null) {
+                return undefined;
+            } else {
+                return props.itemToEdit.description;
+            }
+        })(),
+        parentCategoryID: (() => {
+            if (props.itemToEdit == null) {
+                return undefined;
+            } else {
+                return props.itemToEdit.parent?.id.databaseID ?? null;
+            }
+        })(),
+        imageFile: undefined,
+    }
+}
+
+
+
+
+
+
+
+
+function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps, stateProps: StateProps): boolean {
+
+    const titleIsChanged: boolean = (() => {
+
+        const oldValue = props.itemToEdit?.name.trim() ?? "";
+
+        const newValue = (() => {
+            if (stateProps.title === undefined){
+                return oldValue;
+            } else {
+                return stateProps.title?.trim() ?? "";
+            }
+        })();
+
+        return oldValue !== newValue;
+
+    })();
+
+    const descriptionIsChanged: boolean = (() => {
+
+        const oldValue = props.itemToEdit?.description?.trim() ?? "";
+        const newValue = (() => {
+            if (stateProps.description === undefined){
+                return oldValue;
+            } else {
+                return stateProps.description?.trim() ?? "";
+            }
+        })();
+        return oldValue !== newValue;
+
+    })();
+
+    const productDataTypeIsSelected: boolean = stateProps.itemType !== undefined;
+
+    const parentCategoryIDIsChanged: boolean = (() => {
+
+        const oldValue = (() => {
+            if (props.itemToEdit == null){
+                return undefined;
+            } else {
+                return props.itemToEdit.parent?.id.databaseID ?? null;
+            }
+        })();
+
+        const newValue = (() => {
+            if (stateProps.parentCategoryID === undefined){
+                return oldValue;
+            } else {
+                return stateProps.parentCategoryID;
+            }
+        })();
+
+        return oldValue !== newValue;
+    })();
+
+    const imageHasBeenSelected: boolean = (() => {
+        if (stateProps.imageFile === undefined) {
+            return false;
+        } else if (props.itemToEdit != null) {
+            return (stateProps.imageFile === null && props.itemToEdit.imageURL === null) === false;
+        } else {
+            return true;
+        }
+    })();
+
+    return [titleIsChanged, descriptionIsChanged, productDataTypeIsSelected, parentCategoryIDIsChanged, imageHasBeenSelected]
+        .some(x => x);
+}
+
+
+
+function getAPIUpdateObjectFromState(props: EditProductItemViewProps, stateProps: StateProps): ProductItemProps & { fetchItemType: FetchItemType } {
+
+    const noValueProvidedError = (fieldTitle: string) => {
+        return new Error(`The ${fieldTitle} field is required, but you have not provided a value for it.`);
+    }
+
+    return {
+        title: (() => {
+
+            const trimmedTitle_stateProps = stateProps.title?.trim() ?? undefined;
+            const titleValueIsNotValid = typeof trimmedTitle_stateProps != "string" || trimmedTitle_stateProps === "";
+
+            if (props.itemToEdit == null) {
+                if (titleValueIsNotValid){
+                    throw noValueProvidedError(FieldTitles.title);    
+                } else {
+                    return trimmedTitle_stateProps;
+                }
+            } else {
+                return trimmedTitle_stateProps === props.itemToEdit.name ? undefined : trimmedTitle_stateProps;
+            }
+        })(),
+
+        description: (() => {
+
+            const oldValue = props.itemToEdit?.description ?? null;
+            const newValue = (() => {
+                if (stateProps.description === undefined){
+                    return oldValue;
+                } else {
+                    const trimmedDescription = stateProps.description?.trim() ?? null;
+                    return (trimmedDescription === "") ? null : trimmedDescription;
+                }
+            })();
+            return oldValue === newValue ? undefined : newValue;
+        })(),
+        parentCategoryID: stateProps.parentCategoryID,
+        image: stateProps.imageFile,
+        fetchItemType: (() => {
+
+            const productDataType = (() => {
+                if (props.itemToEdit == null) {
+                    if (stateProps.itemType !== undefined) {
+                        return stateProps.itemType;
+                    } else {
+                        throw noValueProvidedError(FieldTitles.itemType);
+                    }
+                } else {
+                    if (isProduct(props.itemToEdit)) {
+                        return ProductDataType.Product;
+                    } else if (isProductCategory(props.itemToEdit)) {
+                        return ProductDataType.ProductCategory;
+                    } else {
+                        throw new Error("This point should not be reached! Check logic");
+                    }
+                }
+            })();
+
+            switch (productDataType) {
+                case ProductDataType.Product: return FetchItemType.PRODUCT;
+                case ProductDataType.ProductCategory: return FetchItemType.CATEGORY;
+            }
+        })(),
+    }
+}
+
+
+
 
 export default function EditProductItemView(props: EditProductItemViewProps) {
 
-    const [title, setTitle] = useState(props.itemToEdit?.name ?? "");
-    const [description, setDescription] = useState(props.itemToEdit?.description ?? "");
+    const defaultStates = getDefaultUpdatePropertyStates(props);
+
+    const [itemType, setItemType] = useState(defaultStates.itemType);
+    const [parentCategoryID, setParentCategoryID] = useState(defaultStates.parentCategoryID);
+    const [title, setTitle] = useState(defaultStates.title);
+    const [description, setDescription] = useState(defaultStates.description);
+    const [imageFile, setImageFile] = useState(defaultStates.imageFile);
+
+    const currentPropertiesStates: StateProps = {
+        itemType, parentCategoryID, title, description, imageFile,
+    }
+
     const [isLoading, setIsLoading] = useState(false);
     const [creationOrUpdateHasCompleted, setCreationOrUpdateHasCompleted] = useState(false);
     const [errorMessage, setErrorMessage] = useState<Optional<string>>(null);
 
 
-    const trimmedTitle = title.trim();
-    const trimmedDescription = description.trim();
 
-    const FieldTitles = {
-        itemType: "Item Type",
-        title: "Title",
-        description: "Description",
-        parentCategory: "Parent Category",
-    }
-
-    const { selectedFetchItemType, setSelectedFetchItemType, getFetchItemTypeSelectElement } = useFetchItemTypeFunctionality(props);
-    const fetchItemTypeSelectElement = getFetchItemTypeSelectElement(!isLoading, FieldTitles.itemType);
-
-    const { selectedParentCategoryID, setSelectedParentCategoryID, getParentCategorySelectElement } = useSelectParentCategoryFunctionality(props);
-    const parentCategorySelectElement = getParentCategorySelectElement(!isLoading, FieldTitles.parentCategory);
 
     useEffect(() => {
-        setTitle(props.itemToEdit?.name ?? "");
-        setDescription(props.itemToEdit?.description ?? "");
-        setSelectedFetchItemType(null);
-        setSelectedParentCategoryID(getDefaultParentValueForProps(props));
-    }, [props.itemToEdit, setSelectedFetchItemType, setSelectedParentCategoryID, props]);
+        const defaultStates = getDefaultUpdatePropertyStates(props);
+        setItemType(defaultStates.itemType);
+        setParentCategoryID(defaultStates.parentCategoryID);
+        setTitle(defaultStates.title);
+        setDescription(defaultStates.description);
+        setImageFile(defaultStates.imageFile);
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.itemToEdit]);
 
     const history = useHistory();
 
-    
-    const areThereChangesToBeSaved = (() => {
-        const titleIsChanged = trimmedTitle !== (props.itemToEdit?.name ?? "").trim()
-        const descriptionIsChanged = trimmedDescription !== (props.itemToEdit?.description ?? "").trim();
-        const fetchItemIsSelected = (fetchItemTypeSelectElement ? (selectedFetchItemType != null) : false);
 
-        const parentCategoryIDIsChanged = (() => {
-            const savedValue = (() => {
-                if (props.itemToEdit){
-                    return props.itemToEdit.parent?.id.databaseID ?? NULL_PARENT_CATEGORY_ID;
-                } else {
-                    return null;
-                }
-            })();
-            return selectedParentCategoryID !== savedValue;
-        })();
-        
-        return [titleIsChanged, descriptionIsChanged, parentCategoryIDIsChanged, fetchItemIsSelected]
-            .some(x => x);
-    })();
+    const areThereChangesToBeSaved = getAreThereChangesToBeSavedValue(props, currentPropertiesStates);
 
     useBlockHistoryWhileMounted("Are you sure you want to leave this page? If you do, all the changes you have made will be lost.",
         areThereChangesToBeSaved && creationOrUpdateHasCompleted === false);
@@ -94,44 +265,21 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
         setErrorMessage(null);
         setIsLoading(true);
 
-        function fieldIsRequiredError(fieldName: string): Error {
-            return new Error(`The '${fieldName}' field is required.`);
-        }
-
-        const valueToBeUsedAsParentCategoryID = (() => {
-            //eslint-disable-next-line eqeqeq
-            if (selectedParentCategoryID == null || selectedParentCategoryID == NULL_PARENT_CATEGORY_ID) { return null; }
-            return selectedParentCategoryID;
-        })();
-
-
-        const objectProps: ProductItemProps = { title: trimmedTitle, description: trimmedDescription, parentCategoryID: valueToBeUsedAsParentCategoryID };
-
-        const fetchItemType = (() => {
-            if (isProduct(props.itemToEdit)) {
-                return FetchItemType.PRODUCT;
-            } else if (isProductCategory(props.itemToEdit)) {
-                return FetchItemType.CATEGORY;
-            } else if (fetchItemTypeSelectElement) {
-                return selectedFetchItemType;
-            } else {
-                throw new Error("this point is not supposed to be reached!! Check logic");
-            }
-        })();
+        let fetchItemType: FetchItemType;
 
         const promise = (() => {
+            try {
 
-            if (objectProps.title === "") {
-                return Promise.reject(fieldIsRequiredError(FieldTitles.title));
-            }
-            if (props.itemToEdit) {
-                return apiRequests.editItem(fetchItemType!, props.itemToEdit.id.databaseID, objectProps)
-            } else {
-                if (fetchItemType == null) {
-                    return Promise.reject(fieldIsRequiredError(FieldTitles.itemType));
+                // if any values required for the api request are not provided, the below function call should throw an error that we will catch
+                const objectProps = getAPIUpdateObjectFromState(props, currentPropertiesStates);
+                fetchItemType = objectProps.fetchItemType;
+                if (props.itemToEdit != null) {
+                    return apiRequests.editItem(objectProps.fetchItemType, props.itemToEdit.id.databaseID, objectProps)
+                } else {
+                    return apiRequests.createNewItem(objectProps.fetchItemType, objectProps);
                 }
-                return apiRequests.createNewItem(fetchItemType, objectProps);
-            }
+            } catch (error) { return Promise.reject(error) }
+
         })();
 
         promise.finally(() => {
@@ -165,139 +313,22 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
 
     return <div className="EditProductItemView">
         <form className="container" onSubmit={respondToFormSubmission}>
-            {fetchItemTypeSelectElement}
-            {parentCategorySelectElement}
 
-            <TextField isEnabled={!isLoading} className="title" isRequired={true} topText={FieldTitles.title} placeholderText="What is the name of the item?" value={title} onTextChange={setTitle} />
-            <TextField isEnabled={!isLoading} className="description" topText={FieldTitles.description} placeholderText="Give some information on the item." type={CustomTextFieldType.MultipleLine} value={description} onTextChange={setDescription} />
+            <ProductItemTypeSelector isEnabled={!isLoading} itemBeingEdited={props.itemToEdit} value={itemType} onValueChange={setItemType} />
+
+            <ProductItemParentCategorySelector isEnabled={!isLoading} itemBeingEdited={props.itemToEdit} value={parentCategoryID} onValueChange={setParentCategoryID} />
+
+            <TextField isEnabled={!isLoading} className="title" isRequired={true} topText={FieldTitles.title} placeholderText="What is the name of the item?" value={title ?? ""} onTextChange={setTitle} />
+
+            <TextField isEnabled={!isLoading} className="description" topText={FieldTitles.description} placeholderText="Give some information on the item." type={CustomTextFieldType.MultipleLine} value={description ?? ""} onTextChange={setDescription} />
+
             {errorMessage ? <ErrorMessageBox errorMessage={errorMessage} /> : null}
+
             <LoadingButton isActive={areThereChangesToBeSaved} className="submit-button" loadingIndicatorSize="1.8rem" shouldShowIndicator={isLoading}>
                 {submitButtonText}
             </LoadingButton>
         </form>
     </div>
-}
-
-
-
-
-
-function useFetchItemTypeFunctionality(props: EditProductItemViewProps) {
-
-    const [selectedFetchItemType, setSelectedFetchItemType] = useState<Optional<FetchItemType>>(null);
-    const { getItemTypeForString, getStringForItemType } = useFetchItemTypeConversion();
-
-    function respondToItemTypeDidChange(stringValue: string) {
-        const newItemType = getItemTypeForString(stringValue);
-        setSelectedFetchItemType(newItemType);
-    }
-
-    const getFetchItemTypeSelectElement = (isEnabled: boolean, topText: string) => {
-        if (props.itemToEdit) { return null; }
-
-        const value = (() => {
-            if (selectedFetchItemType == null) { return ""; }
-            return getStringForItemType(selectedFetchItemType);
-        })();
-
-        return <CustomSelect isEnabled={isEnabled} topText={topText} value={value} placeholderText="Is this a product or category?" onValueChange={respondToItemTypeDidChange}>
-            {[FetchItemType.PRODUCT, FetchItemType.CATEGORY]
-                .map(x => {
-                    const string = getStringForItemType(x);
-                    return { uniqueID: string, stringValue: string };
-                })}
-        </CustomSelect>
-
-    };
-
-    return { selectedFetchItemType, setSelectedFetchItemType, getFetchItemTypeSelectElement };
-}
-
-function useFetchItemTypeConversion() {
-
-    const productText = "Product";
-    const categoryText = "Category";
-
-    function getStringForItemType(type: FetchItemType): string {
-        switch (type) {
-            case FetchItemType.PRODUCT: return productText;
-            case FetchItemType.CATEGORY: return categoryText;
-        }
-    }
-
-    function getItemTypeForString(string: string): Optional<FetchItemType> {
-        switch (string) {
-            case productText: return FetchItemType.PRODUCT;
-            case categoryText: return FetchItemType.CATEGORY;
-            default: return null;
-        }
-    }
-
-    return { getStringForItemType, getItemTypeForString };
-}
-
-
-
-
-function useSelectParentCategoryFunctionality(props: EditProductItemViewProps) {
-
-    const [selectedParentCategoryID, setSelectedParentCategoryID] = useState<Optional<number>>(getDefaultParentValueForProps(props));
-
-    const allCategories = useProductsInfoContextValue().data?.allCategories ?? [];
-
-    const customSelectChildren = useMemo(() => {
-        let children: CustomSelectChild[] = [];
-
-        allCategories.forEach(x => {
-            if (x.id.databaseID === props.itemToEdit?.id.databaseID){return;}
-
-            const title = (function getRecursiveTitleFor(category: ProductCategory): string{
-                const titleItems = [category.name];
-                if (category.parent != null){
-                    titleItems.unshift(getRecursiveTitleFor(category.parent));
-                }
-                return titleItems.join(", ");
-            })(x);
-
-            children.push({ uniqueID: String(x.id.databaseID), stringValue: title });
-        });
-        children = children.sort((x1, x2) => x1.stringValue.localeCompare(x2.stringValue));
-        children.unshift({ uniqueID: String(NULL_PARENT_CATEGORY_ID), stringValue: "None (should be top level)" });
-        return children;
-    }, [allCategories, props.itemToEdit]);
-
-
-    function respondToValueDidChange(stringValue: string) {
-        const num = Number(stringValue);
-        if (isNaN(num)) {
-            throw new Error("this should be valid! Check logic");
-        }
-        setSelectedParentCategoryID(num);
-    }
-
-    const getParentCategorySelectElement = (isEnabled: boolean, topText: string) => {
-        const value = (() => {
-            if (selectedParentCategoryID == null) { return ""; }
-            return selectedParentCategoryID + ""; // to coerce the number to a string;
-        })();
-
-        
-        return <CustomSelect isEnabled={isEnabled} topText={topText} value={value} placeholderText="What is the parent category?" onValueChange={respondToValueDidChange}>
-            {customSelectChildren}
-        </CustomSelect>
-    };
-
-    return { selectedParentCategoryID, setSelectedParentCategoryID, getParentCategorySelectElement };
-}
-
-function getDefaultParentValueForProps(props: EditProductItemViewProps): Optional<number> {
-
-    if (props.itemToEdit != null) {
-        return props.itemToEdit.parent?.id.databaseID ?? NULL_PARENT_CATEGORY_ID;
-    } else {
-        return null;
-    }
-
 }
 
 
@@ -313,3 +344,159 @@ function getProductDataTypeForFetchItemType(fetchItemType: FetchItemType): Produ
     }
 }
 
+
+
+
+
+
+
+
+
+
+function ProductItemTypeSelector(props: {
+    isEnabled: boolean,
+    itemBeingEdited: Optional<ProductDataObject>,
+    value: RequiredDatabaseValue<ProductDataType>,
+    onValueChange: (newValue: RequiredDatabaseValue<ProductDataType>) => void,
+}) {
+
+    const { getStringForItemType, getItemTypeForString } = (() => {
+        const productText = "Product";
+        const categoryText = "Category";
+
+        function getStringForItemType(type: ProductDataType): string {
+            switch (type) {
+                case ProductDataType.Product: return productText;
+                case ProductDataType.ProductCategory: return categoryText;
+            }
+        }
+
+        function getItemTypeForString(string: string): Optional<ProductDataType> {
+            switch (string) {
+                case productText: return ProductDataType.Product;
+                case categoryText: return ProductDataType.ProductCategory;
+                default: return null;
+            }
+        }
+
+        return { getStringForItemType, getItemTypeForString };
+    })();
+
+
+    function respondToItemTypeDidChange(stringValue: string) {
+        const newValue = (() => {
+            if (stringValue === "") {
+                return undefined;
+            } else {
+                const convertedItemType = getItemTypeForString(stringValue);
+                if (convertedItemType == null) {
+                    throw new Error("this isn't supposed to be null. Check the logic");
+                }
+                return convertedItemType;
+            }
+        })();
+        props.onValueChange(newValue);
+    }
+
+    const value = (() => {
+        return props.value !== undefined ? getStringForItemType(props.value) : "";
+    })();
+
+    return <>
+        {(() => {
+            if (props.itemBeingEdited == null) {
+                return <CustomSelect isEnabled={props.isEnabled} topText={FieldTitles.itemType} value={value} placeholderText="Is this a product or category?" onValueChange={respondToItemTypeDidChange}>
+                    {[ProductDataType.Product, ProductDataType.ProductCategory]
+                        .map(x => {
+                            const string = getStringForItemType(x);
+                            return { uniqueID: string, stringValue: string };
+                        })}
+                </CustomSelect>
+            } else {
+                return null;
+            }
+        })()}
+    </>
+}
+
+
+
+
+
+
+
+
+
+
+
+function ProductItemParentCategorySelector(props: {
+    isEnabled: boolean,
+    itemBeingEdited: Optional<ProductDataObject>,
+    value: OptionalDatabaseValue<number>,
+    onValueChange: (newValue: OptionalDatabaseValue<number>) => void,
+}) {
+
+    const NULL_PARENT_CATEGORY_ID = -1;
+
+    const productsInfoConstextValue = useProductsInfoContextValue();
+
+    const allCategories = productsInfoConstextValue.data?.allCategories ?? [];
+
+    const customSelectChildren = useMemo(() => {
+        let children: CustomSelectChild[] = [];
+
+        allCategories.forEach(x => {
+            if (x.id.databaseID === props.itemBeingEdited?.id.databaseID) { return; }
+
+            const title = (function getRecursiveTitleFor(category: ProductCategory): string {
+                const titleItems = [category.name];
+                if (category.parent != null) {
+                    titleItems.unshift(getRecursiveTitleFor(category.parent));
+                }
+                return titleItems.join(", ");
+            })(x);
+
+            children.push({ uniqueID: String(x.id.databaseID), stringValue: title });
+        });
+        children = children.sort((x1, x2) => x1.stringValue.localeCompare(x2.stringValue));
+        children.unshift({ uniqueID: String(NULL_PARENT_CATEGORY_ID), stringValue: "None (should be top level)" });
+        return children;
+        //eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [productsInfoConstextValue, props.itemBeingEdited]);
+
+
+    function respondToValueDidChange(stringValue: string) {
+
+        const newValue = (() => {
+            if (stringValue === "") {
+                return undefined;
+            }
+            const num = Number(stringValue);
+            if (isNaN(num)) {
+                throw new Error("this should be valid! Check logic");
+            }
+            if (num === NULL_PARENT_CATEGORY_ID) {
+                return null;
+            } else {
+                return num;
+            }
+        })();
+
+        props.onValueChange(newValue);
+    }
+
+    const value = (() => {
+        if (props.value === undefined) {
+            return "";
+        } else if (props.value === null) {
+            return String(NULL_PARENT_CATEGORY_ID);
+        } else {
+            return String(props.value);
+        }
+    })();
+
+
+    return <CustomSelect isEnabled={props.isEnabled} topText={FieldTitles.parentCategory} value={value} placeholderText="What is the parent category?" onValueChange={respondToValueDidChange}>
+        {customSelectChildren}
+    </CustomSelect>
+}
