@@ -1,14 +1,14 @@
 
 import React, { useMemo } from 'react';
 import {Optional} from 'jshelpers';
-import { ProductDataObject, ProductCategory } from 'App/MainSiteInterface/Products/ProductsDataHelpers';
+import { ProductDataObject, ProductCategory, isProductCategory, doesProductCategoryRecursivelyContainItem } from 'App/MainSiteInterface/Products/ProductsDataHelpers';
 import { useProductsInfoContextValue } from 'App/MainSiteInterface/Products/ProductsUIHelpers';
 import CustomSelect, { CustomSelectChild } from 'random-components/CustomInputs/CustomSelect/CustomSelect';
 import { OptionalDatabaseValue, FieldTitles } from '../EditProductItemViewHelpers';
 
 
 
-console.warn("remember to block users from selecting a child of a category as the parent. Better to show message instead of simply removing it from the list");
+console.warn("remember to write code on the server side that prevents users from setting the parent of a category to one of the category's decendents");
 
 export default function ProductItemParentCategorySelector(props: {
     isEnabled: boolean,
@@ -28,6 +28,14 @@ export default function ProductItemParentCategorySelector(props: {
 
         allCategories.forEach(x => {
             if (x.id.databaseID === props.itemBeingEdited?.id.databaseID) { return; }
+
+
+            // we are doing this to prevent the user from setting a decendent of a category to be its parent.
+
+            if (isProductCategory(props.itemBeingEdited) && 
+            doesProductCategoryRecursivelyContainItem(x, props.itemBeingEdited)){
+                return;
+            }
 
             const title = (function getRecursiveTitleFor(category: ProductCategory): string {
                 const titleItems = [category.name];

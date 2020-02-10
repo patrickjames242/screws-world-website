@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Optional } from 'jshelpers';
-import { ProductDataObject, ProductCategory, Product, isProductCategory } from '../ProductsDataHelpers';
+import { ProductDataObject, ProductCategory, Product, isProductCategory, ProductDataType } from '../ProductsDataHelpers';
 import { useAllTopLevelProductItems, ProductsPageSubjectType, useProductsInfoContextValue } from '../ProductsUIHelpers';
 import './MainContent.scss';
 import ProductDetailsView from './ProductDetailsView/ProductDetailsView';
@@ -18,6 +18,7 @@ export default function MainContent() {
     const productInfo = useProductsInfoContextValue();
 
     const isDashboard = useIsDashboard();
+
 
     const { title, description }: { title: string, description: Optional<string> } = (() => {
 
@@ -52,9 +53,18 @@ export default function MainContent() {
                         description: null,
                     };
                 case ProductsPageSubjectType.EDIT_ITEM:
-                    const itemName = (currentSubject.associatedData as ProductDataObject).name;
+                    const object = currentSubject.associatedData as ProductDataObject;
+                    const itemName = object.name;
+
+                    const itemType = (() => {
+                        switch(object.id.objectType){
+                            case ProductDataType.Product: return "Product";
+                            case ProductDataType.ProductCategory: return "Category";
+                        }
+                    })();
+                    
                     return {
-                        title: `Edit '${itemName}'`,
+                        title: `Edit ${itemType}: '${itemName}'`,
                         description: null,
                     };
                 case ProductsPageSubjectType.ERROR:

@@ -28,6 +28,12 @@ interface FetchDataFromAPIProps {
     headers?: Map<string, string>,
 }
 
+class APIRequestError extends Error{
+    constructor(message: string, readonly errorCode: number){
+        super(message);
+    }
+}
+
 
 async function fetchDataFromAPI<ResultType>(props: FetchDataFromAPIProps): Promise<ResultType> {
 
@@ -83,7 +89,7 @@ async function fetchDataFromAPI<ResultType>(props: FetchDataFromAPIProps): Promi
     if (resultJsonBody.status === "success") {
         return resultJsonBody.data;
     } else if (resultJsonBody.status === "failure" && resultJsonBody.errorMessage != null) {
-        return Promise.reject(new Error(resultJsonBody.errorMessage));
+        return Promise.reject(new APIRequestError(resultJsonBody.errorMessage, fetchResult.status));
     } else {
         return Promise.reject(new Error("An unknown error occured."));
     }
@@ -249,14 +255,25 @@ export class RequestsRequiringAuthentication {
     }
 
     private performRequestRequiringAuth<ResultType>(props: FetchDataFromAPIProps): Promise<ResultType> {
+
+        const authenticationErrorText = "An authentication error has occured. Please log out and log back in to complete this action.";
+        const authenticationError = new Error(authenticationErrorText);
+
         const authToken = this.authTokenProvider();
+
         if (authToken == null) {
-            return Promise.reject(new Error("An authentication error has occured. Please log out and log back in to complete this action."));
+            return Promise.reject(authenticationError);
         }
         const headers = props.headers ?? new Map<string, string>();
         headers.set("auth-token", authToken);
         props.headers = headers;
-        return fetchDataFromAPI(props);
+        return fetchDataFromAPI(props).catch((error) => {
+            if (error instanceof APIRequestError && error.errorCode === 401){
+                return Promise.reject(new APIRequestError(authenticationErrorText, error.errorCode));
+            } else {
+                return Promise.reject(error);
+            }
+        }) as Promise<ResultType>;
     }
 
 }

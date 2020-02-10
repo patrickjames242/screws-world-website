@@ -12,6 +12,7 @@ export interface AlertProviderFunctions {
     showAlert(info: CustomAlertInfo): void;
 }
 
+
 const AlertContext = React.createContext<Optional<AlertProviderFunctions>>(null);
 
 export const AlertContextConsumer = AlertContext.Consumer;

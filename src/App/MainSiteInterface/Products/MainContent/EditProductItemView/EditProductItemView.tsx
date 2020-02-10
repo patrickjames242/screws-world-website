@@ -19,8 +19,8 @@ import ProductItemImageSelector from './ChildComponents/ImageSelector/ImageSelec
 
 
 
-
-
+console.warn("remember to write code that guesses an appropriate default parent category when the create new button is clicked");
+console.warn("when you add an image and remove it on the edit products page, for a creation, the save button is not grayed out");
 
 export default function EditProductItemView(props: EditProductItemViewProps) {
 
