@@ -3,6 +3,11 @@
 .CustomInput{
 
     > select{
+        word-break: break-all;
+        line-height: 1.5;
+        width: 100%;
+        white-space: pre-wrap;
+        
         &:invalid {
             color: var(--input-placeholder-color);
         }

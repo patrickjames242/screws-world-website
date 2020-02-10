@@ -14,6 +14,8 @@ import AlertProvider, { useAlertFunctionality, CustomAlertInfo, CustomAlertButto
 import { ScreenDimmerProvider } from './ScreenDimmer';
 
 
+
+
 export default function App() {
     //eslint-disable-next-line react/jsx-pascal-case
     return <AlertProvider><_App /></AlertProvider>

@@ -121,9 +121,6 @@
                             border-radius: 0.3rem;
                             background-color: colors(light-blue);
                         }
-
-                        
-                
                     }
 
                     > .under-image-content{
@@ -139,12 +136,14 @@
                             > .title{
                                 font-weight: bold;
                                 font-size: 16px;
+                                word-break: break-all;
                                 @include setMaximumLines(2);
                             }
 
                             > .description{
                                 font-size: 14px;
                                 color: colors(grayish-blue-text);
+                                word-break: break-all;
                                 @include setMaximumLines(3);
                             }
                         }

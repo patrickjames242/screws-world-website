@@ -240,7 +240,7 @@ export class RequestsRequiringAuthentication {
             type: BodyInfoContentType.AUTO,
             data: image,
         }
-        return await this.performRequestRequiringAuth<ProductItemNetworkResponse>({url: url, method: HTTPMethod.PUT, bodyInfo});
+        return this.performRequestRequiringAuth<ProductItemNetworkResponse>({url: url, method: HTTPMethod.PUT, bodyInfo});
     }
 
     private async deleteImageForItem(itemType: FetchItemType, id: number): Promise<ProductItemNetworkResponse>{

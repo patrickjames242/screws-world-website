@@ -10,7 +10,9 @@ export interface CustomInputProps {
     isEnabled?: boolean
 }
 
-export type CustomInputChild = (props: {className: string, style: React.CSSProperties, onFocus: () => void, onBlur: () => void}) => React.ReactElement;
+export type CustomInputChildParams = {className: string, style: React.CSSProperties, onFocus: () => void, onBlur: () => void}
+
+export type CustomInputChild = (params: CustomInputChildParams) => React.ReactElement;
 
 export default function CustomInput(props: CustomInputProps & {children: CustomInputChild}) {
 
@@ -46,3 +48,5 @@ export default function CustomInput(props: CustomInputProps & {children: CustomI
         {child}
     </div>
 }
+
+

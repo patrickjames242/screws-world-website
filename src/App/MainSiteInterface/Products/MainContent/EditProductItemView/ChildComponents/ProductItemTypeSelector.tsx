@@ -3,7 +3,7 @@ import { Optional } from "jshelpers";
 import { ProductDataObject, ProductDataType } from "App/MainSiteInterface/Products/ProductsDataHelpers";
 import React from "react";
 import CustomSelect from "random-components/CustomInputs/CustomSelect/CustomSelect";
-import { RequiredDatabaseValue, FieldTitles } from "../commonStuff";
+import { RequiredDatabaseValue, FieldTitles } from "../EditProductItemViewHelpers";
 
 
 

@@ -12,10 +12,10 @@ import ErrorMessageBox from 'random-components/ErrorMessageBox/ErrorMessageBox';
 import { FetchItemType, ProductItemNetworkResponse } from 'API';
 
 import { DashboardProductsRouteURLs } from '../../ProductsRoutesInfo';
-import { EditProductItemViewProps, StateProps, FieldTitles } from './commonStuff';
 import ProductItemTypeSelector from './ChildComponents/ProductItemTypeSelector';
-import ProductItemParentCategorySelector from './ChildComponents/ProductItemParentCategorySelector';
-import { getDefaultUpdatePropertyStates, getAreThereChangesToBeSavedValue, getAPIUpdateObjectFromState } from './EditProductItemViewHelpers';
+import ProductItemParentCategorySelector from './ChildComponents/ParentCategorySelector';
+import { getDefaultUpdatePropertyStates, getAreThereChangesToBeSavedValue, getAPIUpdateObjectFromState, EditProductItemViewProps, StateProps, FieldTitles } from './EditProductItemViewHelpers';
+import ProductItemImageSelector from './ChildComponents/ImageSelector/ImageSelector';
 
 
 
@@ -66,6 +66,8 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
     const apiRequestResult = useRef<Optional<{ fetchItemType: FetchItemType, result: ProductItemNetworkResponse }>>(null);
 
     function respondToFormSubmission(event: React.FormEvent<HTMLFormElement>) {
+        
+        if (isLoading){return;}
 
         event.preventDefault();
 
@@ -128,8 +130,11 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
             <ProductItemParentCategorySelector isEnabled={!isLoading} itemBeingEdited={props.itemToEdit} value={parentCategoryID} onValueChange={setParentCategoryID} />
 
             <TextField isEnabled={!isLoading} className="title" isRequired={true} topText={FieldTitles.title} placeholderText="What is the name of the item?" value={title ?? ""} onTextChange={setTitle} />
+            
+            <ProductItemImageSelector itemBeingEdited={props.itemToEdit} value={imageFile} onValueChange={setImageFile}/>
 
             <TextField isEnabled={!isLoading} className="description" topText={FieldTitles.description} placeholderText="Give some information on the item." type={CustomTextFieldType.MultipleLine} value={description ?? ""} onTextChange={setDescription} />
+
 
             {errorMessage ? <ErrorMessageBox errorMessage={errorMessage} /> : null}
 
@@ -152,24 +157,6 @@ function getProductDataTypeForFetchItemType(fetchItemType: FetchItemType): Produ
         case FetchItemType.CATEGORY: return ProductDataType.ProductCategory;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

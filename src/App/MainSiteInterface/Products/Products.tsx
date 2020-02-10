@@ -61,14 +61,15 @@ export default function Products() {
     }, []);
 
     useEffect(() => {
-        apiInfoDidChangeNotification.addListener((change) => {
+        const unlisten = apiInfoDidChangeNotification.addListener((change) => {
             const objectsManager = productsObjectsManager;
             if (objectsManager){
                 objectsManager.updateAccordingToAPIChange(change);
                 setProductsObjectsManager(objectsManager.getCopy());   
             }
-        })
-    })
+        });
+        return unlisten;
+    }, [productsObjectsManager]);
 
     return <ProductsInfoContext.Provider value={contextProviderValue}>
         <div className="Products">

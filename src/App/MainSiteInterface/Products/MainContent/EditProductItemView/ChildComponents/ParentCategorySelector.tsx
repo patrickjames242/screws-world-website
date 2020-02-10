@@ -2,9 +2,13 @@
 import React, { useMemo } from 'react';
 import {Optional} from 'jshelpers';
 import { ProductDataObject, ProductCategory } from 'App/MainSiteInterface/Products/ProductsDataHelpers';
-import { OptionalDatabaseValue, FieldTitles } from '../commonStuff';
 import { useProductsInfoContextValue } from 'App/MainSiteInterface/Products/ProductsUIHelpers';
 import CustomSelect, { CustomSelectChild } from 'random-components/CustomInputs/CustomSelect/CustomSelect';
+import { OptionalDatabaseValue, FieldTitles } from '../EditProductItemViewHelpers';
+
+
+
+console.warn("remember to block users from selecting a child of a category as the parent. Better to show message instead of simply removing it from the list");
 
 export default function ProductItemParentCategorySelector(props: {
     isEnabled: boolean,

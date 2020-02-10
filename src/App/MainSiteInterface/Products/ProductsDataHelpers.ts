@@ -91,7 +91,7 @@ export abstract class ProductDataObject {
         this._parentGetter = parentGetter;
     }
 
-    abstract getNewWithUpdatedProperties(props: { name: string, description: Optional<string> }): ProductDataObject;
+    abstract getNewWithUpdatedProperties(props: { name: string, description: Optional<string>, imageURL: Optional<string>}): ProductDataObject;
 
     get name() { return this._name; }
     get description() { return this._description; }
@@ -111,8 +111,8 @@ export class Product extends ProductDataObject {
         super(ProductDataType.Product, id, name, description, imageURL, parentGetter);
     }
 
-    getNewWithUpdatedProperties(props: {name: string, description: Optional<string>}): Product{
-        return new Product(this.id.databaseID, props.name, props.description, this.imageURL, this._parentGetter);
+    getNewWithUpdatedProperties(props: {name: string, description: Optional<string>, imageURL: Optional<string>}): Product{
+        return new Product(this.id.databaseID, props.name, props.description, props.imageURL, this._parentGetter);
     }
 
 }
@@ -137,8 +137,8 @@ export class ProductCategory extends ProductDataObject {
         return this._childrenGetter(this.id.databaseID) ?? [];
     }
 
-    getNewWithUpdatedProperties(props: {name: string, description: Optional<string>}): ProductCategory{
-        return new ProductCategory(this.id.databaseID, props.name, props.description, this.imageURL, this._parentGetter, this._childrenGetter);
+    getNewWithUpdatedProperties(props: {name: string, description: Optional<string>, imageURL: Optional<string>}): ProductCategory{
+        return new ProductCategory(this.id.databaseID, props.name, props.description, props.imageURL, this._parentGetter, this._childrenGetter);
     }
 }
 
@@ -274,7 +274,7 @@ export class ProductsDataObjectsManager {
                     if (typeof networkResponse === "number") { break; }
                     const existingObject1 = this._objectsByObjectIDs.get((new ProductsDataObjectID(networkResponse.id, itemType)).stringVersion);
                     if (!existingObject1) { break; }
-                    const updatedObject = existingObject1.getNewWithUpdatedProperties({name: networkResponse.title, description: networkResponse.description});
+                    const updatedObject = existingObject1.getNewWithUpdatedProperties({name: networkResponse.title, description: networkResponse.description, imageURL: networkResponse.image_url});
                     this._objectsByObjectIDs.set(existingObject1.id.stringVersion, updatedObject);
                     this._resetParentAndChildrenInformationForChild(updatedObject, networkResponse.parent_category);
                     break;
@@ -337,8 +337,6 @@ export class ProductsDataObjectsManager {
     private static _sortObjects(objects: ProductDataObject[]): ProductDataObject[] {
         return objects.sort((x1, x2) => x1.name.localeCompare(x2.name));
     }
-
-
 }
 
 
