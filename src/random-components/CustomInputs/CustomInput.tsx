@@ -3,21 +3,23 @@ import React, { useState, CSSProperties } from 'react';
 import './CustomInput.scss';
 
 
-export interface CustomInputProps {
-    topText?: string;
-    className?: string;  
-    isRequired?: boolean;  
-    isEnabled?: boolean
+export interface CustomInputProps<ValueType> {
+    readonly topText?: string;
+    readonly className?: string;  
+    readonly isRequired?: boolean;  
+    readonly isEnabled?: boolean;
+    readonly value?: ValueType;
+    readonly onValueChange?: (newValue: ValueType) => void;
 }
 
 export type CustomInputChildParams = {className: string, style: React.CSSProperties, onFocus: () => void, onBlur: () => void}
 
 export type CustomInputChild = (params: CustomInputChildParams) => React.ReactElement;
 
-export default function CustomInput(props: CustomInputProps & {children: CustomInputChild}) {
+export default function CustomInput<ValueType>(props: CustomInputProps<ValueType> & {children: CustomInputChild}) {
 
     const [isInFocus, setIsInFocus] = useState(false);
-    
+
     const className = [
         "CustomInput",
         props.className ?? "",

@@ -3,17 +3,15 @@ import { Optional } from "jshelpers";
 import { ProductDataObject, ProductDataType } from "App/MainSiteInterface/Products/ProductsDataHelpers";
 import React from "react";
 import CustomSelect from "random-components/CustomInputs/CustomSelect/CustomSelect";
-import { RequiredDatabaseValue, FieldTitles } from "../EditProductItemViewHelpers";
+import { RequiredDatabaseValue } from "../EditProductItemViewHelpers";
+import { CustomInputProps } from "random-components/CustomInputs/CustomInput";
 
 
-
-
-export default function ProductItemTypeSelector(props: {
-    isEnabled: boolean,
+export interface ProductItemTypeSelectorProps extends CustomInputProps<RequiredDatabaseValue<ProductDataType>>{
     itemBeingEdited: Optional<ProductDataObject>,
-    value: RequiredDatabaseValue<ProductDataType>,
-    onValueChange: (newValue: RequiredDatabaseValue<ProductDataType>) => void,
-}) {
+}
+
+export default function ProductItemTypeSelector(props: ProductItemTypeSelectorProps) {
 
     const { getStringForItemType, getItemTypeForString } = (() => {
         const productText = "Product";
@@ -50,7 +48,7 @@ export default function ProductItemTypeSelector(props: {
                 return convertedItemType;
             }
         })();
-        props.onValueChange(newValue);
+        props.onValueChange?.(newValue);
     }
 
     const value = (() => {
@@ -60,7 +58,7 @@ export default function ProductItemTypeSelector(props: {
     return <>
         {(() => {
             if (props.itemBeingEdited == null) {
-                return <CustomSelect isEnabled={props.isEnabled} topText={FieldTitles.itemType} value={value} placeholderText="Is this a product or category?" onValueChange={respondToItemTypeDidChange}>
+                return <CustomSelect {...props} value={value} placeholderText="Is this a product or category?" onValueChange={respondToItemTypeDidChange}>
                     {[ProductDataType.Product, ProductDataType.ProductCategory]
                         .map(x => {
                             const string = getStringForItemType(x);

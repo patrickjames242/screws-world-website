@@ -10,14 +10,12 @@ export interface CustomSelectChild {
 }
 
 
-export interface CustomSelectProps extends CustomInputProps{
+// the string value should represent the unique id of the select option
+export interface CustomSelectProps extends CustomInputProps<string>{
     
     readonly placeholderText?: string,
     readonly children: CustomSelectChild[],
-
-    // string should represent the unique id of the select child
-    readonly value?: string,
-    readonly onValueChange?: (newValueUniqueID: string) => void,
+    
 }
 
 
@@ -35,7 +33,7 @@ export default function CustomSelect(props: CustomSelectProps) {
     const placeholderText = props.placeholderText ?? "Please select an option";
     const componentProps = props;
 
-    return <CustomInput className={className} isEnabled={props.isEnabled} topText={componentProps.topText}>
+    return <CustomInput {...componentProps} className={className}>
         {(props) => {
             return <select
                 value={componentProps.value}
@@ -44,7 +42,9 @@ export default function CustomSelect(props: CustomSelectProps) {
                 onFocus={props.onFocus}
                 onBlur={props.onBlur}
                 style={props.style}
-                onChange={respondToValueChange}>
+                onChange={respondToValueChange}
+                disabled={(componentProps.isEnabled ?? true) === false}>
+                
                 <option disabled value="">{placeholderText}</option>
                 {/* providing a default value because apparently typescript isn't forcing callers to provide the children array as a child of this component 🤷🏽‍♂️ */}
                 {(componentProps.children ?? []).map(x => {

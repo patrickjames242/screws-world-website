@@ -15,7 +15,7 @@ import { Optional } from 'jshelpers';
 import { useCurrentProductsPageSubject, ProductsPageSubjectType, useCurrentProductDetailsViewItem } from '../ProductsUIHelpers';
 import { DashboardProductsRouteURLs } from '../ProductsRoutesInfo';
 import { useDashboardInfo, useRequestsRequiringAuth } from 'App/Dashboard/DashboardUIHelpers';
-import { isProduct, isProductCategory, ProductDataObject } from '../ProductsDataHelpers';
+import { isProduct, isProductCategory, ProductDataObject, ProductCategory } from '../ProductsDataHelpers';
 import { FetchItemType } from 'API';
 
 
@@ -53,19 +53,35 @@ export default function TopActionButtonsView() {
 
     const currentSubject = useCurrentProductsPageSubject();
 
-    const createNewLink = DashboardProductsRouteURLs.createProductItem;
+    const createNewLink: string = (() => {
+
+        const defaultParentCategory: ProductCategory | null | undefined = (() => {
+            const currentItem = currentSubject?.associatedData;
+            if (isProduct(currentItem)) {
+                return currentItem.parent;
+            } else if (isProductCategory(currentItem)){
+                return currentItem;
+            } else {
+                return null;
+            }
+        })();
+
+        return DashboardProductsRouteURLs.createProductItem(defaultParentCategory);
+    })()
+
+
     const createNewButtonShouldBeDisplayed = currentSubject != null && currentSubject.type !== ProductsPageSubjectType.CREATE_NEW;
 
     const editLink: Optional<string> = (() => {
         // we can ignore the error because this hook is still being called unconditionally.
         //eslint-disable-next-line react-hooks/rules-of-hooks
         let item = useCurrentProductDetailsViewItem();
-        if (!item){return null;}
+        if (!item) { return null; }
         return DashboardProductsRouteURLs.editProductItem(item.id);
     })();
-    
+
     const editButtonShouldBeDisplayed = (() => {
-        switch(currentSubject?.type){
+        switch (currentSubject?.type) {
             case ProductsPageSubjectType.CATEGORY:
             case ProductsPageSubjectType.PRODUCT:
                 return true;
@@ -76,18 +92,18 @@ export default function TopActionButtonsView() {
     const deleteAlertInfo = useDeleteAlertInfo();
 
     const respondToDeleteButtonClicked: Optional<() => void> = (() => {
-        switch (currentSubject?.type){
+        switch (currentSubject?.type) {
             case ProductsPageSubjectType.PRODUCT:
             case ProductsPageSubjectType.CATEGORY:
             case ProductsPageSubjectType.EDIT_ITEM:
                 return () => {
-                    if (deleteAlertInfo == null){return;}
+                    if (deleteAlertInfo == null) { return; }
                     alertFunctionality.showAlert(deleteAlertInfo);
                 };
             default: return null;
         }
     })();
-        
+
     const numberOfRightButtons = [
         createNewButtonShouldBeDisplayed,
         editButtonShouldBeDisplayed,
@@ -97,13 +113,13 @@ export default function TopActionButtonsView() {
     const className = [
         "TopActionButtonsView",
         (() => {
-            if (numberOfRightButtons > 1){
+            if (numberOfRightButtons > 1) {
                 return "should-be-spread-out-on-narrow-screen";
-            } else {return "";}
+            } else { return ""; }
         })()
     ].join(" ");
 
-    
+
 
     return <div className={className}>
         <TopActionButton svgIcon={homeIcon} title="go home" link={dashboardURL} />
@@ -112,10 +128,10 @@ export default function TopActionButtonsView() {
 
         {createNewButtonShouldBeDisplayed ? <TopActionButton svgIcon={plusIcon} title="create new item" link={createNewLink} /> : null}
 
-        {editButtonShouldBeDisplayed ? <TopActionButton svgIcon={editIcon} title="edit current item" link={editLink!}/> : null}
-        
+        {editButtonShouldBeDisplayed ? <TopActionButton svgIcon={editIcon} title="edit current item" link={editLink!} /> : null}
+
         {respondToDeleteButtonClicked ? <TopActionButton svgIcon={trashIcon} title="delete current item" onClick={respondToDeleteButtonClicked} isDestructive /> : null}
-        
+
     </div>
 }
 
@@ -145,21 +161,21 @@ function useDeleteAlertInfo(): Optional<CustomAlertInfo> {
     const history = useHistory();
     const apiRequests = useRequestsRequiringAuth();
 
-    if (isProductCategory(currentlyDisplayedItem) === false && isProduct(currentlyDisplayedItem) === false){return null;}
+    if (isProductCategory(currentlyDisplayedItem) === false && isProduct(currentlyDisplayedItem) === false) { return null; }
 
     const itemType = (() => {
-        if (isProductCategory(currentlyDisplayedItem)){
+        if (isProductCategory(currentlyDisplayedItem)) {
             return FetchItemType.CATEGORY;
-        } else if (isProduct(currentlyDisplayedItem)){
+        } else if (isProduct(currentlyDisplayedItem)) {
             return FetchItemType.PRODUCT;
         } else {
             throw new Error("this point should not be reached!! Check logic");
         }
     })();
 
-    
 
-    
+
+
 
     const willChildrenBeDeleted = isProductCategory(currentlyDisplayedItem) && currentlyDisplayedItem.children.length >= 1;
 
@@ -172,19 +188,19 @@ function useDeleteAlertInfo(): Optional<CustomAlertInfo> {
     const deleteButton = new CustomAlertButtonInfo(
         "Delete",
         dismiss => {
-            
-            if (itemType == null){dismiss(); return;}
+
+            if (itemType == null) { dismiss(); return; }
 
             deleteButtonController?.setIsLoading(true);
             apiRequests.deleteItem(itemType, (currentlyDisplayedItem as ProductDataObject).id.databaseID)
-            .finally(() => {
-                deleteButtonController?.setIsLoading(false);
-            }).then(() => {
-                dismiss();
-                history.replace(DashboardProductsRouteURLs.root);
-            }).catch((error) => {
-                alertController.showErrorMessage(error.message);
-            });
+                .finally(() => {
+                    deleteButtonController?.setIsLoading(false);
+                }).then(() => {
+                    dismiss();
+                    history.replace(DashboardProductsRouteURLs.root);
+                }).catch((error) => {
+                    alertController.showErrorMessage(error.message);
+                });
         },
         CustomAlertButtonType.PRIMARY_DESTRUCTIVE,
         c => deleteButtonController = c,
@@ -209,7 +225,7 @@ function useDeleteAlertInfo(): Optional<CustomAlertInfo> {
     const confirmationMessage = "DELETE ALL";
 
     const description = (() => {
-        if (willChildrenBeDeleted){
+        if (willChildrenBeDeleted) {
             return "If you delete this category, ALL products and categories under it will also be deleted. Are you sure you want to continue?\n\nPlease type " + confirmationMessage + " to confirm.";
         } else {
             return `Are you sure you want to delete "${currentlyDisplayedItem.name}"? Once deleted, it cannot be recovered.`;

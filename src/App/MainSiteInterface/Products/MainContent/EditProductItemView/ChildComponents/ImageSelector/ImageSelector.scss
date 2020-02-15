@@ -17,8 +17,6 @@
         }
     }
 
-    
-
     .EditImageButtons{
         justify-self: end;
         display: grid;
@@ -32,7 +30,7 @@
             font-weight: bold;
             background-color: colors(dark-light-blue);
             @include bounceOnHover;
-            box-shadow: 0 0 15px 8px rgba(black, 0.15);
+            // box-shadow: 0 0 15px 8px rgba(black, 0.15);
         }
 
        

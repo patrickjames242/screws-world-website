@@ -7,8 +7,8 @@ import './ProductItemsGrid.scss';
 import ProductItemImageView from 'random-components/ProductItemImageView/ProductItemImageView';
 
 
-console.warn("see if you can get the text area of the product or category item to wrap its text if its shorter than the longest item in its row");
-console.warn("write code on the server side that prevents a trimmed title string from being empty");
+console.warn("TODO: see if you can get the text area of the product or category item to wrap its text if its shorter than the longest item in its row");
+
 
 export default function ProductItemsGrid(props: { products: ProductDataObject[] }) {
     return <div className="ProductItemsGrid">

@@ -3,7 +3,9 @@
 import { ProductItemProps, FetchItemType } from "API";
 import { isProduct, ProductDataType, isProductCategory, ProductDataObject } from "../../ProductsDataHelpers";
 import { Optional } from "jshelpers";
-
+import {Location} from 'history';
+import * as QueryString from 'query-string';
+import { EDIT_PRODUCT_DEFAULT_PARENT_QUERY_PARAM_KEY } from "../../ProductsRoutesInfo";
 
 export interface EditProductItemViewProps {
     itemToEdit: Optional<ProductDataObject>,
@@ -33,8 +35,26 @@ export interface StateProps {
     imageFile: OptionalDatabaseValue<File>,
 }
 
+function getDefaultParentCategoryValueFromLocation(location: Location): number | null | undefined{
+    const parsed = QueryString.parse(location.search)[EDIT_PRODUCT_DEFAULT_PARENT_QUERY_PARAM_KEY];
+    if (typeof parsed !== 'string'){return;}
+    if (parsed.toUpperCase() === "null".toUpperCase()){
+        return null;
+    } else {
+        const num = Number(parsed);
+        if (isNaN(num)){
+            return undefined;
+        } else {
+            return num;
+        }
+    }
+}
 
-export function getDefaultUpdatePropertyStates(props: EditProductItemViewProps): StateProps {
+
+export function getDefaultUpdatePropertyStates(props: EditProductItemViewProps, currentLocation: Location): StateProps {
+
+    const defaultParent = getDefaultParentCategoryValueFromLocation(currentLocation);
+    
     return {
         itemType: undefined,
         title: props.itemToEdit?.name ?? undefined,
@@ -46,8 +66,8 @@ export function getDefaultUpdatePropertyStates(props: EditProductItemViewProps):
             }
         })(),
         parentCategoryID: (() => {
-            if (props.itemToEdit == null) {
-                return undefined;
+            if (props.itemToEdit == null){
+                return defaultParent;
             } else {
                 return props.itemToEdit.parent?.id.databaseID ?? null;
             }
@@ -60,10 +80,13 @@ export function getDefaultUpdatePropertyStates(props: EditProductItemViewProps):
 
 
 
+export interface ChangesState{
+    areThereChangesToBeSaved: boolean;
+    hasTheUserMadeChanges: boolean;
+}
 
 
-
-export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps, stateProps: StateProps): boolean {
+export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps, stateProps: StateProps, currentLocation: Location): ChangesState{
 
     const titleIsChanged: boolean = (() => {
 
@@ -97,7 +120,9 @@ export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps
 
     const productDataTypeIsSelected: boolean = stateProps.itemType !== undefined;
 
-    const parentCategoryIDIsChanged: boolean = (() => {
+    const parentCategoryIDIsChanged: boolean | ChangesState = (() => {
+
+        const defualtParentCategory = getDefaultParentCategoryValueFromLocation(currentLocation);
 
         const oldValue = (() => {
             if (props.itemToEdit == null){
@@ -115,21 +140,65 @@ export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps
             }
         })();
 
-        return oldValue !== newValue;
-    })();
-
-    const imageHasBeenSelected: boolean = (() => {
-        if (stateProps.imageFile === undefined) {
-            return false;
-        } else if (props.itemToEdit != null) {
-            return (stateProps.imageFile === null && props.itemToEdit.imageURL === null) === false;
+        if (oldValue !== newValue){
+            if (newValue === defualtParentCategory){
+                return {
+                    hasTheUserMadeChanges: false,
+                    areThereChangesToBeSaved: true,
+                }
+            } else {
+                return true;
+            }
         } else {
-            return true;
+            return false;
         }
     })();
 
-    return [titleIsChanged, descriptionIsChanged, productDataTypeIsSelected, parentCategoryIDIsChanged, imageHasBeenSelected]
-        .some(x => x);
+    const imageHasBeenChanged: boolean = (() => {
+
+        const imageVal = "SOME IMAGE";
+
+        const oldValue: string | null = (() => {
+            if (props.itemToEdit == null){
+                return null;
+            } else if (props.itemToEdit.imageURL == null){
+                return null;
+            } else {
+                return imageVal;
+            }
+        })();
+
+        const newValue: string | null = (() => {
+            if (stateProps.imageFile === undefined){
+                return oldValue;
+            } else if (stateProps.imageFile === null){
+                return null;
+            } else {
+                return imageVal;
+            }
+        })();
+
+        return oldValue !== newValue;
+    })();
+
+    const allChanges = [titleIsChanged, descriptionIsChanged, productDataTypeIsSelected, parentCategoryIDIsChanged, imageHasBeenChanged];
+
+    const areThereChangesToBeSaved = allChanges.some(x => {
+        if (typeof x === "boolean"){
+            return x;
+        } else {
+            return x.areThereChangesToBeSaved;
+        }
+    });
+
+    const hasTheUserMadeChanges = allChanges.some(x => {
+        if (typeof x === "boolean"){
+            return x;
+        } else {
+            return x.hasTheUserMadeChanges;
+        }
+    })
+    return {areThereChangesToBeSaved, hasTheUserMadeChanges};
 }
 
 

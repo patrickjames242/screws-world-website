@@ -10,14 +10,21 @@ import ProductItemImageView from 'random-components/ProductItemImageView/Product
 
 export default function ProductDetailsView(props: { product: Product }) {
     return <div className="ProductDetailsView">
-        <div className="description-section">
-            {props.product.description}
-        </div>
+
+        {(() => {
+            if (props.product.description != null && 
+                props.product.description.trim() !== "") {
+                return <div className="description-section">
+                    {props.product.description}
+                </div>
+            }
+        })()}
+
         <div className="image-section-holder">
             <div className="image-section">
                 <div className="content">
                     <div className="background-view" />
-                    <ProductItemImageView imageSource={props.product}/>
+                    <ProductItemImageView imageSource={props.product} />
                 </div>
             </div>
         </div>

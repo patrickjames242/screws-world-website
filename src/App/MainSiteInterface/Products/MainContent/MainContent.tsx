@@ -34,6 +34,7 @@ export default function MainContent() {
             return introTitleInfo;
 
         } else if (productInfo.data) {
+
             const currentSubject = productInfo.data.subject;
 
             switch (currentSubject.type) {
@@ -88,7 +89,7 @@ export default function MainContent() {
     return <div className="MainContent">
         <TitleBox title={title} description={description} />
         {(() => {
-            if (!productInfo.data) {
+            if (productInfo.data == null) {
                 if (productInfo.loadingIsFinished){
                     return null;
                 } else {
@@ -106,10 +107,12 @@ export default function MainContent() {
                 case ProductsPageSubjectType.CATEGORY:
                     const products = (currentSubject.associatedData as ProductCategory).children;
                     return <ProductItemsGrid products={products} />
+
                 case ProductsPageSubjectType.EDIT_ITEM:
                 case ProductsPageSubjectType.CREATE_NEW:
+
                     let item = currentSubject.associatedData as Optional<ProductDataObject>;
-                    return <EditProductItemView itemToEdit={item} />;
+                    return <EditProductItemView itemToEdit={item}/>;
             }
         })()}
     </div>

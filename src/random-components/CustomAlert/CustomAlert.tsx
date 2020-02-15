@@ -182,7 +182,7 @@ function CustomAlert(props: CustomAlertInfo & { onAlertIsFinishedDismissing: () 
                     if (!props.textFieldInfo) { return null; }
                     return <CustomTextField
                         value={textFieldText}
-                        onTextChange={respondToTextFieldTextDidChange}
+                        onValueChange={respondToTextFieldTextDidChange}
                         placeholderText={props.textFieldInfo?.placeholderText ?? "Type here..."} />
                 })()}
 

@@ -4,7 +4,7 @@ import './EditProductItemView.scss';
 import React, { useEffect, useState, useRef } from 'react';
 import { ProductsDataObjectID, ProductDataType } from '../../ProductsDataHelpers';
 import { Optional, useBlockHistoryWhileMounted } from 'jshelpers';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useRequestsRequiringAuth } from 'App/Dashboard/DashboardUIHelpers';
 import TextField, { CustomTextFieldType } from 'random-components/CustomInputs/CustomTextField/CustomTextField';
 import LoadingButton from 'random-components/LoadingButton/LoadingButton';
@@ -19,12 +19,12 @@ import ProductItemImageSelector from './ChildComponents/ImageSelector/ImageSelec
 
 
 
-console.warn("remember to write code that guesses an appropriate default parent category when the create new button is clicked");
-console.warn("when you add an image and remove it on the edit products page, for a creation, the save button is not grayed out");
 
 export default function EditProductItemView(props: EditProductItemViewProps) {
 
-    const defaultStates = getDefaultUpdatePropertyStates(props);
+    const location = useLocation();
+
+    const defaultStates = getDefaultUpdatePropertyStates(props, location);
 
     const [itemType, setItemType] = useState(defaultStates.itemType);
     const [parentCategoryID, setParentCategoryID] = useState(defaultStates.parentCategoryID);
@@ -41,10 +41,8 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
     const [errorMessage, setErrorMessage] = useState<Optional<string>>(null);
 
 
-
-
     useEffect(() => {
-        const defaultStates = getDefaultUpdatePropertyStates(props);
+        const defaultStates = getDefaultUpdatePropertyStates(props, location);
         setItemType(defaultStates.itemType);
         setParentCategoryID(defaultStates.parentCategoryID);
         setTitle(defaultStates.title);
@@ -56,18 +54,21 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
     const history = useHistory();
 
 
-    const areThereChangesToBeSaved = getAreThereChangesToBeSavedValue(props, currentPropertiesStates);
+    const changesState = getAreThereChangesToBeSavedValue(props, currentPropertiesStates, location);
 
     useBlockHistoryWhileMounted("Are you sure you want to leave this page? If you do, all the changes you have made will be lost.",
-        areThereChangesToBeSaved && creationOrUpdateHasCompleted === false);
+        changesState.hasTheUserMadeChanges && creationOrUpdateHasCompleted === false);
 
     const apiRequests = useRequestsRequiringAuth();
 
-    const apiRequestResult = useRef<Optional<{ fetchItemType: FetchItemType, result: ProductItemNetworkResponse }>>(null);
+    const apiRequestResult = useRef<Optional<{
+        fetchItemType: FetchItemType,
+        result: ProductItemNetworkResponse
+    }>>(null);
 
     function respondToFormSubmission(event: React.FormEvent<HTMLFormElement>) {
-        
-        if (isLoading){return;}
+
+        if (isLoading) { return; }
 
         event.preventDefault();
 
@@ -90,7 +91,6 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
                     return apiRequests.createNewItem(objectProps.fetchItemType, objectProps);
                 }
             } catch (error) { return Promise.reject(error) }
-
         })();
 
         promise.finally(() => {
@@ -121,34 +121,29 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
 
     const submitButtonText = props.itemToEdit === null ? "Create" : "Save changes";
 
+    const shouldFieldsBeEnabled = isLoading === false;
 
     return <div className="EditProductItemView">
         <form className="container" onSubmit={respondToFormSubmission}>
 
-            <ProductItemTypeSelector isEnabled={!isLoading} itemBeingEdited={props.itemToEdit} value={itemType} onValueChange={setItemType} />
+            <ProductItemTypeSelector isEnabled={shouldFieldsBeEnabled} topText={FieldTitles.itemType} itemBeingEdited={props.itemToEdit} value={itemType} onValueChange={setItemType} />
 
-            <ProductItemParentCategorySelector isEnabled={!isLoading} itemBeingEdited={props.itemToEdit} value={parentCategoryID} onValueChange={setParentCategoryID} />
+            <ProductItemParentCategorySelector isEnabled={shouldFieldsBeEnabled} topText={FieldTitles.itemType} itemBeingEdited={props.itemToEdit} value={parentCategoryID} onValueChange={setParentCategoryID} />
 
-            <TextField isEnabled={!isLoading} className="title" isRequired={true} topText={FieldTitles.title} placeholderText="What is the name of the item?" value={title ?? ""} onTextChange={setTitle} />
-            
-            <ProductItemImageSelector itemBeingEdited={props.itemToEdit} value={imageFile} onValueChange={setImageFile}/>
+            <TextField isEnabled={shouldFieldsBeEnabled} className="title" isRequired={true} topText={FieldTitles.title} placeholderText="What is the name of the item?" value={title ?? ""} onValueChange={setTitle} />
 
-            <TextField isEnabled={!isLoading} className="description" topText={FieldTitles.description} placeholderText="Give some information on the item." type={CustomTextFieldType.MultipleLine} value={description ?? ""} onTextChange={setDescription} />
+            <ProductItemImageSelector isEnabled={shouldFieldsBeEnabled} topText={FieldTitles.image} itemBeingEdited={props.itemToEdit} value={imageFile} onValueChange={setImageFile} />
 
+            <TextField isEnabled={shouldFieldsBeEnabled} className="description" topText={FieldTitles.description} placeholderText="Give some information on the item." type={CustomTextFieldType.MultipleLine} value={description ?? ""} onValueChange={setDescription} />
 
             {errorMessage ? <ErrorMessageBox errorMessage={errorMessage} /> : null}
 
-            <LoadingButton isActive={areThereChangesToBeSaved} className="submit-button" loadingIndicatorSize="1.8rem" shouldShowIndicator={isLoading}>
+            <LoadingButton isActive={changesState.areThereChangesToBeSaved} className="submit-button" loadingIndicatorSize="1.8rem" shouldShowIndicator={isLoading}>
                 {submitButtonText}
             </LoadingButton>
         </form>
     </div>
 }
-
-
-
-
-
 
 
 function getProductDataTypeForFetchItemType(fetchItemType: FetchItemType): ProductDataType {
@@ -157,6 +152,4 @@ function getProductDataTypeForFetchItemType(fetchItemType: FetchItemType): Produ
         case FetchItemType.CATEGORY: return ProductDataType.ProductCategory;
     }
 }
-
-
 

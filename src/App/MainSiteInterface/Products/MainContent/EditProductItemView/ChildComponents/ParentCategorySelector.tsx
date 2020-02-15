@@ -4,18 +4,16 @@ import {Optional} from 'jshelpers';
 import { ProductDataObject, ProductCategory, isProductCategory, doesProductCategoryRecursivelyContainItem } from 'App/MainSiteInterface/Products/ProductsDataHelpers';
 import { useProductsInfoContextValue } from 'App/MainSiteInterface/Products/ProductsUIHelpers';
 import CustomSelect, { CustomSelectChild } from 'random-components/CustomInputs/CustomSelect/CustomSelect';
-import { OptionalDatabaseValue, FieldTitles } from '../EditProductItemViewHelpers';
+import { OptionalDatabaseValue } from '../EditProductItemViewHelpers';
+import { CustomInputProps } from 'random-components/CustomInputs/CustomInput';
 
+console.warn("TODO: remember to write code on the server side that prevents users from setting the parent of a category to one of the category's decendents");
 
-
-console.warn("remember to write code on the server side that prevents users from setting the parent of a category to one of the category's decendents");
-
-export default function ProductItemParentCategorySelector(props: {
-    isEnabled: boolean,
+interface ProductItemParentCategorySelectorProps extends CustomInputProps<OptionalDatabaseValue<number>>{
     itemBeingEdited: Optional<ProductDataObject>,
-    value: OptionalDatabaseValue<number>,
-    onValueChange: (newValue: OptionalDatabaseValue<number>) => void,
-}) {
+}
+
+export default function ProductItemParentCategorySelector(props: ProductItemParentCategorySelectorProps) {
 
     const NULL_PARENT_CATEGORY_ID = -1;
 
@@ -71,7 +69,7 @@ export default function ProductItemParentCategorySelector(props: {
             }
         })();
 
-        props.onValueChange(newValue);
+        props.onValueChange?.(newValue);
     }
 
     const value = (() => {
@@ -85,7 +83,7 @@ export default function ProductItemParentCategorySelector(props: {
     })();
 
 
-    return <CustomSelect isEnabled={props.isEnabled} topText={FieldTitles.parentCategory} value={value} placeholderText="What is the parent category?" onValueChange={respondToValueDidChange}>
+    return <CustomSelect {...props} value={value} placeholderText="What is the parent category?" onValueChange={respondToValueDidChange}>
         {customSelectChildren}
     </CustomSelect>
 }

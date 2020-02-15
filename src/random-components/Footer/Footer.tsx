@@ -14,7 +14,7 @@ export default function Footer() {
     }
 
 
-    return <div className="Footer">
+    return <footer className="Footer">
         <div className="top-line"></div>
         <div className="text-box">
             <div className="title">Pay us a visit. Give us a Call. Email Us.</div>
@@ -25,7 +25,7 @@ export default function Footer() {
                 return <ContactMethod key={i} platform={x.platform} info={x.info} link={x.link} shouldOpenInNewWindow={x.shouldOpenInNewWindow}/>
             })}
         </div>
-    </div>
+    </footer>
 }
 
 const contactMethods = [

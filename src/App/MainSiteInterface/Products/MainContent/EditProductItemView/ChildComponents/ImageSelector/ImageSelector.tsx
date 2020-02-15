@@ -1,15 +1,19 @@
+
 import './ImageSelector.scss';
-import React, { useRef } from 'react';
-import CustomInput, { CustomInputChildParams } from 'random-components/CustomInputs/CustomInput';
-import { FieldTitles, OptionalDatabaseValue } from '../../EditProductItemViewHelpers';
+import React, { useRef, CSSProperties } from 'react';
+import CustomInput, { CustomInputChildParams, CustomInputProps } from 'random-components/CustomInputs/CustomInput';
+import { OptionalDatabaseValue } from '../../EditProductItemViewHelpers';
 import ProductItemImageView from 'random-components/ProductItemImageView/ProductItemImageView';
 import { ProductDataObject } from 'App/MainSiteInterface/Products/ProductsDataHelpers';
 import { Optional } from 'jshelpers';
 
 
-console.warn("remember that the image selector is not disabled properly while the edit product page is loading");
 
-export default function ProductItemImageSelector(props: { itemBeingEdited: Optional<ProductDataObject>, value: OptionalDatabaseValue<File>, onValueChange: (newValue: OptionalDatabaseValue<File>) => void}) {
+export interface ProductItemImageSelectorProps extends CustomInputProps<OptionalDatabaseValue<File>>{
+    itemBeingEdited: Optional<ProductDataObject>,
+}
+
+export default function ProductItemImageSelector(props: ProductItemImageSelectorProps) {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -21,11 +25,11 @@ export default function ProductItemImageSelector(props: { itemBeingEdited: Optio
         const newValue = event.target.files?.[0];
         if (newValue == null){return;}
         event.target.value = ''; // so that the onChange handler will be called if another image is selected
-        props.onValueChange(newValue);
+        props.onValueChange?.(newValue);
     }
 
     function respondToRemoveButtonClicked() {
-        props.onValueChange(null);
+        props.onValueChange?.(null);
     }
 
     const imageViewValue = (() => {
@@ -44,19 +48,24 @@ export default function ProductItemImageSelector(props: { itemBeingEdited: Optio
             return props.value !== null;
         }
     })();
-
-    return <div className="ProductItemImageSelector">
-        <CustomInput topText={FieldTitles.image}>
+    
+    
+    return <div className={["ProductItemImageSelector", props.className ?? ""].join(" ")}>
+        
+        <CustomInput {...props} className="">
             {(params: CustomInputChildParams) => {
                 return <div className={params.className} style={params.style} onFocus={params.onFocus} onBlur={params.onBlur}>
                     <ProductItemImageView imageSource={imageViewValue} />
                 </div>;
             }}
         </CustomInput>
-
-        <input ref={fileInputRef} style={{ opacity: 0, position: "absolute" }} className="file-input" type="file" accept="image/*" onChange={respondToFileInputValueDidChange}/>
         
-        <EditImageButtons shouldShowRemoveButton={shouldShowRemoveButton} onRemoveButtonClick={respondToRemoveButtonClicked} onSelectImageButtonClick={respondToSelectButtonClicked} />
+        <input ref={fileInputRef} style={{ opacity: 0, position: "absolute" }} className="file-input" type="file" accept="image/*" onChange={respondToFileInputValueDidChange}/>
+
+        <EditImageButtons style={{
+            opacity: (props.isEnabled ?? true) ? undefined : 0.5,
+            pointerEvents: (props.isEnabled ?? true) ? undefined : "none",
+        }} shouldShowRemoveButton={shouldShowRemoveButton} onRemoveButtonClick={respondToRemoveButtonClicked} onSelectImageButtonClick={respondToSelectButtonClicked} />
 
     </div>
 
@@ -67,7 +76,9 @@ export default function ProductItemImageSelector(props: { itemBeingEdited: Optio
 function EditImageButtons(props: {
     shouldShowRemoveButton: boolean,
     onSelectImageButtonClick: () => void,
-    onRemoveButtonClick: () => void
+    onRemoveButtonClick: () => void,
+    style?: React.CSSProperties,
+    isEnabled?: boolean,
 }) {
 
     function respondToSelectImageButtonClicked(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -80,14 +91,15 @@ function EditImageButtons(props: {
         props.onRemoveButtonClick();
     }
 
-    return <div className="EditImageButtons">
-        <button className="select-image-button" onClick={respondToSelectImageButtonClicked}>Select Image</button>
+    const shouldButtonsBeDisabled = (props.isEnabled ?? true) === false;
+    
+    return <div style={props.style} className="EditImageButtons">
+        <button disabled={shouldButtonsBeDisabled} className="select-image-button" onClick={respondToSelectImageButtonClicked}>Select Image</button>
         {(() => {
             if (props.shouldShowRemoveButton){
-                return <button className="remove-button" onClick={respondToRemoveButtonClicked}>Remove</button>;
+                return <button disabled={shouldButtonsBeDisabled} className="remove-button" onClick={respondToRemoveButtonClicked}>Remove</button>;
             }
         })()}
-        
     </div>
 }
 

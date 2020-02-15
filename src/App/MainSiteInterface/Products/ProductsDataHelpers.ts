@@ -273,7 +273,7 @@ export class ProductsDataObjectsManager {
                 case APIChangeType.UPDATE:
                     if (typeof networkResponse === "number") { break; }
                     const existingObject1 = this._objectsByObjectIDs.get((new ProductsDataObjectID(networkResponse.id, itemType)).stringVersion);
-                    if (!existingObject1) { break; }
+                    if (existingObject1 == null) { break; }
                     const updatedObject = existingObject1.getNewWithUpdatedProperties({name: networkResponse.title, description: networkResponse.description, imageURL: networkResponse.image_url});
                     this._objectsByObjectIDs.set(existingObject1.id.stringVersion, updatedObject);
                     this._resetParentAndChildrenInformationForChild(updatedObject, networkResponse.parent_category);
@@ -282,7 +282,7 @@ export class ProductsDataObjectsManager {
                 case APIChangeType.DELETE:
                     if (typeof networkResponse !== "number") { break; }
                     const existingObject2 = this._objectsByObjectIDs.get(new ProductsDataObjectID(networkResponse, itemType).stringVersion);
-                    if (!existingObject2) { break; }
+                    if (existingObject2 == null) { break; }
                     this._deleteParentAndChildrenInformationAboutChild(existingObject2);
                     this._objectsByObjectIDs.delete(existingObject2.id.stringVersion);
                     break;

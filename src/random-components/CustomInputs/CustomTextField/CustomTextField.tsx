@@ -9,17 +9,15 @@ export enum CustomTextFieldType {
     MultipleLine,
 }
 
-export interface CustomTextFieldProps extends CustomInputProps {
+export interface CustomTextFieldProps extends CustomInputProps<string> {
     type?: CustomTextFieldType;
     placeholderText: string;
-    value?: string;
-    onTextChange?: (text: string) => void;
     isPassword?: boolean;
 }
 
 export default function CustomTextField(props: CustomTextFieldProps) {
     function handleChange(event: Event) {
-        props.onTextChange?.((event.target as any).value ?? "");
+        props.onValueChange?.((event.target as any).value ?? "");
     }
 
     const inputElement = 
@@ -46,6 +44,7 @@ export default function CustomTextField(props: CustomTextFieldProps) {
             type: typeProp,
             onChange: handleChange,
             style: inputProps.style,
+            disabled: (props.isEnabled ?? true) ? undefined : true,
         };
 
         return React.createElement(elementType, propDict);
@@ -56,7 +55,7 @@ export default function CustomTextField(props: CustomTextFieldProps) {
         props.className ?? "",
     ].join(" ");
 
-    return <CustomInput isEnabled={props.isEnabled} topText={props.topText} className={className}>
+    return <CustomInput {...props} className={className}>
         {inputElement}
     </CustomInput>
 
