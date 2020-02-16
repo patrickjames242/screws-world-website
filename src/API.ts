@@ -3,6 +3,7 @@
 
 import { Optional, Notification } from "jshelpers";
 
+console.warn("TODO: remember to sign access tokens with the hash of the users password");
 
 enum HTTPMethod {
     GET,
@@ -122,8 +123,8 @@ function urlForFetchItemType(fetchItemType: FetchItemType): string {
 
 
 
-// const baseURL = "https://screws-world-backend.herokuapp.com";
-const baseURL = "http://localhost:5000";
+const baseURL = "https://screws-world-backend.herokuapp.com";
+// const baseURL = "http://localhost:5000";
 
 const categoriesURL = baseURL + "/categories";
 const productsURL = baseURL + "/products";
