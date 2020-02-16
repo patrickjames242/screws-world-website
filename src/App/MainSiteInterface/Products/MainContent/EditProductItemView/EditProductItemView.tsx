@@ -14,7 +14,7 @@ import { FetchItemType, ProductItemNetworkResponse } from 'API';
 import { DashboardProductsRouteURLs } from '../../ProductsRoutesInfo';
 import ProductItemTypeSelector from './ChildComponents/ProductItemTypeSelector';
 import ProductItemParentCategorySelector from './ChildComponents/ParentCategorySelector';
-import { getDefaultUpdatePropertyStates, getAreThereChangesToBeSavedValue, getAPIUpdateObjectFromState, EditProductItemViewProps, StateProps, FieldTitles } from './EditProductItemViewHelpers';
+import { getDefaultUpdatePropertyStates, getAreThereChangesToBeSavedValue, getAPIUpdateObjectFromState, EditProductItemViewProps, StateProps, FieldTitles} from './EditProductItemViewHelpers';
 import ProductItemImageSelector from './ChildComponents/ImageSelector/ImageSelector';
 
 
@@ -128,7 +128,7 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
 
             <ProductItemTypeSelector isEnabled={shouldFieldsBeEnabled} topText={FieldTitles.itemType} itemBeingEdited={props.itemToEdit} value={itemType} onValueChange={setItemType} />
 
-            <ProductItemParentCategorySelector isEnabled={shouldFieldsBeEnabled} topText={FieldTitles.itemType} itemBeingEdited={props.itemToEdit} value={parentCategoryID} onValueChange={setParentCategoryID} />
+            <ProductItemParentCategorySelector isEnabled={shouldFieldsBeEnabled} topText={FieldTitles.parentCategory} itemBeingEdited={props.itemToEdit} value={parentCategoryID} onValueChange={setParentCategoryID} />
 
             <TextField isEnabled={shouldFieldsBeEnabled} className="title" isRequired={true} topText={FieldTitles.title} placeholderText="What is the name of the item?" value={title ?? ""} onValueChange={setTitle} />
 

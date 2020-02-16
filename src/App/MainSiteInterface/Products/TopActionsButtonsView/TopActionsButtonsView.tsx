@@ -15,7 +15,7 @@ import { Optional } from 'jshelpers';
 import { useCurrentProductsPageSubject, ProductsPageSubjectType, useCurrentProductDetailsViewItem } from '../ProductsUIHelpers';
 import { DashboardProductsRouteURLs } from '../ProductsRoutesInfo';
 import { useDashboardInfo, useRequestsRequiringAuth } from 'App/Dashboard/DashboardUIHelpers';
-import { isProduct, isProductCategory, ProductDataObject, ProductCategory } from '../ProductsDataHelpers';
+import { isProduct, isProductCategory, ProductDataObject, ProductCategory, ProductsDataObjectID } from '../ProductsDataHelpers';
 import { FetchItemType } from 'API';
 
 
@@ -192,12 +192,24 @@ function useDeleteAlertInfo(): Optional<CustomAlertInfo> {
             if (itemType == null) { dismiss(); return; }
 
             deleteButtonController?.setIsLoading(true);
+
+            const urlToRedirectTo = (() => {
+                const id: Optional<ProductsDataObjectID> = (() => {
+                    if (currentlyDisplayedItem instanceof ProductDataObject){
+                        return currentlyDisplayedItem.parent?.id ?? null;
+                    } else {
+                        return null;
+                    }
+                })();
+                return id == null ? DashboardProductsRouteURLs.root : DashboardProductsRouteURLs.productDetailsView(id);
+            })();
+
             apiRequests.deleteItem(itemType, (currentlyDisplayedItem as ProductDataObject).id.databaseID)
                 .finally(() => {
                     deleteButtonController?.setIsLoading(false);
                 }).then(() => {
                     dismiss();
-                    history.replace(DashboardProductsRouteURLs.root);
+                    history.replace(urlToRedirectTo);
                 }).catch((error) => {
                     alertController.showErrorMessage(error.message);
                 });

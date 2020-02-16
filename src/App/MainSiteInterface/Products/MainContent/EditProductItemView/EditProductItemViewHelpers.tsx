@@ -50,6 +50,40 @@ function getDefaultParentCategoryValueFromLocation(location: Location): number |
     }
 }
 
+// export const MostRecentlySelectedItemType = (() => {
+//     const key = "EditProductItemViewHelpers MostRecentlySelectedItemType";
+
+//     const categoryString = "category";
+//     const productString = "product";
+    
+//     const get = () => {
+//         const itemTypeString = localStorage.getItem(key);
+//         switch (itemTypeString){
+//             case categoryString: return ProductDataType.ProductCategory;
+//             case productString: return ProductDataType.Product;
+//             default: return null;
+//         }
+//     }
+
+//     const set = (newValue: ProductDataType) => {
+
+//         if (newValue == null){
+//             localStorage.removeItem(key);
+//             return;
+//         }
+
+//         const stringVal = (() => {
+//             switch (newValue){
+//                 case ProductDataType.Product: return productString;
+//                 case ProductDataType.ProductCategory: return categoryString;
+//             }
+//         })();
+//         localStorage.setItem(key, stringVal);
+//     }
+
+//     return {get, set};
+// })();
+
 
 export function getDefaultUpdatePropertyStates(props: EditProductItemViewProps, currentLocation: Location): StateProps {
 
@@ -239,6 +273,7 @@ export function getAPIUpdateObjectFromState(props: EditProductItemViewProps, sta
             })();
             return oldValue === newValue ? undefined : newValue;
         })(),
+
         parentCategoryID: stateProps.parentCategoryID,
         image: stateProps.imageFile,
         fetchItemType: (() => {
@@ -268,3 +303,5 @@ export function getAPIUpdateObjectFromState(props: EditProductItemViewProps, sta
         })(),
     }
 }
+
+

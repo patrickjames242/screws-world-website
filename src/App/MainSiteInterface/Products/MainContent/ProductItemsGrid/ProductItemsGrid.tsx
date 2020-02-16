@@ -7,7 +7,6 @@ import './ProductItemsGrid.scss';
 import ProductItemImageView from 'random-components/ProductItemImageView/ProductItemImageView';
 
 
-console.warn("TODO: see if you can get the text area of the product or category item to wrap its text if its shorter than the longest item in its row");
 
 
 export default function ProductItemsGrid(props: { products: ProductDataObject[] }) {

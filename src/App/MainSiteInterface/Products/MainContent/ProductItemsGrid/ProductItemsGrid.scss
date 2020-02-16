@@ -21,6 +21,7 @@
             grid-template-columns: $column-config;
             justify-content: center;
             justify-items: stretch;
+            align-items: start;
 
             @media(min-width: 550px){
                 // grid-template-columns: auto auto;

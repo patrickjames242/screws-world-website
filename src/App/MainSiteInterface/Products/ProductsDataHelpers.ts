@@ -216,16 +216,20 @@ export class ProductsDataObjectsManager {
     }
 
     getAllCategories: () => ProductCategory[] = () => {
-        if (this._cachedCategories != null){
-            return this._cachedCategories;
-        } else {
-            this._invalidateCache();
-            const cachedCategories = this._cachedCategories;
-            if (cachedCategories == null){
-                throw new Error("this shouldn't be null! Check logic!!");
+        const val = (() => {
+            if (this._cachedCategories != null){
+                return this._cachedCategories;
+            } else {
+                this._invalidateCache();
+                const cachedCategories = this._cachedCategories;
+                if (cachedCategories == null){
+                    throw new Error("this shouldn't be null! Check logic!!");
+                }
+                return cachedCategories;
             }
-            return cachedCategories;
-        }
+        })()
+        return val;
+        
     }
 
     getObjectForObjectID: (objectID: ProductsDataObjectID) => Optional<ProductDataObject> =
@@ -283,14 +287,23 @@ export class ProductsDataObjectsManager {
                     if (typeof networkResponse !== "number") { break; }
                     const existingObject2 = this._objectsByObjectIDs.get(new ProductsDataObjectID(networkResponse, itemType).stringVersion);
                     if (existingObject2 == null) { break; }
-                    this._deleteParentAndChildrenInformationAboutChild(existingObject2);
-                    this._objectsByObjectIDs.delete(existingObject2.id.stringVersion);
+                    this._recursivelyDeleteObjectAndChildren(existingObject2);
                     break;
             }
             this._invalidateCache();
         }
 
-    // removes all records of the provided child
+    private _recursivelyDeleteObjectAndChildren(object: ProductDataObject){
+        if (isProductCategory(object) && object.children.length > 0){
+            for (const child of object.children){
+                this._recursivelyDeleteObjectAndChildren(child);
+            }
+        }
+        this._deleteParentAndChildrenInformationAboutChild(object);
+        this._objectsByObjectIDs.delete(object.id.stringVersion);
+    }
+
+    
     private _resetParentAndChildrenInformationForChild(child: ProductDataObject, categoryID: Optional<number>) {
 
         this._deleteParentAndChildrenInformationAboutChild(child);
@@ -308,6 +321,8 @@ export class ProductsDataObjectsManager {
             this._categoryChildrenByCategoryID.set(categoryIDForChildrenArray, [child]);
         }
     }
+
+    // removes the reference to the parent category of the object from the object to parent map, removes the object from the children array of its parent in the category to children map
 
     private _deleteParentAndChildrenInformationAboutChild(child: ProductDataObject) {
         const parentCategoryID = (() => {

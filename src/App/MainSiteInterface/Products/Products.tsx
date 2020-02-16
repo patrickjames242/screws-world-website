@@ -63,7 +63,7 @@ export default function Products() {
     useEffect(() => {
         const unlisten = apiInfoDidChangeNotification.addListener((change) => {
             const objectsManager = productsObjectsManager;
-            if (objectsManager){
+            if (objectsManager != null){
                 objectsManager.updateAccordingToAPIChange(change);
                 setProductsObjectsManager(objectsManager.getCopy());   
             }
