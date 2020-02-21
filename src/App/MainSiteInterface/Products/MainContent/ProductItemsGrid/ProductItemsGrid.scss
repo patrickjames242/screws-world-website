@@ -136,7 +136,7 @@
                             
                             > .title{
                                 font-weight: bold;
-                                font-size: 16px;
+                                font-size: 14px;
                                 word-break: break-word;
                                 @include setMaximumLines(2);
                             }
@@ -145,7 +145,7 @@
                                 font-size: 14px;
                                 color: colors(grayish-blue-text);
                                 word-break: break-word;
-                                @include setMaximumLines(3);
+                                @include setMaximumLines(2);
                             }
                         }
                     }

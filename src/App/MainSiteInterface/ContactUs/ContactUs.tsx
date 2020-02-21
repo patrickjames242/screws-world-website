@@ -2,9 +2,10 @@
 import React from 'react';
 import './ContactUs.scss';
 import { SCREWS_WORLD_EMAIL, SCREWS_WORLD_NUMBER, useSetTitleFunctionality } from 'jshelpers';
-import PageHeader from 'random-components/PageHeader/PageHeader';
+import { PageHeaderProps } from 'random-components/PageHeader/PageHeader';
 
 import CustomTextField, {CustomTextFieldType} from 'random-components/CustomInputs/CustomTextField/CustomTextField';
+import HeadedUpPageContainer from 'random-components/HeadedUpPageContainer/HeadedUpPageContainer';
 
 
 
@@ -32,12 +33,13 @@ export default function ContactUs() {
         },
     ];
 
-    return <div className="ContactUs">
-        <div className="content">
+    const pageHeaderProps: PageHeaderProps = {
+        title: "Reach out to us today!",
+        subtitle: "Please fill out the form below, email us, or call us, and one of our employees will be in touch with you shortly."
+    }
 
-            <PageHeader title="Reach out to us today!" subtitle="Please fill out the form below, email us, or call us, and one of our employees will be in touch with you shortly." />
-
-            <div className="body-content-holder">
+    return <HeadedUpPageContainer className="ContactUs" stylingProps={{maxContentWidth: "60rem"}} pageHeaderProps={pageHeaderProps}>
+        <div className="body-content-holder">
                 <div className="text-fields">
                     {textFieldsInfo.map((x, i) => {
                         return <CustomTextField type={x.type} topText={x.topText} placeholderText={x.placeholderText} key={i} />
@@ -67,8 +69,9 @@ export default function ContactUs() {
                     }
                 </div>
             </div>
-        </div>
-    </div>
+    </HeadedUpPageContainer>
+
+
 
 }
 

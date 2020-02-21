@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Rubik:400,700&display=swap');
 
 :root{
-    font-size: 16px;
+    font-size: 14px;
     @include respondToNarrowWidth{
         font-size: 12px;
     }

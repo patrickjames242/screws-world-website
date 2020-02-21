@@ -13,7 +13,6 @@ export default function Footer() {
         </a>
     }
 
-
     return <footer className="Footer">
         <div className="top-line"></div>
         <div className="text-box">
@@ -26,6 +25,7 @@ export default function Footer() {
             })}
         </div>
     </footer>
+    
 }
 
 const contactMethods = [

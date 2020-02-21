@@ -7,7 +7,6 @@ import CustomSelect, { CustomSelectChild } from 'random-components/CustomInputs/
 import { OptionalDatabaseValue } from '../EditProductItemViewHelpers';
 import { CustomInputProps } from 'random-components/CustomInputs/CustomInput';
 
-console.warn("TODO: remember to write code on the server side that prevents users from setting the parent of a category to one of the category's decendents");
 
 interface ProductItemParentCategorySelectorProps extends CustomInputProps<OptionalDatabaseValue<number>>{
     itemBeingEdited: Optional<ProductDataObject>,

@@ -26,7 +26,10 @@
         }
 
         > .center-content{
-            max-width: 780px;
+            max-width: 51rem;
+            @include respondToNarrowWidth{
+                max-width: 40rem;
+            }
             text-align: center;
             display: grid;
             gap: 30px;
@@ -35,7 +38,7 @@
             --top-and-bottom-margins: 7.8rem;
             @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
             @media(max-width: 500px){
-                --top-and-bottom-margins: 3rem;
+                --top-and-bottom-margins: 5rem;
             }
 
             //padding code
@@ -45,18 +48,25 @@
                 --center-content-side-padding: 30px;
             }
             
-
+            // background-color: green;
             > .motto-title{
-                max-width: 10em;
-                font-size: 5rem;
-                @include setProps(margin-left margin-right, auto);
+                
+                // background-color: orange;
+                font-size: 5.5rem;
+                
                 @include respondToNarrowWidth{
                     font-size: 3.5rem;
                 }
             }
             > .description-text{
-                font-size: 1.44rem;
+                justify-self: center;
+                // max-width: 40rem;
+                font-size: 1.7rem;
                 color: colors(white-dimmed-blue);
+                @include respondToNarrowWidth{
+                    font-size: 1.5rem;
+                }
+                // background-color: blue;
             }
             > .buttons-box{
                 display: grid;
@@ -133,7 +143,7 @@
             @include respondToNarrowWidth{
                 grid-template-columns: initial;
             }
-            > .Feature{
+            > .IndividualFeatureBox{
                 display: grid;
                 gap: 1.25rem;
                 > .image-holder{
@@ -148,7 +158,7 @@
                     }
                 }
                 > .description{
-                    color: gray(0.8);
+                    color: colors(grayish-blue-text);
                     line-height: 1.4;
                     font-size: 1.25rem;
                 }
@@ -186,6 +196,7 @@
             }
 
             > .left-info-box{
+                
 
                 display: grid;
                 gap: 2rem;
@@ -199,8 +210,6 @@
                     font-weight: bold;
                     
                     @include applyBlueThemeTextGradient;
-                    color: colors(light-blue);
-                    
                 }
 
                 > .description{
@@ -210,7 +219,6 @@
             }
 
             > .right-info-box{
-                // background-color: red;
                 display: grid;
                 grid-auto-flow: column;
                 justify-content: start;
@@ -233,8 +241,6 @@
                         &::before{
                             content: '>';
                             position: absolute;
-                            // color: colors(light-blue);
-                            color: white;
                             top: -0.02em;
                             left: -1.1em;
                             font-size: 1em;
@@ -276,8 +282,7 @@
         > .reviews-grid-container{
             
             max-width: 100%;
-            
-            
+        
             @include setProps(padding-left padding-right, $reviews-grid-side-padding);
             @include setCustomScrollBarStyle;
             @media(max-width: $compress-width){
@@ -316,12 +321,11 @@
                     width: calc(70vw - 1rem);
                 }
 
-                
-
                 > .review-text{
                     line-height: 1.5;
                     font-size: 1.2rem;
-                    color: lightgray;
+                    color: colors(grayish-blue-text);
+                    font-style: italic;
                 }
                 
                 > .author-box{
@@ -334,7 +338,7 @@
                         font-weight: bold;
                     }
                     
-                    > .profession{
+                    > .date{
                         text-transform: uppercase;
                         font-size: 0.8rem;
                         font-weight: bold;

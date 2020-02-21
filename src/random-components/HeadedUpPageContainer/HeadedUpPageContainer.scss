@@ -1,0 +1,27 @@
+@import 'helpers';
+
+.HeadedUpPageContainer{
+    margin-bottom: 7.1rem;
+    > .content{
+        --content-padding: 2.5rem;
+        @include setProps(margin-left margin-right, auto);
+        @include setProps(padding-left padding-right, var(--content-padding));
+        @include respondToNarrowWidth{
+            --content-padding: 1.8rem;
+        }
+
+        > .PageHeader{
+            --top-and-bottom-margins: 8rem;
+            @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
+        }
+    }
+    
+
+    @media(max-width: 520px){
+        > .content > .PageHeader{
+            --top-and-bottom-margins: 6rem;
+        }
+        margin-bottom: 6rem;
+    }
+}
+

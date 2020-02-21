@@ -3,18 +3,6 @@
 
 .ContactUs{
     > .content{
-        max-width: 60rem;
-        --content-padding: 2.5rem;
-        @include setProps(margin-left margin-right, auto);
-        @include setProps(padding-left padding-right, var(--content-padding));
-        @include respondToNarrowWidth{
-            --content-padding: 1.8rem;
-        }
-
-        > .PageHeader{
-            --top-and-bottom-margins: 8rem;
-            @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
-        }
         
         > .body-content-holder{
             display: grid;
@@ -86,22 +74,12 @@
                         font-size: 1.2rem;
                         color: colors(grayish-blue-text);
 
-                        @include respondToNarrowDesktopSnapPoint{
-                            font-size: 1rem;    
-                        }
                     }
                 }
             }
         }
     }
-    margin-bottom: 7.1rem;
-
-    @media(max-width: 520px){
-        > .content > .PageHeader{
-            --top-and-bottom-margins: 6rem;
-        }
-        margin-bottom: 6rem;
-    }
+    
 }
 
 

@@ -14,7 +14,6 @@ export default function LogInScreen(props: { authTokenHandler: (authToken: strin
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<Optional<string>>(null);
 
-    
     function respondToOnSubmit(formEvent: React.FormEvent<HTMLFormElement>) {
         formEvent.preventDefault();
         if (passwordText === "" || usernameText === "") {
@@ -79,7 +78,6 @@ export default function LogInScreen(props: { authTokenHandler: (authToken: strin
                 <LoadingButton className="login-button" shouldShowIndicator={isLoading}>
                     Log In
                 </LoadingButton>
-
             </div>
         </div>
     </form>

@@ -11,14 +11,14 @@ $narrow-nav-drop-down-bar-background-color: colors(light-dark-blue);
 
     border-radius: $nav-bar-border-radius;
     background-color: $narrow-nav-drop-down-bar-background-color;   
-    box-shadow: 0px 0px 3.3rem 1rem rgba(colors(dark-blue), 0.9);
+    box-shadow: 0 0 3.3rem 1rem rgba(colors(dark-blue), 0.9);
     overflow: hidden;
 
     @include setProps(left right top, $nav-bar-insets);
 
     .nav-bar-content{
         
-        box-shadow: 0px 0px 3.3rem 0.7rem rgba(colors(dark-blue), 0.6);
+        box-shadow: 0 0 3.3rem 0.7rem rgba(colors(dark-blue), 0.6);
         background-color: colors(light-gray-bg);    
     
         height: $nav-bar-height;

@@ -19,7 +19,7 @@
             padding: 3rem;
             max-width: 23rem;
             @include setProps(margin-left margin-right, auto);
-            border-radius: 20px;
+            border-radius: 1.25rem;
             background-color: colors(light-dark-blue);
             display: grid;
             
@@ -35,7 +35,7 @@
                 
             }
 
-            $text-field-side-padding: 17.6px;
+            $text-field-side-padding: 1.1rem;
 
             display: grid;
             
@@ -43,7 +43,7 @@
 
             > .CustomTextField{
                 .input-box{
-                    padding: 12.8px $text-field-side-padding;
+                    padding: 0.8rem $text-field-side-padding;
                 }
             }
 

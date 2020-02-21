@@ -57,23 +57,23 @@ function ShowCase() {
 
 function FeaturesBox() {
 
-    function Feature(props: { image: string, title: string, description: string }) {
-        return <div className="Feature">
-            <div className="image-holder">
-                <img src={props.image} alt="" />
-            </div>
-            <div className="title">{props.title}</div>
-            <div className="description">{props.description}</div>
-        </div>
-    }
-
     const features = featuresDict.map((x, i) => {
-        return <Feature title={x.title} description={x.description} image={x.image} key={i} />
+        return <IndividualFeatureBox title={x.title} description={x.description} image={x.image} key={i} />
     });
 
     return <div className="FeaturesBox">
         <h1 className="title">At Screws World we don't disappoint!</h1>
         <div className="features">{features}</div>
+    </div>
+}
+
+function IndividualFeatureBox(props: { image: string, title: string, description: string }) {
+    return <div className="IndividualFeatureBox">
+        <div className="image-holder">
+            <img src={props.image} alt="" />
+        </div>
+        <div className="title">{props.title}</div>
+        <div className="description">{props.description}</div>
     </div>
 }
 
@@ -138,42 +138,42 @@ function AdditionalInfoBox() {
     </div>
 }
 
+interface Review{
+    text: string,
+    author: string,
+    reviewDate: string,
+}
 
 function ReviewsSection() {
-
-    function Review(props: { text: string, author: string, authorTitle: string }) {
-        return <div className="Review">
-            <div className="review-text">{props.text}</div>
-
-            <div className="author-box">
-                <div className="title">{"- " + props.author}</div>
-                <div className="profession">{props.authorTitle}</div>
-            </div>
-
-        </div>
-    }
-
     return <div className="ReviewsSection">
         <div className="quotes-icon-holder">{quotesIcon}</div>
         <div className="reviews-grid-container">
             <div className="reviews-grid">
                 {reviews.map((x, i) => {
-                    return <Review key={i} text={x.text} author={x.author} authorTitle={x.authorTitle} />
+                    return <ReviewBox key={i} {...x}/>
                 })}
             </div>
         </div>
+    </div>
+}
 
+function ReviewBox(props: Review) {
+    return <div className="Review">
+        <div className="review-text">{`"${props.text}"`}</div>
+        <div className="author-box">
+            <div className="title">{"- " + props.author}</div>
+            <div className="date">{props.reviewDate}</div>
+        </div>
     </div>
 }
 
 const reviews = (() => {
-    let x = [];
+    let x: Review[] = [];
     for (let i = 1; i <= 4; i++) {
         x.push({
             text: "Lorem ipsum dolor sit amet consect adipisi elit. Harum, vel!",
             author: "Charles Sawyer",
-            authorTitle: "Local Carpenter",
-
+            reviewDate: "September 3, 2019",
         })
     }
     return x;

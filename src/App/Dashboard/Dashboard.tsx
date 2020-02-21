@@ -12,19 +12,23 @@ import { RequestsRequiringAuthentication } from "API";
 
 
 
-const UserPersistedAuthToken = {
-    key: "userAuthToken",
-    get(): Optional<string> {
-        return localStorage.getItem(UserPersistedAuthToken.key) ?? null;
-    },
-    set(newValue: Optional<string>) {
-        if (newValue){
-            localStorage.setItem(UserPersistedAuthToken.key, newValue);
-        } else {
-            localStorage.removeItem(UserPersistedAuthToken.key);
-        }
-    },
-};
+const UserPersistedAuthToken = (() => {
+    const key = "userAuthToken";
+
+    return {
+        get(): Optional<string> {
+            return localStorage.getItem(key) ?? null;
+        },
+        set(newValue: Optional<string>) {
+            if (newValue){
+                localStorage.setItem(key, newValue);
+            } else {
+                localStorage.removeItem(key);
+            }
+        },
+    }
+})();
+
 
 
 export default function Dashboard() {
