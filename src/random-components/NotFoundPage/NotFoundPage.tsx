@@ -8,8 +8,8 @@ export default function NotFoundPage() {
     useSetTitleFunctionality("Page Not Found");
     return <div className="NotFoundPage">
         <div className="text-box">
-            <div className="title">Page Not Found</div>
-            <div className="description">Sorry, but we couldn't find what you were looking for.</div>
+            <h1 className="title">Page Not Found</h1>
+            <p className="description">Sorry, but we couldn't find what you were looking for.</p>
         </div>
     </div>
 }

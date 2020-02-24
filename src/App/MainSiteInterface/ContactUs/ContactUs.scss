@@ -2,6 +2,9 @@
 
 
 .ContactUs{
+    @media(max-width: 520px){
+         --HeadedUpPageContainer-bottom-margin: 6rem;
+    }
     > .content{
         
         > .body-content-holder{

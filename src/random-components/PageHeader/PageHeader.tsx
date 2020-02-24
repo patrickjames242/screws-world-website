@@ -12,8 +12,8 @@ export default function PageHeader(props: PageHeaderProps) {
     const className = ["PageHeader", props.className ?? ""].join(" ");
     return <div className={className}>
         <div className="text-content">
-            <div className="title">{props.title}</div>
-            <div className="subtitle">{props.subtitle}</div>
+            <h1 className="title">{props.title}</h1>
+            <p className="subtitle">{props.subtitle}</p>
         </div>
     </div>
 }

@@ -6,8 +6,9 @@ import { useSetTitleFunctionality } from 'jshelpers';
 import HeadedUpPageContainer from 'random-components/HeadedUpPageContainer/HeadedUpPageContainer';
 import { PageHeaderProps } from 'random-components/PageHeader/PageHeader';
 import familyIslandsImage from './images/family-islands.jpg';
-import screwsImage from './images/screws.jpg';
+import screwInventoryImage from './images/screw-inventory.jpg';
 import licensePlateImage from './images/license-plate.jpg';
+import screwsImage from './images/screws.jpg';
 import { Link } from 'react-router-dom';
 import * as TopLevelRoutePaths from 'topLevelRoutePaths';
 
@@ -26,7 +27,7 @@ export default function Services() {
         subtitle: "See all the services Screws and Fasteners World have to offer.",
     }
 
-    return <HeadedUpPageContainer className="Services" stylingProps={{ maxContentWidth: "75rem" }} pageHeaderProps={pageHeaderProps}>
+    return <HeadedUpPageContainer className="Services" stylingProps={{ maxContentWidth: "70rem" }} pageHeaderProps={pageHeaderProps}>
         <div className="service-boxes-container">
             {services.map((x, i) => <IndividualServiceBox key={i} service={x} />)}
         </div>
@@ -42,6 +43,12 @@ const services: Service[] = (() => {
             image: licensePlateImage,
         },
         {
+            topSubtitle: "Special Orders",
+            title: "We accept special orders",
+            bottomSubtitle: "If we do not currently have the item you are looking for, or do not have enough of it, we will special order these items for at your request. Just give us a call and let us know!",
+            image: screwsImage,
+        },
+        {
             topSubtitle: "Shipping",
             title: "We ship to the Family Islands",
             bottomSubtitle: "Whether you live in Exuma, Eleuthera, Abaco or any other island, just give us a call and we'll be happy to ship our products to you.",
@@ -51,9 +58,8 @@ const services: Service[] = (() => {
             topSubtitle: "Inventory Restocking",
             title: "We restock your screw inventory on request",
             bottomSubtitle: "If you have a business that must maintain an inventory of screws, Screws World will regularly check and replenish your inventory, should you desire.",
-            image: screwsImage,
+            image: screwInventoryImage,
         },
-        
     ];
 })();
 

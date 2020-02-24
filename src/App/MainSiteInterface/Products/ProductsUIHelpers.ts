@@ -104,12 +104,6 @@ export function computeProductsInfoContextValueFromFetchResult(routePath: string
     } else {
         return {loadingIsFinished: false, data: null, error: null};
     }
-
-    // return {
-    //     loadingIsFinished: false,
-    //     data: null,
-    //     error: null,
-    // }
 }
 
 

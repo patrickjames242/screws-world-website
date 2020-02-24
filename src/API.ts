@@ -3,7 +3,6 @@
 
 import { Optional, Notification } from "jshelpers";
 
-console.warn("TODO: remember to sign access tokens with the hash of the users password");
 
 enum HTTPMethod {
     GET,

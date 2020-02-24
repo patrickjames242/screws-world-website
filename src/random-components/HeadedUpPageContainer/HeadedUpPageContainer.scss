@@ -1,27 +1,36 @@
 @import 'helpers';
 
 .HeadedUpPageContainer{
-    margin-bottom: 7.1rem;
+    
+    --HeadedUpPageContainer-bottom-margin: 7.1rem;
+    margin-bottom: var(--HeadedUpPageContainer-bottom-margin);
+    
     > .content{
-        --content-padding: 2.5rem;
+        
+        --HeadedUpPageContainer-max-content-width: 60rem;
+        max-width: var(--HeadedUpPageContainer-max-content-width);
+
+
+        --HeadedUpPageContainer-side-padding: 3rem;    
         @include setProps(margin-left margin-right, auto);
-        @include setProps(padding-left padding-right, var(--content-padding));
-        @include respondToNarrowWidth{
-            --content-padding: 1.8rem;
-        }
+        @include setProps(padding-left padding-right, var(--HeadedUpPageContainer-side-padding));
+        
+        
 
         > .PageHeader{
-            --top-and-bottom-margins: 8rem;
-            @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
+            --PageHeader-top-and-bottom-margins: 8rem;
+            @include setProps(margin-top margin-bottom, var(--PageHeader-top-and-bottom-margins));
         }
     }
     
 
     @media(max-width: 520px){
-        > .content > .PageHeader{
-            --top-and-bottom-margins: 6rem;
+        > .content {
+            --HeadedUpPageContainer-side-padding: 1.8rem;
+            > .PageHeader{
+                --PageHeader-top-and-bottom-margins: 6rem;
+            }
         }
-        margin-bottom: 6rem;
     }
 }
 

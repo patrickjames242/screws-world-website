@@ -33,7 +33,7 @@
                 pointer-events: auto;
 
                 background-color: colors(light-gray-bg);
-                overflow-y: scroll;
+                overflow-y: auto;
                 border-radius: $nav-bar-border-radius;
                 
                 position: relative;
@@ -60,9 +60,6 @@
                     fill: white;
                 }
             }
-
-
         }
-
     }
 }

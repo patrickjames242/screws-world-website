@@ -1,1 +1,188 @@
 @import 'helpers';
+
+
+.AboutUs{
+    .AboutUs-children-items{
+
+        $max-content-width-in-points: 1120px;
+
+        --max-content-width: var(--HeadedUpPageContainer-max-content-width);
+        --content-padding: var(--HeadedUpPageContainer-side-padding);
+
+        display: grid;
+        gap: 8em;
+
+        .ScreenWidthStretchingBox{
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            > .inner-content{
+                max-width: var(--max-content-width);
+                margin: auto;
+            }
+        }
+
+        .HeadingSeparatorLine{
+            background-color: colors(dark-light-blue);
+            height: 0.4rem;
+            width: 4rem;
+            border-radius: 10000000rem;
+        }
+
+        
+
+        > .IntroBox > .inner-content{
+            display: grid;
+            gap: 4.5rem;
+            grid-template-columns: 1fr 25rem;
+            
+            
+            > .image-section{
+
+                --intro-box-image-insets: 1.5rem;
+                position: relative;
+                > div{
+                    position: absolute;
+                    @include setProps(left right top bottom, 0);
+                    > .background-outline{
+                        position: absolute;
+                        border-radius: 2rem;
+                        border: 3px solid colors(dark-light-blue);
+                        top: var(--intro-box-image-insets); left: var(--intro-box-image-insets);
+                        bottom: 0; right: 0;
+                    }
+
+                    > .image-holder{
+                        position: absolute;
+                        @include setProps(bottom right, var(--intro-box-image-insets));
+                        @include setProps(top left, 0);
+                        border-radius: 1.1rem;
+                        overflow: hidden;
+                        > img{
+                            position: absolute;    
+                            @include setProps(left top, 0);
+                            @include setProps(width height, 100%);
+                            object-fit: cover;
+                        }    
+                    }
+                }
+            }
+
+            > .text-section{
+                display: grid;
+                align-content: start;
+                gap: 4rem;
+                padding-bottom: 3rem;
+                padding-top: 3rem;
+                padding-right: var(--content-padding);
+
+
+                > .IntroBoxRightListItem{
+
+                    display: grid;
+                    gap: 1.3rem;
+
+                    > .title{
+                        font-size: 2rem;
+                        font-weight: bold;
+
+                    }
+
+                    > .description{
+                        font-size: 1.2rem;
+                        color: colors(grayish-blue-text);
+                        line-height: 1.4;
+                    }
+                }
+            }
+
+            @media(max-width: $max-content-width-in-points){
+                
+                > .image-section > div{
+                    
+                    > .background-outline, .image-holder{
+                        border-bottom-left-radius: initial;
+                        border-top-left-radius: initial;
+                    }
+
+                    > .background-outline{
+                        border-left: initial;
+                        left: 0;
+                    }
+                }
+                
+            }
+
+            @media(max-width: 900px){
+                grid-template-columns: initial;
+                gap: 3rem;
+                
+                > .image-section{
+                    
+                   padding-top: 60%;
+                   --intro-box-image-insets: 0;
+
+                   > div{
+                       > .background-outline{
+                           display: none;
+                       }
+                       > .image-holder{
+                           border-radius: 0;
+                       }
+                    }    
+                }
+
+                > .text-section{
+                    @include setProps(padding-top padding-bottom, 0);
+                    @include setProps(padding-left padding-right, var(--content-padding));
+                    grid-auto-flow: column;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 2.5rem;
+                    > .IntroBoxRightListItem {
+                        
+                        > .title{
+                            font-size: 1.6rem;
+                        }
+                    }
+                }
+            }
+
+            @media(max-width: 600px){
+                > .text-section{
+                    grid-auto-flow: initial;
+                    grid-template-columns: initial;
+                    gap: 3rem;
+                    > .IntroBoxRightListItem{
+                        justify-items: center;
+                        text-align: center;
+                    }
+                }
+            }
+        }
+
+        .CenteredTitleAndDescription{
+
+            
+            max-width: 60rem;
+            margin: auto;
+            display: grid;
+            gap: 2rem;
+            justify-items: center;
+            text-align: center;
+            @include setProps(padding-left padding-right, var(--content-padding));
+            > .title{
+                font-size: 2.7rem;
+            }
+
+            > .description{
+                color: colors(grayish-blue-text);
+                font-size: 1.2rem;
+                line-height: 1.4;
+                white-space: pre-wrap;
+            }
+            
+
+            
+        }
+    }
+}
+

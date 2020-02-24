@@ -20,7 +20,7 @@ const UserPersistedAuthToken = (() => {
             return localStorage.getItem(key) ?? null;
         },
         set(newValue: Optional<string>) {
-            if (newValue){
+            if (newValue != null){
                 localStorage.setItem(key, newValue);
             } else {
                 localStorage.removeItem(key);

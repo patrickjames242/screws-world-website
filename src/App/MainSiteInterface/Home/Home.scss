@@ -11,7 +11,6 @@
         margin-top: $inset;
         @include setProps(margin-left margin-right, $inset);
         
-        
         @include centerContentInGrid;
 
         position: relative;
@@ -38,14 +37,14 @@
             --top-and-bottom-margins: 7.8rem;
             @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
             @media(max-width: 500px){
-                --top-and-bottom-margins: 5rem;
+                --top-and-bottom-margins: 4rem;
             }
 
             //padding code
             --center-content-side-padding: 80px;
             @include setProps(padding-left padding-right, var(--center-content-side-padding));
             @include respondToNarrowWidth{  
-                --center-content-side-padding: 30px;
+                --center-content-side-padding: 20px;
             }
             
             // background-color: green;
@@ -230,10 +229,11 @@
                 }
 
                 > .List{
+
                     display: grid;
                     gap: 1rem;
                     font-size: 1.15rem;
-                    // background-color: red;
+
                     > .item{        
                         margin-left: 1.1em;
                         list-style-type: none;

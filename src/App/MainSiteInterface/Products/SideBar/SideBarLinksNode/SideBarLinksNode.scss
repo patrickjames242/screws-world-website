@@ -49,6 +49,9 @@
         > .title{
             font-size: $side-bar-link-title-font-size;
             word-break: break-all;
+
+            // for microsoft edge on windows
+            word-wrap: break-word;
             @include setMaximumLines(1);
         }
         

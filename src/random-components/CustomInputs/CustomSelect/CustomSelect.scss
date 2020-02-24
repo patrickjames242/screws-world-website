@@ -4,6 +4,9 @@
 
     > select{
         word-break: break-word;
+        // for microsoft edge on windows
+        word-wrap: break-word;
+
         line-height: 1.5;
         width: 100%;
         white-space: pre-wrap;
