@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import './ContactUs.scss';
 import { SCREWS_WORLD_EMAIL, SCREWS_WORLD_NUMBER, useSetTitleFunctionality } from 'jshelpers';
 import { PageHeaderProps } from 'random-components/PageHeader/PageHeader';
@@ -8,42 +8,50 @@ import CustomTextField, {CustomTextFieldType} from 'random-components/CustomInpu
 import HeadedUpPageContainer from 'random-components/HeadedUpPageContainer/HeadedUpPageContainer';
 
 
+const textFieldsInfo = {
+    email: {
+        topText: "Your email address",
+        placeholderText: "jane.appleseed@screwsworld.com",
+    },
+    name: {
+        topText: "Your name",
+        placeholderText: "How do we address you?",
+    },
+    subject: {
+        topText: "Subject",
+        placeholderText: "Let us know how can we help you!",
+    },
+    description: {
+        topText: "Full description",
+        placeholderText: "Please include as much information as possible.",
+    }
+}
 
 
 export default function ContactUs() {
     useSetTitleFunctionality("Contact Us");
 
-    const textFieldsInfo = [
-        {
-            topText: "Your email address",
-            placeholderText: "jane.appleseed@screwsworld.com",
-        },
-        {
-            topText: "Your name",
-            placeholderText: "How do we address you?",
-        },
-        {
-            topText: "Subject",
-            placeholderText: "Let us know how can we help you!",
-        },
-        {
-            topText: "Full description",
-            placeholderText: "Please include as much information as possible.",
-            type: CustomTextFieldType.MultipleLine,
-        },
-    ];
+    const [email, setEmail] = useState("");
+    const [name, setName] = useState("");
+    const [subject, setSubject] = useState("");
+    const [description, setDescription] = useState("");
 
-    const pageHeaderProps: PageHeaderProps = {
+
+
+    const pageHeaderProps: PageHeaderProps = useRef({
         title: "Reach out to us today!",
         subtitle: "Please fill out the form below, email us, or call us, and one of our employees will be in touch with you shortly."
-    }
+    }).current;
 
     return <HeadedUpPageContainer className="ContactUs" stylingProps={{maxContentWidth: "60rem"}} pageHeaderProps={pageHeaderProps}>
         <div className="body-content-holder">
                 <div className="text-fields">
-                    {textFieldsInfo.map((x, i) => {
-                        return <CustomTextField type={x.type} topText={x.topText} placeholderText={x.placeholderText} key={i} />
-                    })}
+                    
+                    <CustomTextField {...textFieldsInfo.email} value={email} onValueChange={setEmail}/>
+                    <CustomTextField {...textFieldsInfo.name} value={name} onValueChange={setName}/>
+                    <CustomTextField {...textFieldsInfo.subject} value={subject} onValueChange={setSubject}/>
+                    <CustomTextField {...textFieldsInfo.description} value={description} onValueChange={setDescription} type={CustomTextFieldType.MultipleLine} />
+
                     <button className="submit-button">Submit</button>
                 </div>
                 <div className="contact-methods-holder">

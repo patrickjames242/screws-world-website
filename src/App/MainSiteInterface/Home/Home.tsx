@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, ReactNode, useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { SelectionType as NavBarSelection, getInfoForSelection } from 'random-components/NavBar/SelectionType';
 
@@ -10,9 +10,9 @@ import customerServiceIcon from 'assets/home-screen-images/icon-people.png';
 import priceIcon from 'assets/home-screen-images/price.png';
 import toolsIcon from 'assets/home-screen-images/tools.png';
 import quotesIcon from './quotes-icon.js';
-import mapboxgl from 'mapbox-gl';
 import { useSetTitleFunctionality } from 'jshelpers';
-mapboxgl.accessToken = 'pk.eyJ1IjoicGF0cmlja2hhbm5hMjQyIiwiYSI6ImNqcnh2eWVrczBydGo0OWx2dDUyYjhvNnMifQ.SGbGDXppFmFkdUnBxIyoqA';
+import ScrewsWorldLocationMap from 'random-components/ScrewsWorldLocationMap';
+
 
 
 
@@ -32,6 +32,7 @@ export default function Home() {
 
 
 function ShowCase() {
+    
     const S = NavBarSelection;
     const aboutUsPath = getInfoForSelection(S.AboutUs).routePath;
     const productsPath = getInfoForSelection(S.Products).routePath;
@@ -82,17 +83,17 @@ function IndividualFeatureBox(props: { image: string, title: string, description
 const featuresDict = [
     {
         title: "Awesome customer service",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas quasi officiis nihil esse animi saepe amet at eius veritatis nostrum.",
+        description: "We pride ourselves on treating our customers like royalty. Our representatives are here to cater to all your screw and fastener needs.",
         image: customerServiceIcon,
     },
     {
         title: "Great prices",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas quasi officiis nihil esse animi saepe amet at eius veritatis nostrum.",
+        description: "Our prices are fair and reasonable. We respect our customers too much to offer anything but the best prices we can.",
         image: priceIcon,
     },
     {
         title: "Wide variety of products",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas quasi officiis nihil esse animi saepe amet at eius veritatis nostrum.",
+        description: "We don’t just carry screws!. We carry everything from threaded rods to fishing lines to masonry tools. Whatever you need, we got you!",
         image: toolsIcon,
     },
 
@@ -102,13 +103,7 @@ const featuresDict = [
 
 function AdditionalInfoBox() {
 
-    function List(props: { children: ReactNode[] }) {
-        return <ul className="List">
-            {props.children.map((x, i) => {
-                return <li className="item" key={i}>{x}</li>
-            })}
-        </ul>
-    }
+    
 
     return <div className="AdditionalInfoBox">
         <div className="content">
@@ -117,26 +112,36 @@ function AdditionalInfoBox() {
                 <div className="description">For all your screw and fastener needs, we have virtually everything you could possibly want.</div>
             </div>
             <div className="right-info-box">
-                <List>
+                <AdditionalInfoItemList>
                     {[
                         "Philip Screwdrivers",
                         "Stainless steel bolts",
                         "Screws and washers",
                         "Linked Chains"
                     ]}
-                </List>
-                <List>
+                </AdditionalInfoItemList>
+                <AdditionalInfoItemList>
                     {[
                         "Nuts and Bolts",
                         "Threaded Rods",
                         "Fishing Lines",
                         "Much, much more!"
                     ]}
-                </List>
+                </AdditionalInfoItemList>
             </div>
         </div>
     </div>
 }
+
+function AdditionalInfoItemList(props: { children: string[] }) {
+    return <ul className="List">
+        {props.children.map((x, i) => {
+            return <li className="item" key={i}>{x}</li>
+        })}
+    </ul>
+}
+
+
 
 interface Review{
     text: string,
@@ -167,16 +172,31 @@ function ReviewBox(props: Review) {
     </div>
 }
 
-const reviews = (() => {
-    let x: Review[] = [];
-    for (let i = 1; i <= 4; i++) {
-        x.push({
-            text: "Lorem ipsum dolor sit amet consect adipisi elit. Harum, vel!",
-            author: "Charles Sawyer",
-            reviewDate: "September 3, 2019",
-        })
-    }
-    return x;
+const reviews: Review[] = (() => {
+    
+    return [
+        {
+            text: "It's a great place to shop for just about all screws, bolts and nuts you need and more... I always recommend them.",
+            author: "Alex Gardiner",
+            reviewDate: "August 2019", 
+        },
+        {
+            text: "Helpful customer service. Definitely a lot of screws, nuts and bolts there in stock. Clean store.",
+            author: "Rohan Deal",
+            reviewDate: "April 2019", 
+        },
+        {
+            text: "Great customer service!",
+            author: "Reuben Rolle",
+            reviewDate: "June 2019", 
+        },
+        {
+            text: "I've found just about everything I need here... They're my go to when I need a special fastener.",
+            author: "Lee McCoy",
+            reviewDate: "June 2017", 
+        },
+    ]
+
 })();
 
 
@@ -184,59 +204,19 @@ const reviews = (() => {
 
 function MapSection() {
 
-    const mapDivID = "Home-Page-MapSection-map-view";
-    const mapSectionDivRef = useRef<HTMLDivElement>(null);
+    
 
-    // map is loaded when its section is actually scrolled into view because loading the map is expensive and slows down the page while it is loading
-    useEffect(() => {
-
-        // we display the map immediately if the browser doesn't support the intersection api
-        if ('IntersectionObserver' in window === false) {
-            displayMapOnScreen();
-            return;
-        }
-
-        let observer = new IntersectionObserver(intersectionOccured)
-
-        function displayMapOnScreen() {
-            const center = { lon: -77.339006, lat: 25.052057 };
-            const map = new mapboxgl.Map({
-                container: mapDivID,
-                style: 'mapbox://styles/patrickhanna242/cjs0x6hqx0co31fmqmxjluf1w',
-                center: center,
-                zoom: 14.5,
-            });
-            new mapboxgl.Marker({ color: "#0470d9" }).setLngLat(center).addTo(map);
-        }
-
-        function intersectionOccured(entries: IntersectionObserverEntry[]) {
-            const entry = entries[0];
-            // testing for the isIntersecting property because some older browsers didn't implement it
-            if ('isIntersecting' in entry && entry.isIntersecting === false) { return; }
-            displayMapOnScreen();
-            observer.disconnect();
-        }
-
-        if (mapSectionDivRef.current) {
-            observer.observe(mapSectionDivRef.current);
-        }
-
-        return () => observer.disconnect();
-
-    }, []);
-
-    return <div className="MapSection" ref={mapSectionDivRef}>
+    return <div className="MapSection">
         <div className="content">
             <div className="map-holder">
-                <div id={mapDivID} className="map"></div>
+                <ScrewsWorldLocationMap/>
             </div>
 
             <div className="text-content">
                 <div className="title">Come and pay us a visit!</div>
-                <div className="description">We are located at the junction of Balfour Avenue and Palm Beach Street, and we are open 7AM to 5:30PM, Monday to Friday.</div>
+                <div className="description">We are located at the junction of Balfour Avenue and Palm Beach Street, and we are open 7:30 AM to 5:30 PM from Monday to Friday, and 8:00 AM to 11:00 AM on Sunday.</div>
             </div>
         </div>
     </div>
 
 }
-

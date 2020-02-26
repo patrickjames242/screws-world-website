@@ -2,15 +2,16 @@
 
 
 .AboutUs{
-    .AboutUs-children-items{
+    .content{
 
         $max-content-width-in-points: 1120px;
 
         --max-content-width: var(--HeadedUpPageContainer-max-content-width);
         --content-padding: var(--HeadedUpPageContainer-side-padding);
 
-        display: grid;
-        gap: 8em;
+        > *:not(:last-child){
+            margin-bottom: 8rem;
+        }
 
         .ScreenWidthStretchingBox{
             width: 100vw;
@@ -30,7 +31,7 @@
 
         
 
-        > .IntroBox > .inner-content{
+        > .IntroBox > .inner-content > div{
             display: grid;
             gap: 4.5rem;
             grid-template-columns: 1fr 25rem;
@@ -82,9 +83,8 @@
                     gap: 1.3rem;
 
                     > .title{
-                        font-size: 2rem;
+                        font-size: 1.6rem;
                         font-weight: bold;
-
                     }
 
                     > .description{
@@ -95,7 +95,7 @@
                 }
             }
 
-            @media(max-width: $max-content-width-in-points){
+            &.stick-to-sides{
                 
                 > .image-section > div{
                     
@@ -118,7 +118,7 @@
                 
                 > .image-section{
                     
-                   padding-top: 60%;
+                   padding-top: 56.25%;
                    --intro-box-image-insets: 0;
 
                    > div{
@@ -137,12 +137,7 @@
                     grid-auto-flow: column;
                     grid-template-columns: 1fr 1fr 1fr;
                     gap: 2.5rem;
-                    > .IntroBoxRightListItem {
-                        
-                        > .title{
-                            font-size: 1.6rem;
-                        }
-                    }
+                   
                 }
             }
 
@@ -159,16 +154,20 @@
             }
         }
 
-        .CenteredTitleAndDescription{
+        .history-title-and-description{
+            > .CenteredTitleAndDescription{
+                @include setProps(margin-left margin-right, auto);
+            }
+        }
 
+        .CenteredTitleAndDescription{
+            max-width: 50rem;
             
-            max-width: 60rem;
-            margin: auto;
             display: grid;
             gap: 2rem;
             justify-items: center;
             text-align: center;
-            @include setProps(padding-left padding-right, var(--content-padding));
+          
             > .title{
                 font-size: 2.7rem;
             }
@@ -179,9 +178,52 @@
                 line-height: 1.4;
                 white-space: pre-wrap;
             }
-            
+        }
+
+        .CenteredTitleAndDescriptionWithBottomBox > .inner-content{
+            display: grid;
+            gap: 3rem;
+
+            > .title-and-description-holder{
+                @include setProps(margin-left margin-right, auto);
+                @include setProps(padding-left padding-right, var(--content-padding));
+
+            }
+            > .bottom-box{
+                > div{
+                    max-width: 900px;
+                    @include setProps(margin-left margin-right, auto);
+                    > div{
+                        padding-top: 56.25%;
+                        position: relative;
+                        border-radius: 2rem;
+                        overflow: hidden;
+                        border: 1rem solid colors(light-gray-bg);
+                        background-color: colors(light-gray-bg);
+                        > div{
+                            position: absolute;
+                            @include setProps(left right top bottom, 0);
+                        }
+
+                        &.stick-to-sides{
+                            
+                            @include setProps(border-left border-right, initial);
+                            border-radius: 0;
+                            
+                            
+                        }
+                    }
+                }
+            }
 
             
+        }
+
+        > .map-section > .inner-content{
+            #ScrewsWorldLocationMap{
+                width: 100%;
+                height: 100%;
+            }
         }
     }
 }

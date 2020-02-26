@@ -313,6 +313,7 @@
                 background-color: colors(light-dark-blue);
                 border-radius: 1rem;
                 display: grid;
+                grid-template-rows: 1fr auto;
                 gap: 1.5rem;
                 
                 font-size: 1.2rem;

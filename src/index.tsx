@@ -9,5 +9,8 @@ import './index.scss';
 
 ReactDom.render(<App/>, document.getElementById('root'));
 
-console.warn("center images on nav bar links at the top");
+
 console.warn("make product and category items smaller on the categories screen");
+console.warn("add back to center button on map");
+console.warn("when there is already a saved image for a product item, selecting a new image on ios does not ungray out the save changes button");
+console.warn("when selecting an image on ios, sometimes only half of the image shows up in the actual space for the image on the website.");
