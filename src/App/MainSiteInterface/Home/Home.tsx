@@ -93,7 +93,7 @@ const featuresDict = [
     },
     {
         title: "Wide variety of products",
-        description: "We don’t just carry screws!. We carry everything from threaded rods to fishing lines to masonry tools. Whatever you need, we got you!",
+        description: "We don’t just carry screws! We carry everything from threaded rods to fishing lines to masonry tools. Whatever you need, we got you!",
         image: toolsIcon,
     },
 
