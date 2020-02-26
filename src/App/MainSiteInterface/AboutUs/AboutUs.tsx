@@ -36,7 +36,7 @@ export default function AboutUs() {
         } />
 
         <CenteredTitleAndDescriptionWithBottomBox className="map-section" bottomBoxChildren={<ScrewsWorldLocationMap/>} title="Where To Find Us" description={
-            `You can find us in the three story lime green building on corner of Balfour Avenue and Palm Beach Street in Nassau Bahamas. We open between the hours of 7:30 am to 5:00 pm on Mondays through Fridays and 8:00 am  to 11:00 am on Sundays.`
+            `You can find us in the three story lime green building on corner of Balfour Avenue and Palm Beach Street in Nassau Bahamas. We open between the hours of 7:00 am to 5:00 pm on Mondays through Fridays and sometimes at 8:00 am to 11:00 am on Sundays.`
         } />
 
     </HeadedUpPageContainer>

@@ -214,7 +214,7 @@ function MapSection() {
 
             <div className="text-content">
                 <div className="title">Come and pay us a visit!</div>
-                <div className="description">We are located at the junction of Balfour Avenue and Palm Beach Street, and we are open 7:30 AM to 5:30 PM from Monday to Friday, and 8:00 AM to 11:00 AM on Sunday.</div>
+                <div className="description">We are located at the junction of Balfour Avenue and Palm Beach Street, and we are open 7:00 AM to 5:30 PM from Monday to Friday, and sometimes at 8:00 AM to 11:00 AM on Sunday.</div>
             </div>
         </div>
     </div>

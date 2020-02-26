@@ -39,13 +39,13 @@ const services: Service[] = (() => {
         {
             topSubtitle: "License Plate Installation",
             title: "We install vehicle license plates",
-            bottomSubtitle: "Stop by and one of our employees will assist you with installing your license plate and providing the screws necessary.",
+            bottomSubtitle: "Stop by and one of our employees will assist you with installing your license plate and providing the screws necessary, for a fee.",
             image: licensePlateImage,
         },
         {
             topSubtitle: "Special Orders",
             title: "We accept special orders",
-            bottomSubtitle: "If we do not currently have the item you are looking for, or do not have enough of it, we will special order these items for at your request. Just give us a call and let us know!",
+            bottomSubtitle: "If we do not currently have the item you are looking for, or do not have enough of it, we will special order these items at your request. Just give us a call and let us know what you need!",
             image: screwsImage,
         },
         {
