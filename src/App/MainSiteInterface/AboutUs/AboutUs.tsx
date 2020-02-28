@@ -5,7 +5,7 @@ import { useSetTitleFunctionality } from 'jshelpers';
 import HeadedUpPageContainer from 'random-components/HeadedUpPageContainer/HeadedUpPageContainer';
 import { PageHeaderProps } from 'random-components/PageHeader/PageHeader';
 import screwsWorldFrontView from './images/screws-world-front.jpeg';
-import ScrewsWorldLocationMap from 'random-components/ScrewsWorldLocationMap';
+import ScrewsWorldLocationMap from 'random-components/ScrewsWorldLocationMap/ScrewsWorldLocationMap';
 
 
 
@@ -36,7 +36,7 @@ export default function AboutUs() {
         } />
 
         <CenteredTitleAndDescriptionWithBottomBox className="map-section" bottomBoxChildren={<ScrewsWorldLocationMap/>} title="Where To Find Us" description={
-            `You can find us in the three story lime green building on corner of Balfour Avenue and Palm Beach Street in Nassau Bahamas. We open between the hours of 7:00 am to 5:00 pm on Mondays through Fridays and sometimes at 8:00 am to 11:00 am on Sundays.`
+            `You can find us in the three story lime green building on the corner of Balfour Avenue and Palm Beach Street in Nassau Bahamas.\n\nWe open from 7:00 am to 5:00 pm on Mondays through Fridays, on most Sundays from 8:00 am to 11:00 am and sometimes on holidays.`
         } />
 
     </HeadedUpPageContainer>
@@ -190,7 +190,6 @@ function useClassNameWhenElementWidthEqualsWindowWidth(className: string, elemen
 
             if (windowWidth <= elementWidth) {
                 elementRef.current.classList.add(className);
-
             } else {
                 elementRef.current.classList.remove(className);
             }
@@ -202,10 +201,12 @@ function useClassNameWhenElementWidthEqualsWindowWidth(className: string, elemen
         }, 0);
 
         window.addEventListener('resize', respondToEventListener);
+        
         return () => {
             window.removeEventListener('resize', respondToEventListener);
             elementRef?.current?.classList.remove(className);
         }
+    
     }, [elementRef, className]);
 }
 

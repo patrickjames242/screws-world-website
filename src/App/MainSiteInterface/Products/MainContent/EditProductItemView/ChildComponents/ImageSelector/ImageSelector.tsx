@@ -1,6 +1,6 @@
 
 import './ImageSelector.scss';
-import React, { useRef, CSSProperties } from 'react';
+import React, { useRef } from 'react';
 import CustomInput, { CustomInputChildParams, CustomInputProps } from 'random-components/CustomInputs/CustomInput';
 import { OptionalDatabaseValue } from '../../EditProductItemViewHelpers';
 import ProductItemImageView from 'random-components/ProductItemImageView/ProductItemImageView';
@@ -25,7 +25,12 @@ export default function ProductItemImageSelector(props: ProductItemImageSelector
         const newValue = event.target.files?.[0];
         if (newValue == null){return;}
         event.target.value = ''; // so that the onChange handler will be called if another image is selected
-        props.onValueChange?.(newValue);
+        compressImageFileIfNeeded(newValue)
+        .then((compressedFile) => {
+            props.onValueChange?.(compressedFile);
+        }).catch((error) => {
+            console.error("something went wrong when trying to compress the image", error.message);
+        });
     }
 
     function respondToRemoveButtonClicked() {
@@ -101,5 +106,82 @@ function EditImageButtons(props: {
             }
         })()}
     </div>
+}
+
+
+
+
+
+async function compressImageFileIfNeeded(file: File): Promise<File> {
+
+    if (file.size <= 50000){
+        return file;
+    }
+
+    const compressionPercentage = (() => {
+        if (file.size <= 200000){
+            return 0.9;
+        } else if (file.size <= 1000000){
+            return 0.5;
+        } else {
+            return 0.08;
+        }
+    })();
+
+    addToBlobMethodTo_HTMLCanvasElement_IfNeeded();
+
+    const imageCouldNotBeCompressedError = new Error('The image could not be compressed');
+
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+    image.src = url;
+    await new Promise(resolve => {
+        image.onload = () => {
+            resolve()
+        }
+    });
+    const canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const context = canvas.getContext('2d');
+    if (context == null){
+        return Promise.reject(imageCouldNotBeCompressedError);
+    }
+    context.drawImage(image, 0, 0, image.width, image.height);
+
+    const newFile: File = await new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+            if (blob == null){
+                reject(imageCouldNotBeCompressedError);
+                return;
+            }
+            resolve(new File([blob], file.name, {type: file.type}));
+        }, file.type, compressionPercentage);
+    });
+    
+    return newFile;
+}
+
+// adds toBlob method to HTMLCanvasElement if it does not already exist, because browser support is not as good as I'd like it to be
+function addToBlobMethodTo_HTMLCanvasElement_IfNeeded() {
+
+    // I got this from here: https://zocada.com/compress-resize-images-javascript-browser/
+
+    if (!HTMLCanvasElement.prototype.toBlob) {
+        Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+            value: function (callback: BlobCallback, type?: string, quality?: any): void {
+                var dataURL = this.toDataURL(type, quality).split(',')[1];
+                setTimeout(function () {
+                    var binStr = atob(dataURL),
+                        len = binStr.length,
+                        arr = new Uint8Array(len);
+                    for (var i = 0; i < len; i++) {
+                        arr[i] = binStr.charCodeAt(i);
+                    }
+                    callback(new Blob([arr], { type: type ?? 'image/png' }));
+                });
+            }
+        });
+    }
 }
 

@@ -30,6 +30,7 @@ export const SCREWS_WORLD_EMAIL = "info@screwsworldbahamas.com";
 export const SCREWS_WORLD_NUMBER = "(242) 326-1976";
 
 
+
 // works just like useEffect, except that the effect is not called after the first render, as is the case with useEffect.
 export function useUpdateEffect(effect, dependencies) {
 

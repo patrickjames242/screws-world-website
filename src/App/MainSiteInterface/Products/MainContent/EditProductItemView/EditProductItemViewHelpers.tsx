@@ -3,7 +3,7 @@
 import { ProductItemProps, FetchItemType } from "API";
 import { isProduct, ProductDataType, isProductCategory, ProductDataObject } from "../../ProductsDataHelpers";
 import { Optional } from "jshelpers";
-import {Location} from 'history';
+import { Location } from 'history';
 import * as QueryString from 'query-string';
 import { EDIT_PRODUCT_DEFAULT_PARENT_QUERY_PARAM_KEY } from "../../ProductsRoutesInfo";
 
@@ -35,14 +35,14 @@ export interface StateProps {
     imageFile: OptionalDatabaseValue<File>,
 }
 
-function getDefaultParentCategoryValueFromLocation(location: Location): number | null | undefined{
+function getDefaultParentCategoryValueFromLocation(location: Location): number | null | undefined {
     const parsed = QueryString.parse(location.search)[EDIT_PRODUCT_DEFAULT_PARENT_QUERY_PARAM_KEY];
-    if (typeof parsed !== 'string'){return;}
-    if (parsed.toUpperCase() === "null".toUpperCase()){
+    if (typeof parsed !== 'string') { return; }
+    if (parsed.toUpperCase() === "null".toUpperCase()) {
         return null;
     } else {
         const num = Number(parsed);
-        if (isNaN(num)){
+        if (isNaN(num)) {
             return undefined;
         } else {
             return num;
@@ -55,7 +55,7 @@ function getDefaultParentCategoryValueFromLocation(location: Location): number |
 
 //     const categoryString = "category";
 //     const productString = "product";
-    
+
 //     const get = () => {
 //         const itemTypeString = localStorage.getItem(key);
 //         switch (itemTypeString){
@@ -88,7 +88,7 @@ function getDefaultParentCategoryValueFromLocation(location: Location): number |
 export function getDefaultUpdatePropertyStates(props: EditProductItemViewProps, currentLocation: Location): StateProps {
 
     const defaultParent = getDefaultParentCategoryValueFromLocation(currentLocation);
-    
+
     return {
         itemType: undefined,
         title: props.itemToEdit?.name ?? undefined,
@@ -100,7 +100,7 @@ export function getDefaultUpdatePropertyStates(props: EditProductItemViewProps, 
             }
         })(),
         parentCategoryID: (() => {
-            if (props.itemToEdit == null){
+            if (props.itemToEdit == null) {
                 return defaultParent;
             } else {
                 return props.itemToEdit.parent?.id.databaseID ?? null;
@@ -114,20 +114,20 @@ export function getDefaultUpdatePropertyStates(props: EditProductItemViewProps, 
 
 
 
-export interface ChangesState{
+export interface ChangesState {
     areThereChangesToBeSaved: boolean;
     hasTheUserMadeChanges: boolean;
 }
 
 
-export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps, stateProps: StateProps, currentLocation: Location): ChangesState{
+export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps, stateProps: StateProps, currentLocation: Location): ChangesState {
 
     const titleIsChanged: boolean = (() => {
 
         const oldValue = props.itemToEdit?.name.trim() ?? "";
 
         const newValue = (() => {
-            if (stateProps.title === undefined){
+            if (stateProps.title === undefined) {
                 return oldValue;
             } else {
                 return stateProps.title?.trim() ?? "";
@@ -142,7 +142,7 @@ export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps
 
         const oldValue = props.itemToEdit?.description?.trim() ?? "";
         const newValue = (() => {
-            if (stateProps.description === undefined){
+            if (stateProps.description === undefined) {
                 return oldValue;
             } else {
                 return stateProps.description?.trim() ?? "";
@@ -159,7 +159,7 @@ export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps
         const defualtParentCategory = getDefaultParentCategoryValueFromLocation(currentLocation);
 
         const oldValue = (() => {
-            if (props.itemToEdit == null){
+            if (props.itemToEdit == null) {
                 return undefined;
             } else {
                 return props.itemToEdit.parent?.id.databaseID ?? null;
@@ -167,15 +167,15 @@ export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps
         })();
 
         const newValue = (() => {
-            if (stateProps.parentCategoryID === undefined){
+            if (stateProps.parentCategoryID === undefined) {
                 return oldValue;
             } else {
                 return stateProps.parentCategoryID;
             }
         })();
 
-        if (oldValue !== newValue){
-            if (newValue === defualtParentCategory){
+        if (oldValue !== newValue) {
+            if (newValue === defualtParentCategory) {
                 return {
                     hasTheUserMadeChanges: false,
                     areThereChangesToBeSaved: true,
@@ -190,25 +190,26 @@ export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps
 
     const imageHasBeenChanged: boolean = (() => {
 
-        const imageVal = "SOME IMAGE";
+        const oldImageVal = "OLD IMAGE";
+        const newImageVal = "NEW IMAGE";
 
         const oldValue: string | null = (() => {
-            if (props.itemToEdit == null){
+            if (props.itemToEdit == null) {
                 return null;
-            } else if (props.itemToEdit.imageURL == null){
+            } else if (props.itemToEdit.imageURL == null) {
                 return null;
             } else {
-                return imageVal;
+                return oldImageVal;
             }
         })();
 
         const newValue: string | null = (() => {
-            if (stateProps.imageFile === undefined){
+            if (stateProps.imageFile === undefined) {
                 return oldValue;
-            } else if (stateProps.imageFile === null){
+            } else if (stateProps.imageFile === null) {
                 return null;
             } else {
-                return imageVal;
+                return newImageVal;
             }
         })();
 
@@ -218,7 +219,7 @@ export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps
     const allChanges = [titleIsChanged, descriptionIsChanged, productDataTypeIsSelected, parentCategoryIDIsChanged, imageHasBeenChanged];
 
     const areThereChangesToBeSaved = allChanges.some(x => {
-        if (typeof x === "boolean"){
+        if (typeof x === "boolean") {
             return x;
         } else {
             return x.areThereChangesToBeSaved;
@@ -226,13 +227,13 @@ export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps
     });
 
     const hasTheUserMadeChanges = allChanges.some(x => {
-        if (typeof x === "boolean"){
+        if (typeof x === "boolean") {
             return x;
         } else {
             return x.hasTheUserMadeChanges;
         }
     })
-    return {areThereChangesToBeSaved, hasTheUserMadeChanges};
+    return { areThereChangesToBeSaved, hasTheUserMadeChanges };
 }
 
 
@@ -250,8 +251,8 @@ export function getAPIUpdateObjectFromState(props: EditProductItemViewProps, sta
             const titleValueIsNotValid = typeof trimmedTitle_stateProps != "string" || trimmedTitle_stateProps === "";
 
             if (props.itemToEdit == null) {
-                if (titleValueIsNotValid){
-                    throw noValueProvidedError(FieldTitles.title);    
+                if (titleValueIsNotValid) {
+                    throw noValueProvidedError(FieldTitles.title);
                 } else {
                     return trimmedTitle_stateProps;
                 }
@@ -264,7 +265,7 @@ export function getAPIUpdateObjectFromState(props: EditProductItemViewProps, sta
 
             const oldValue = props.itemToEdit?.description ?? null;
             const newValue = (() => {
-                if (stateProps.description === undefined){
+                if (stateProps.description === undefined) {
                     return oldValue;
                 } else {
                     const trimmedDescription = stateProps.description?.trim() ?? null;
@@ -303,5 +304,10 @@ export function getAPIUpdateObjectFromState(props: EditProductItemViewProps, sta
         })(),
     }
 }
+
+
+
+
+
 
 

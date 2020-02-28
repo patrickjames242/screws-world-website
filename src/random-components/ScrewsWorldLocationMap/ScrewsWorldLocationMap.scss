@@ -1,0 +1,29 @@
+@import 'helpers';
+
+
+
+.ScrewsWorldLocationMap{
+    #ScrewsWorldLocationMap-inner-map-div{
+        width: 100%;
+        height: 100%;
+    }
+    position: relative;
+    > .back-to-center-button{
+        padding: 0.81rem;
+        
+        background-color: #0470d9;
+        border-radius: 1000000rem;
+        position: absolute;
+        @include setProps(right top, 1.5rem);
+        @include bounceOnHover($bounce-scale: 1.2);
+        
+        > svg{
+            @include setProps(width height, 1.8rem);    
+            display: block;
+            fill: white;
+        }
+    }
+}
+
+
+

@@ -11,7 +11,7 @@ import priceIcon from 'assets/home-screen-images/price.png';
 import toolsIcon from 'assets/home-screen-images/tools.png';
 import quotesIcon from './quotes-icon.js';
 import { useSetTitleFunctionality } from 'jshelpers';
-import ScrewsWorldLocationMap from 'random-components/ScrewsWorldLocationMap';
+import ScrewsWorldLocationMap from 'random-components/ScrewsWorldLocationMap/ScrewsWorldLocationMap';
 
 
 
@@ -102,8 +102,6 @@ const featuresDict = [
 
 
 function AdditionalInfoBox() {
-
-    
 
     return <div className="AdditionalInfoBox">
         <div className="content">
@@ -214,7 +212,7 @@ function MapSection() {
 
             <div className="text-content">
                 <div className="title">Come and pay us a visit!</div>
-                <div className="description">We are located at the junction of Balfour Avenue and Palm Beach Street, and we are open 7:00 AM to 5:30 PM from Monday to Friday, and sometimes at 8:00 AM to 11:00 AM on Sunday.</div>
+                <div className="description">{`We are located on Balfour Avenue, and we open from 7:00 am to 5:00 pm on Mondays through Fridays, on most Sundays from 8:00 am to 11:00 am and sometimes on holidays.`}</div>
             </div>
         </div>
     </div>

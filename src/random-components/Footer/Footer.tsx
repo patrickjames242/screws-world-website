@@ -25,8 +25,8 @@ export default function Footer() {
             })}
         </div>
     </footer>
-    
 }
+
 
 const contactMethods = [
     { platform: "Facebook", info: "@Screws & Fasteners World", link: "https://www.facebook.com/Screws-Fasteners-World-1472896606259468/", shouldOpenInNewWindow: true},
