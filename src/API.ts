@@ -122,7 +122,7 @@ function urlForFetchItemType(fetchItemType: FetchItemType): string {
 
 
 
-const baseURL = "https://screws-world-backend.herokuapp.com";
+const baseURL = "https://screws-world.herokuapp.com";
 // const baseURL = "http://localhost:5000";
 
 const categoriesURL = baseURL + "/categories";
