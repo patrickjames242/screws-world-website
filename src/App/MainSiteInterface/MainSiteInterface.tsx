@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { Route } from 'react-router-dom';
 
@@ -34,9 +34,15 @@ export default function MainSiteInterface() {
 function ComponentForSelection(props: { selection: NavBarSelection }) {
     const S = NavBarSelection;
 
+    const isInitialSelection = useRef(true);
+
     useEffect(() => {
-        window.scroll(0, 0);
-    }, []);
+        if (isInitialSelection.current === true){
+            isInitialSelection.current = false;
+        } else {
+            window.scroll(0, 0);
+        }
+    }, [props.selection]);
 
     const Component = (() => {
         switch (props.selection) {

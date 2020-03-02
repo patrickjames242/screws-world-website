@@ -198,6 +198,8 @@
                         position: relative;
                         border-radius: 2rem;
                         overflow: hidden;
+                        will-change: transform;
+                        
                         border: 1rem solid colors(light-gray-bg);
                         background-color: colors(light-gray-bg);
                         > div{
@@ -206,11 +208,8 @@
                         }
 
                         &.stick-to-sides{
-                            
                             @include setProps(border-left border-right, initial);
                             border-radius: 0;
-                            
-                            
                         }
                     }
                 }
@@ -218,9 +217,10 @@
         }
 
         > .map-section > .inner-content{
+
             .ScrewsWorldLocationMap{
-                width: 100%;
                 height: 100%;
+                width: 100%;
             }
         }
     }

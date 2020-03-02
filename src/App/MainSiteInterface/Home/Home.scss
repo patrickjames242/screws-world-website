@@ -365,8 +365,9 @@
             max-width: $map-section-max-width;
 
             @include respondToNarrowWidth{
-                grid-template-columns: initial;
-                grid-template-rows: auto auto;
+                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column-reverse;
             }
             
             > .map-holder{
@@ -402,7 +403,6 @@
                 
                 @include centerContentInGrid;
                 @include respondToNarrowWidth{
-                    grid-row: 1;
                     text-align: center;
                     max-width: 400px;
                     margin: auto;
