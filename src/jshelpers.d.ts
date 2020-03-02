@@ -12,6 +12,9 @@ declare module jshelpers{
 
     export const SCREWS_WORLD_EMAIL: string;
     export const SCREWS_WORLD_NUMBER: string;
+
+    export function isValidEmail(email: string): boolean;
+
     export function useUpdateEffect(effect: React.EffectCallback, dependencies?: React.DependencyList): void;
 
     export function useBlockHistoryWhileMounted(message: string, shouldBlock: boolean = true);
@@ -28,10 +31,7 @@ declare module jshelpers{
     }
 
     export const allHistoryBlocksShouldBeRemoved: Notification<{}>;
-
-
-   
-
+    
 }
 
 

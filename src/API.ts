@@ -132,7 +132,7 @@ export interface LoginRequestResult {
     readonly authToken: string,
 }
 
-export function logIn(username: string, password: string): Promise<LoginRequestResult> {
+export async function logIn(username: string, password: string): Promise<LoginRequestResult> {
     const bodyInfo: BodyInfo = {
         type: BodyInfoContentType.JSON,
         data: { username, password },
@@ -150,9 +150,26 @@ export interface ProductItemNetworkResponse {
     image_url: Optional<string>,
 }
 
-export function fetchAllItems(itemType: FetchItemType): Promise<ProductItemNetworkResponse[]> {
+export async function fetchAllItems(itemType: FetchItemType): Promise<ProductItemNetworkResponse[]> {
     return fetchDataFromAPI({ url: urlForFetchItemType(itemType) });
 }
+
+export interface APIEmailMessageProps{
+    contact_email: string,
+    name: string,
+    subject: string,
+    description: string,
+}
+
+export async function sendEmailMessage(props: APIEmailMessageProps): Promise<null>{
+    const bodyInfo: BodyInfo = {
+        type: BodyInfoContentType.JSON,
+        data: props,
+    }
+    return fetchDataFromAPI({url: baseURL + "/email", method: HTTPMethod.POST, bodyInfo});
+}
+
+
 
 export interface ProductItemProps {
     title?: string,
