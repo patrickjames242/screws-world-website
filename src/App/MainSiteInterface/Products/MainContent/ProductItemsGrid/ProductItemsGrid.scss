@@ -99,8 +99,6 @@
                     
                     > .image-box{
                         
-                        
-
                         border-radius: 0.55rem;
                         position: relative;
                         overflow: hidden;
@@ -122,6 +120,7 @@
                             padding: 0.265rem 0.4rem 0.2rem;
                             border-radius: 0.3rem;
                             background-color: colors(light-blue);
+                            box-shadow: 0 0 0.6rem 0.3rem rgba(black, 0.2);
                         }
                     }
 
