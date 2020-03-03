@@ -12,10 +12,8 @@ export interface CustomSelectChild {
 
 // the string value should represent the unique id of the select option
 export interface CustomSelectProps extends CustomInputProps<string>{
-    
     readonly placeholderText?: string,
     readonly children: CustomSelectChild[],
-    
 }
 
 

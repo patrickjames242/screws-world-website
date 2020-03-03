@@ -31,12 +31,18 @@
             position: relative;
 
             > .content{
-                
-                > svg{
-                    fill: $color;
+
+                > .svg-icon-holder{
                     @include setProps(margin-left margin-right, 37%);
-                    
+                    > svg{
+                        fill: $color;
+                        height: 100%;
+                        width: 100%;   
+                        
+                    }
                 }
+                
+                
 
                 > .text{
                     margin-top: 0.2rem;

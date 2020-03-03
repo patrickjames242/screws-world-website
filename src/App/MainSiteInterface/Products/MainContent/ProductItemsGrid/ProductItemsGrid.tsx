@@ -27,7 +27,10 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
         }
     })();
 
+    // because the gradient doesn't work properly for text here in edge for windows (non chromium version)
     const path = useToURLForProductItem(props.dataObject);
+
+    const isEdgeBrowser = /Edge/.test(navigator.userAgent);
 
     return <Link to={path} className="ProductOrCategoryItem">
         <div className="background-view" />
@@ -38,7 +41,9 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
             </div>
             <div className="under-image-content">
                 <div className="text-box">
-                    <div className="title">{props.dataObject.name}</div>
+                    <div className="title" style={{
+                        WebkitTextFillColor: isEdgeBrowser ? "initial" : undefined,
+                    }}>{props.dataObject.name}</div>
                     {(() => {
                         if ((props.dataObject.description?.trim() ?? "") !== ""){
                             return <div className="description">{props.dataObject.description}</div>

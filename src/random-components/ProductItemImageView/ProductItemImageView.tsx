@@ -55,7 +55,11 @@ export default function ProductItemImageView(props: {imageSource?: File | Produc
 function NoImageAvailableView(){
     return <div className="NoImageAvailableView">
         <div className="content">
-            {noImageAvailableIcon}
+            <div className="svg-icon-holder">
+                {/* I'm wrapping this svg within a div because if it isn't, the layout looks all messed up in Edge for windows */}
+                {noImageAvailableIcon}
+            </div>
+            
             <div className="text">No Image Available</div>
         </div>
     </div>
