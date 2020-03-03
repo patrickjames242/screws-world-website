@@ -9,8 +9,7 @@ import { useSpring, animated, useTransition } from 'react-spring';
 
 import './SideBarLinksNode.scss';
 
-console.warn("TODO: checking the length of the children might not be enough for useMemo for shouldNodeBeExpanded")
-
+//TODO: checking the length of the children in SideBarLinksNode.tsx might not be enough for useMemo for shouldNodeBeExpanded
 export default function SideBarLinksNode(props: { item: ProductDataObject }) {
 
     const currentlySelectedItem = useCurrentProductDetailsViewItem();

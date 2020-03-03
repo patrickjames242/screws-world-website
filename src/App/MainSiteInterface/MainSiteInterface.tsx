@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 
-import { Route } from 'react-router-dom';
+import { useLocation, matchPath } from 'react-router-dom';
 
 import { SelectionType as NavBarSelection, getAllSelections, getInfoForSelection } from 'random-components/NavBar/SelectionType';
 
@@ -16,17 +16,23 @@ import HeaderAndFooterContainer from 'random-components/HeaderAndFooterContainer
 
 export default function MainSiteInterface() {
 
+    const location = useLocation();
 
     return <HeaderAndFooterContainer>
-        {getAllSelections().map((x, i) => {
-            const selectionInfo = getInfoForSelection(x);
-            const path = selectionInfo.routePath;
-            const isExact = path === "/";
-            return <Route key={i} exact={isExact} path={path}
-                render={() => {
-                    return <ComponentForSelection selection={x} />
-                }} />
-        })}
+
+        {(() => {
+            const currentSelection = getAllSelections().find(selection => {
+                const pathForSelection = getInfoForSelection(selection).routePath;
+                const match = matchPath(location.pathname, {
+                    path: pathForSelection,
+                    exact: selection === NavBarSelection.Home,
+                });
+                return match != null;
+            }) ?? NavBarSelection.Home;
+
+            return <ComponentForSelection selection={currentSelection}/>
+        })()}
+        
     </HeaderAndFooterContainer>
 }
 
