@@ -198,6 +198,8 @@
                         position: relative;
                         border-radius: 2rem;
                         overflow: hidden;
+                        
+                        // because of border radius issues in safari
                         will-change: transform;
                         
                         border: 1rem solid colors(light-gray-bg);

@@ -105,7 +105,8 @@
                         position: relative;
                         overflow: hidden;
 
-                        
+                        // because of border radius issues in safari
+                        will-change: transform;
 
                         > .ProductItemImageView{
                             @include configureTransition(transform);
