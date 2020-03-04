@@ -63,8 +63,8 @@ function FeaturesBox() {
     });
 
     return <div className="FeaturesBox">
-        <h1 className="title">At Screws World we don't disappoint!</h1>
-        <div className="features">{features}</div>
+        <h2 className="title">At Screws World we don't disappoint!</h2>
+        <p className="features">{features}</p>
     </div>
 }
 
@@ -73,8 +73,8 @@ function IndividualFeatureBox(props: { image: string, title: string, description
         <div className="image-holder">
             <img src={props.image} alt="" />
         </div>
-        <div className="title">{props.title}</div>
-        <div className="description">{props.description}</div>
+        <h3 className="title">{props.title}</h3>
+        <p className="description">{props.description}</p>
     </div>
 }
 
@@ -106,8 +106,8 @@ function AdditionalInfoBox() {
     return <div className="AdditionalInfoBox">
         <div className="content">
             <div className="left-info-box">
-                <div className="title">If you can think of it, we probably have it.</div>
-                <div className="description">For all your screw and fastener needs, we have virtually everything you could possibly want.</div>
+                <h2 className="title">If you can think of it, we probably have it.</h2>
+                <p className="description">For all your screw and fastener needs, we have virtually everything you could possibly want.</p>
             </div>
             <div className="right-info-box">
                 <AdditionalInfoItemList>
@@ -201,9 +201,6 @@ const reviews: Review[] = (() => {
 
 
 function MapSection() {
-
-    
-
     return <div className="MapSection">
         <div className="content">
             <div className="map-holder">
@@ -211,8 +208,8 @@ function MapSection() {
             </div>
 
             <div className="text-content">
-                <div className="title">Come and pay us a visit!</div>
-                <div className="description">{`We are located on Balfour Avenue, and we open from 7:00 am to 5:00 pm on Mondays through Fridays, on most Sundays from 8:00 am to 11:00 am and sometimes on holidays.`}</div>
+                <h2 className="title">Come and pay us a visit!</h2>
+                <p className="description">{`We are located on Balfour Avenue, and we open from 7:00 am to 5:00 pm on Mondays through Fridays, on most Sundays from 8:00 am to 11:00 am and sometimes on holidays.`}</p>
             </div>
         </div>
     </div>

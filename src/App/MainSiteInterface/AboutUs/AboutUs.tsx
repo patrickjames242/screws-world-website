@@ -102,8 +102,8 @@ const introBoxRightListItems = (() => {
 function IntroBoxRightListItem(props: { title: string, description: string }) {
     return <div className="IntroBoxRightListItem">
         <HeadingSeparatorLine />
-        <div className="title">{props.title}</div>
-        <div className="description">{props.description}</div>
+        <h3 className="title">{props.title}</h3>
+        <p className="description">{props.description}</p>
     </div>
 }
 

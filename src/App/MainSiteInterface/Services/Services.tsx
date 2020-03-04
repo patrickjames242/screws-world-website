@@ -77,9 +77,9 @@ function IndividualServiceBox(props: { service: Service }) {
             </div>
         </div>
         <div className="text-grid-item">
-            <div className="top-subtitle">{props.service.topSubtitle}</div>
-            <div className="title">{props.service.title}</div>
-            <div className="bottom-subtitle">{props.service.bottomSubtitle}</div>
+            <h3 className="top-subtitle">{props.service.topSubtitle}</h3>
+            <h2 className="title">{props.service.title}</h2>
+            <p className="bottom-subtitle">{props.service.bottomSubtitle}</p>
             <Link to={TopLevelRoutePaths.CONTACT_US} className="contact-us-button">
                 <div className="text">Contact Us</div>
                 <div className="chevron">›</div>

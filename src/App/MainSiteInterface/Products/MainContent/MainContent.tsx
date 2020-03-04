@@ -131,9 +131,9 @@ function getCompleteTitleForProductItem(productItem: ProductDataObject): string 
 function TitleBox(props: { title: string, description: Optional<string> }) {
     return <div className="TitleBox">
         <div className="text-box">
-            <div className="title">{props.title}</div>
+            <h2 className="title">{props.title}</h2>
             {props.description != null ?
-                <div className="description">{props.description}</div>
+                <h3 className="description">{props.description}</h3>
                 : null}
         </div>
         <div className="bottom-line" />

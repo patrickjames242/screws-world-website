@@ -41,12 +41,12 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
             </div>
             <div className="under-image-content">
                 <div className="text-box">
-                    <div className="title" style={{
+                    <h4 className="title" style={{
                         WebkitTextFillColor: isEdgeBrowser ? "initial" : undefined,
-                    }}>{props.dataObject.name}</div>
+                    }}>{props.dataObject.name}</h4>
                     {(() => {
                         if ((props.dataObject.description?.trim() ?? "") !== ""){
-                            return <div className="description">{props.dataObject.description}</div>
+                            return <p className="description">{props.dataObject.description}</p>
                         }
                     })()}
                 </div>

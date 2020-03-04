@@ -14,9 +14,9 @@ export default function ProductDetailsView(props: { product: Product }) {
         {(() => {
             if (props.product.description != null && 
                 props.product.description.trim() !== "") {
-                return <div className="description-section">
+                return <p className="description-section">
                     {props.product.description}
-                </div>
+                </p>
             }
         })()}
 

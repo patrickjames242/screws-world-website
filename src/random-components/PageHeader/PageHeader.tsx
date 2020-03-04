@@ -13,7 +13,7 @@ export default function PageHeader(props: PageHeaderProps) {
     return <div className={className}>
         <div className="text-content">
             <h1 className="title">{props.title}</h1>
-            <p className="subtitle">{props.subtitle}</p>
+            <h2 className="subtitle">{props.subtitle}</h2>
         </div>
     </div>
 }
