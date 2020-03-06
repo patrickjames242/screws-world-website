@@ -1,4 +1,4 @@
 User-agent: *
-Disallow:
+Disallow: /dashboard/
 
 Sitemap: https://screwsworldbahamas.com/sitemap.xml
