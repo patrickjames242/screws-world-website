@@ -27,7 +27,7 @@ export default function NavBar() {
 
     const { toggleIsExpanded, springStyle } = useExpandCollapseFunctionality(navBarRef);
 
-    return <animated.div ref={navBarRef} style={springStyle} className="NavBar">
+    return <animated.nav ref={navBarRef} style={springStyle} className="NavBar">
         <div className="nav-bar-content">
             <Link to="/" className="title-box">
                 <div className="screw-logo-holder">{screwLogo}</div>
@@ -48,7 +48,7 @@ export default function NavBar() {
             {getAllNavBarLinks()}
         </div>
 
-    </animated.div>
+    </animated.nav>
 }
 
 const wideNavBarLinksCutOffPoint = window.matchMedia(`(max-width: ${scssVariables.wideNavBarLinksCutOffPoint})`);
