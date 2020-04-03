@@ -36,7 +36,7 @@ function ProductOrCategoryItem(props: { dataObject: ProductDataObject }) {
         <div className="background-view" />
         <div className="content-box">
             <div className="image-box">
-                <ProductItemImageView imageSource={props.dataObject} />
+                <ProductItemImageView imageSource={props.dataObject.imageURL} imageContentFitMode={props.dataObject.imageContentFitMode} />
                 <div className="product-or-category">{productOrCategoryText}</div>
             </div>
             <div className="under-image-content">

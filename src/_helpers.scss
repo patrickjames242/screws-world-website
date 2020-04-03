@@ -205,9 +205,10 @@ $theme-colors: (
     }
 }
 
-// this works but it breaks words at all characters, even when it isn't necessary to break them. Find a better way!!!!
-@mixin break-long-words{
+
+@mixin break-long-words{    
     // I got this from here: https://stackoverflow.com/questions/36418352/css-word-wrap-break-word-wont-work
+    // this works but it breaks words at all characters, even when it isn't necessary to break them. Find a better way!!!!
     overflow-wrap: break-word;
     word-wrap: break-word;
     -ms-word-break: break-all;
@@ -218,6 +219,11 @@ $theme-colors: (
     -webkit-hyphens: auto;
     hyphens: auto;
 }
+
+
+
+
+
 
 /// Remove the unit of a length
 /// @param {Number} $number - Number to remove unit from

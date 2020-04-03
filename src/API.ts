@@ -21,6 +21,8 @@ interface BodyInfo {
     type: BodyInfoContentType,
 }
 
+
+
 interface FetchDataFromAPIProps {
     url: string,
     method?: HTTPMethod,
@@ -148,6 +150,7 @@ export interface ProductItemNetworkResponse {
     description: Optional<string>,
     parent_category: Optional<number>,
     image_url: Optional<string>,
+    image_content_fit_mode: string,
 }
 
 export async function fetchAllItems(itemType: FetchItemType): Promise<ProductItemNetworkResponse[]> {
@@ -171,11 +174,41 @@ export async function sendEmailMessage(props: APIEmailMessageProps): Promise<nul
 
 
 
+export enum ProductImageContentFitMode{
+    fit,
+    fill
+}
+
+export const ProductItemContentFitMode_Helpers = (() => {
+    const fit = 'fit', fill = 'fill';
+
+    return {
+        get default(): ProductImageContentFitMode{
+            return ProductImageContentFitMode.fill;
+        },
+        getFromString(string: string): ProductImageContentFitMode{
+            switch (string){
+                case fit: return ProductImageContentFitMode.fit;
+                case fill: return ProductImageContentFitMode.fill;
+                default: throw new Error('the product item content fit mode string is invalid.');
+            }
+        },
+        convertToString(fitMode: ProductImageContentFitMode): string{
+            switch (fitMode){
+                case ProductImageContentFitMode.fit: return fit;
+                case ProductImageContentFitMode.fill: return fill;
+            }
+        }
+    }
+    
+})()
+
 export interface ProductItemProps {
     title?: string,
     description?: Optional<string>,
     parentCategoryID?: Optional<number>,
     image?: Optional<File>,
+    imageContentFitMode?: ProductImageContentFitMode,
 }
 
 
@@ -247,6 +280,11 @@ export class RequestsRequiringAuthentication {
                 title: props.title, 
                 description: props.description, 
                 parent_category: props.parentCategoryID,
+                image_content_fit_mode: (() => {
+                    if (props.imageContentFitMode != null){
+                        return ProductItemContentFitMode_Helpers.convertToString(props.imageContentFitMode)
+                    } else {return undefined;}
+                })()
             }   
         }
     }
@@ -277,10 +315,11 @@ export class RequestsRequiringAuthentication {
         const authenticationError = new Error(authenticationErrorText);
 
         const authToken = this.authTokenProvider();
-
+        
         if (authToken == null) {
             return Promise.reject(authenticationError);
         }
+
         const headers = props.headers ?? new Map<string, string>();
         headers.set("auth-token", authToken);
         props.headers = headers;

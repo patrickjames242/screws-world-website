@@ -31,9 +31,10 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
     const [title, setTitle] = useState(defaultStates.title);
     const [description, setDescription] = useState(defaultStates.description);
     const [imageFile, setImageFile] = useState(defaultStates.imageFile);
+    const [imageContentFitMode, setImageContentFitMode] = useState(defaultStates.imageContentFitMode);
 
     const currentPropertiesStates: StateProps = {
-        itemType, parentCategoryID, title, description, imageFile,
+        itemType, parentCategoryID, title, description, imageFile, imageContentFitMode,
     }
 
     const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +49,7 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
         setTitle(defaultStates.title);
         setDescription(defaultStates.description);
         setImageFile(defaultStates.imageFile);
+        setImageContentFitMode(defaultStates.imageContentFitMode);
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.itemToEdit]);
 
@@ -132,7 +134,7 @@ export default function EditProductItemView(props: EditProductItemViewProps) {
 
             <TextField isEnabled={shouldFieldsBeEnabled} className="title" isRequired={true} topText={FieldTitles.title} placeholderText="What is the name of the item?" value={title ?? ""} onValueChange={setTitle} />
 
-            <ProductItemImageSelector isEnabled={shouldFieldsBeEnabled} topText={FieldTitles.image} itemBeingEdited={props.itemToEdit} value={imageFile} onValueChange={setImageFile} />
+            <ProductItemImageSelector isEnabled={shouldFieldsBeEnabled} topText={FieldTitles.image} itemBeingEdited={props.itemToEdit} value={imageFile} onValueChange={setImageFile} imageFitModeProps={{value: imageContentFitMode, onChange: setImageContentFitMode}}/>
 
             <TextField isEnabled={shouldFieldsBeEnabled} className="description" topText={FieldTitles.description} placeholderText="Give some information on the item." type={CustomTextFieldType.MultipleLine} value={description ?? ""} onValueChange={setDescription} />
 

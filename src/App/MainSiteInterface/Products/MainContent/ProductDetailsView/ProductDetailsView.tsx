@@ -24,7 +24,7 @@ export default function ProductDetailsView(props: { product: Product }) {
             <div className="image-section">
                 <div className="content">
                     <div className="background-view" />
-                    <ProductItemImageView imageSource={props.product} />
+                    <ProductItemImageView imageSource={props.product.imageURL} imageContentFitMode={props.product.imageContentFitMode}/>
                 </div>
             </div>
         </div>

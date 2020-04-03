@@ -7,7 +7,8 @@ import './index.scss';
 
 
 
-ReactDom.render(<App/>, document.getElementById('root'));
+
+ReactDom.render(<App />, document.getElementById('root'));
 
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     console.warn("fix products page issue in edge where text stretches parent if too wide");

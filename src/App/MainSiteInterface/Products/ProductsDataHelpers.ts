@@ -3,7 +3,7 @@
 
 import { Optional } from "jshelpers";
 
-import { fetchAllItems, ProductItemNetworkResponse, FetchItemType, APIChange, APIChangeType } from "API";
+import { fetchAllItems, ProductItemNetworkResponse, FetchItemType, APIChange, APIChangeType, ProductImageContentFitMode, ProductItemContentFitMode_Helpers } from "API";
 
 
 // PUBLIC STUFF
@@ -67,6 +67,8 @@ export class ProductsDataObjectID {
 
 }
 
+
+
 export abstract class ProductDataObject {
 
     readonly id: ProductsDataObjectID;
@@ -74,6 +76,8 @@ export abstract class ProductDataObject {
     protected _name: string;
     protected _description: Optional<string>;
     protected _imageURL: Optional<string>;
+    protected _imageContentFitMode: ProductImageContentFitMode;
+
     protected _parentGetter: (id: ProductsDataObjectID) => Optional<ProductCategory>;
 
     constructor(
@@ -82,20 +86,28 @@ export abstract class ProductDataObject {
         name: string,
         description: Optional<string>,
         imageURL: Optional<string>,
+        imageContentFitMode: ProductImageContentFitMode,
         parentGetter: (id: ProductsDataObjectID) => Optional<ProductCategory>,
     ) {
         this.id = new ProductsDataObjectID(databaseID, objectType);
         this._name = name;
         this._description = description;
         this._imageURL = imageURL;
+        this._imageContentFitMode = imageContentFitMode;
         this._parentGetter = parentGetter;
     }
 
-    abstract getNewWithUpdatedProperties(props: { name: string, description: Optional<string>, imageURL: Optional<string>}): ProductDataObject;
+    abstract getNewWithUpdatedProperties(props: { 
+        name: string, 
+        description: Optional<string>, 
+        imageURL: Optional<string>, 
+        imageContentFitMode: ProductImageContentFitMode 
+    }): ProductDataObject;
 
     get name() { return this._name; }
     get description() { return this._description; }
     get imageURL() { return this._imageURL; }
+    get imageContentFitMode() { return this._imageContentFitMode; }
     get parent() { return this._parentGetter(this.id); }
 
 }
@@ -106,13 +118,26 @@ export class Product extends ProductDataObject {
         name: string,
         description: Optional<string>,
         imageURL: Optional<string>,
+        imageContentFitMode: ProductImageContentFitMode,
         parentGetter: (id: ProductsDataObjectID) => Optional<ProductCategory>,
     ) {
-        super(ProductDataType.Product, id, name, description, imageURL, parentGetter);
+        super(ProductDataType.Product, id, name, description, imageURL, imageContentFitMode, parentGetter);
     }
 
-    getNewWithUpdatedProperties(props: {name: string, description: Optional<string>, imageURL: Optional<string>}): Product{
-        return new Product(this.id.databaseID, props.name, props.description, props.imageURL, this._parentGetter);
+    getNewWithUpdatedProperties(props: { 
+        name: string, 
+        description: Optional<string>, 
+        imageURL: Optional<string>, 
+        imageContentFitMode: ProductImageContentFitMode 
+    }): Product {
+        return new Product(
+            this.id.databaseID, 
+            props.name, 
+            props.description, 
+            props.imageURL, 
+            props.imageContentFitMode, 
+            this._parentGetter
+        );
     }
 
 }
@@ -126,10 +151,11 @@ export class ProductCategory extends ProductDataObject {
         name: string,
         description: Optional<string>,
         imageURL: Optional<string>,
+        imageContentFitMode: ProductImageContentFitMode,
         parentGetter: (id: ProductsDataObjectID) => Optional<ProductCategory>,
         childrenGetter: (categoryID: number) => ProductDataObject[],
     ) {
-        super(ProductDataType.ProductCategory, id, name, description, imageURL, parentGetter);
+        super(ProductDataType.ProductCategory, id, name, description, imageURL, imageContentFitMode, parentGetter);
         this._childrenGetter = childrenGetter;
     }
 
@@ -137,8 +163,21 @@ export class ProductCategory extends ProductDataObject {
         return this._childrenGetter(this.id.databaseID) ?? [];
     }
 
-    getNewWithUpdatedProperties(props: {name: string, description: Optional<string>, imageURL: Optional<string>}): ProductCategory{
-        return new ProductCategory(this.id.databaseID, props.name, props.description, props.imageURL, this._parentGetter, this._childrenGetter);
+    getNewWithUpdatedProperties(props: { 
+        name: string, 
+        description: Optional<string>, 
+        imageURL: Optional<string>, 
+        imageContentFitMode: ProductImageContentFitMode 
+    }): ProductCategory {
+        return new ProductCategory(
+            this.id.databaseID, 
+            props.name, 
+            props.description, 
+            props.imageURL, 
+            props.imageContentFitMode,
+            this._parentGetter, 
+            this._childrenGetter
+        );
     }
 }
 
@@ -149,7 +188,7 @@ export class ProductsDataObjectsManager {
     private static _categoryIDForObjectsWithNoCategory = new ProductsDataObjectID(-1, ProductDataType.ProductCategory);
 
     // look, the reason we maintain all these maps is because this data is being requested at every render of our app. For example, having to find all the children for a particular category at every render is going to negatively impact performance when the amount of categories and products start growing. 
-    
+
 
     private constructor(
         // objects that don't have a parent are stored as an array in this map with the databaseID for the above id as the key
@@ -159,8 +198,8 @@ export class ProductsDataObjectsManager {
 
         // any cached values are recalculated from scratch after any api chnages. If is null, it means either the value hasn't been calculated yet, or the value has been cleared and needs to be recalculated
         private _cachedCategories: Optional<ProductCategory[]>,
-    ) { 
-        if (_cachedCategories == null){
+    ) {
+        if (_cachedCategories == null) {
             this._invalidateCache();
         }
     }
@@ -177,11 +216,14 @@ export class ProductsDataObjectsManager {
         const manager = new ProductsDataObjectsManager(_categoryChildrenByCategoryID, _objectParentsByObjectID, _objectsByObjectIDs, null);
 
         networkCategoriesResponse.forEach(x => {
-            const category = new ProductCategory(x.id, x.title, x.description, x.image_url, manager._getObjectParentForObjectWithID, manager._getCategoryChildenForCategoryID);
+            const imageContentFitMode = ProductItemContentFitMode_Helpers.getFromString(x.image_content_fit_mode)
+            const category = new ProductCategory(x.id, x.title, x.description, x.image_url, imageContentFitMode, manager._getObjectParentForObjectWithID, manager._getCategoryChildenForCategoryID);
             _objectsByObjectIDs.set(category.id.stringVersion, category);
         });
+
         networkProductsResponse.forEach(x => {
-            const product = new Product(x.id, x.title, x.description, x.image_url, manager._getObjectParentForObjectWithID);
+            const imageContentFitMode = ProductItemContentFitMode_Helpers.getFromString(x.image_content_fit_mode)
+            const product = new Product(x.id, x.title, x.description, x.image_url, imageContentFitMode, manager._getObjectParentForObjectWithID);
             _objectsByObjectIDs.set(product.id.stringVersion, product);
         });
 
@@ -217,19 +259,19 @@ export class ProductsDataObjectsManager {
 
     getAllCategories: () => ProductCategory[] = () => {
         const val = (() => {
-            if (this._cachedCategories != null){
+            if (this._cachedCategories != null) {
                 return this._cachedCategories;
             } else {
                 this._invalidateCache();
                 const cachedCategories = this._cachedCategories;
-                if (cachedCategories == null){
+                if (cachedCategories == null) {
                     throw new Error("this shouldn't be null! Check logic!!");
                 }
                 return cachedCategories;
             }
         })()
         return val;
-        
+
     }
 
     getObjectForObjectID: (objectID: ProductsDataObjectID) => Optional<ProductDataObject> =
@@ -240,7 +282,7 @@ export class ProductsDataObjectsManager {
     private _getObjectParentForObjectWithID: (objectID: ProductsDataObjectID) => Optional<ProductCategory> =
         (objectID: ProductsDataObjectID) => {
             const categoryID = this._objectParentsByObjectID.get(objectID.stringVersion) ?? null;
-            if (categoryID == null){return null;}
+            if (categoryID == null) { return null; }
             const id = new ProductsDataObjectID(categoryID, ProductDataType.ProductCategory);
             return (this._objectsByObjectIDs.get(id.stringVersion) ?? null) as Optional<ProductCategory>;
         }
@@ -264,9 +306,17 @@ export class ProductsDataObjectsManager {
                     const convertedNetworkReponse = (() => {
                         switch (itemType) {
                             case ProductDataType.Product:
-                                return new Product(networkResponse.id, networkResponse.title, networkResponse.description, networkResponse.image_url, this._getObjectParentForObjectWithID);
+
+                                const imageContentFitMode = ProductItemContentFitMode_Helpers.getFromString(networkResponse.image_content_fit_mode)
+                                
+                                return new Product(networkResponse.id, networkResponse.title, networkResponse.description, networkResponse.image_url, imageContentFitMode, this._getObjectParentForObjectWithID);
+
                             case ProductDataType.ProductCategory:
-                                return new ProductCategory(networkResponse.id, networkResponse.title, networkResponse.description, networkResponse.image_url, this._getObjectParentForObjectWithID, this._getCategoryChildenForCategoryID);
+
+                                const imageContentFitMode1 = ProductItemContentFitMode_Helpers.getFromString(networkResponse.image_content_fit_mode);
+                                
+                                return new ProductCategory(networkResponse.id, networkResponse.title, networkResponse.description, networkResponse.image_url, imageContentFitMode1, this._getObjectParentForObjectWithID, this._getCategoryChildenForCategoryID);
+                            default: throw new Error('this point should not be reached!! Check logic!!');
                         }
                     })();
 
@@ -277,9 +327,14 @@ export class ProductsDataObjectsManager {
                 case APIChangeType.UPDATE:
                     if (typeof networkResponse === "number") { break; }
                     const existingObject1 = this._objectsByObjectIDs.get((new ProductsDataObjectID(networkResponse.id, itemType)).stringVersion);
+                    
                     if (existingObject1 == null) { break; }
-                    const updatedObject = existingObject1.getNewWithUpdatedProperties({name: networkResponse.title, description: networkResponse.description, imageURL: networkResponse.image_url});
+                    
+                    const imageContentFitMode = ProductItemContentFitMode_Helpers.getFromString(networkResponse.image_content_fit_mode)
+                    
+                    const updatedObject = existingObject1.getNewWithUpdatedProperties({ name: networkResponse.title, description: networkResponse.description, imageURL: networkResponse.image_url, imageContentFitMode: imageContentFitMode});
                     this._objectsByObjectIDs.set(existingObject1.id.stringVersion, updatedObject);
+                    
                     this._resetParentAndChildrenInformationForChild(updatedObject, networkResponse.parent_category);
                     break;
 
@@ -293,9 +348,9 @@ export class ProductsDataObjectsManager {
             this._invalidateCache();
         }
 
-    private _recursivelyDeleteObjectAndChildren(object: ProductDataObject){
-        if (isProductCategory(object) && object.children.length > 0){
-            for (const child of object.children){
+    private _recursivelyDeleteObjectAndChildren(object: ProductDataObject) {
+        if (isProductCategory(object) && object.children.length > 0) {
+            for (const child of object.children) {
                 this._recursivelyDeleteObjectAndChildren(child);
             }
         }
@@ -303,7 +358,7 @@ export class ProductsDataObjectsManager {
         this._objectsByObjectIDs.delete(object.id.stringVersion);
     }
 
-    
+
     private _resetParentAndChildrenInformationForChild(child: ProductDataObject, categoryID: Optional<number>) {
 
         this._deleteParentAndChildrenInformationAboutChild(child);
@@ -337,11 +392,11 @@ export class ProductsDataObjectsManager {
     }
 
     // recalculates any cached values... right now this only includes _cachedCategories
-    private _invalidateCache(){
+    private _invalidateCache() {
         let newCategories: ProductCategory[] = [];
-        for (const object of this._objectsByObjectIDs.values()){
-                        
-            if (isProductCategory(object)){
+        for (const object of this._objectsByObjectIDs.values()) {
+
+            if (isProductCategory(object)) {
                 newCategories.push(object);
             }
         }
@@ -357,15 +412,15 @@ export class ProductsDataObjectsManager {
 
 export function isProduct(x: any): x is Product {
     if (!x || typeof x !== "object") { return false; }
-    if (x.id && x.id.objectType !== undefined){
-        return (x.id.objectType as ProductDataType) === ProductDataType.Product;    
+    if (x.id && x.id.objectType !== undefined) {
+        return (x.id.objectType as ProductDataType) === ProductDataType.Product;
     }
     return false;
 }
 
 export function isProductCategory(x: any): x is ProductCategory {
     if (!x || typeof x !== "object") { return false; }
-    if (x.id && x.id.objectType !== undefined){
+    if (x.id && x.id.objectType !== undefined) {
         return (x.id.objectType as ProductDataType) === ProductDataType.ProductCategory;
     }
     return false

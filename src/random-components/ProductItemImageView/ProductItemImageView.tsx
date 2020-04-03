@@ -1,11 +1,13 @@
 
 import './ProductItemImageView.scss';
 import React, {useMemo, useRef, useEffect} from 'react';
-import { ProductDataObject } from 'App/MainSiteInterface/Products/ProductsDataHelpers';
 import { Optional } from 'jshelpers';
 import noImageAvailableIcon from './noImageAvailableIcon.js';
+import { ProductImageContentFitMode } from 'API';
 
-export default function ProductItemImageView(props: {imageSource?: File | ProductDataObject | null}){
+
+// the string in the imageSource prop represents the url of the image
+export default function ProductItemImageView(props: {imageSource?: File | string | null, imageContentFitMode: ProductImageContentFitMode}){
     
     const previousObjectURL = useRef<Optional<string>>(null);
 
@@ -15,8 +17,8 @@ export default function ProductItemImageView(props: {imageSource?: File | Produc
             URL.revokeObjectURL(previousObjectURL.current);
         }
         
-        if (props.imageSource instanceof ProductDataObject){
-            return props.imageSource.imageURL;
+        if (typeof props.imageSource === "string"){
+            return props.imageSource;
         } else if (props.imageSource instanceof File){
             const objectURL = URL.createObjectURL(props.imageSource);
             previousObjectURL.current = objectURL;
@@ -36,12 +38,19 @@ export default function ProductItemImageView(props: {imageSource?: File | Produc
         }
     }, []);
 
+    const objectFitCSSValue = (() => {
+        switch (props.imageContentFitMode){
+            case ProductImageContentFitMode.fill: return 'cover';
+            case ProductImageContentFitMode.fit: return 'contain';
+        }
+    })()
+
     return <div className="ProductItemImageView">
         <div className="image-holder">
             
             {(() => {
                 if (imageURL != null){
-                    return  <img src={imageURL} alt=""/>;
+                    return  <img src={imageURL} alt="" style={{objectFit: objectFitCSSValue}}/>;
                 } else {
                     return <NoImageAvailableView/>;
                 }

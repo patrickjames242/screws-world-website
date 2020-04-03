@@ -11,6 +11,8 @@ export interface ProductItemTypeSelectorProps extends CustomInputProps<RequiredD
     itemBeingEdited: Optional<ProductDataObject>,
 }
 
+
+
 export default function ProductItemTypeSelector(props: ProductItemTypeSelectorProps) {
 
     const { getStringForItemType, getItemTypeForString } = (() => {

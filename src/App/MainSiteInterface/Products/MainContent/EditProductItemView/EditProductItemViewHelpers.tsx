@@ -1,6 +1,6 @@
 
 
-import { ProductItemProps, FetchItemType } from "API";
+import { ProductItemProps, FetchItemType, ProductImageContentFitMode, ProductItemContentFitMode_Helpers } from "API";
 import { isProduct, ProductDataType, isProductCategory, ProductDataObject } from "../../ProductsDataHelpers";
 import { Optional } from "jshelpers";
 import { Location } from 'history';
@@ -27,12 +27,14 @@ export const FieldTitles = {
 export type OptionalDatabaseValue<Type> = Type | null | undefined;
 export type RequiredDatabaseValue<Type> = Type | undefined;
 
+
 export interface StateProps {
     itemType: RequiredDatabaseValue<ProductDataType>,
     parentCategoryID: OptionalDatabaseValue<number>,
     title: RequiredDatabaseValue<string>,
     description: OptionalDatabaseValue<string>,
     imageFile: OptionalDatabaseValue<File>,
+    imageContentFitMode: ProductImageContentFitMode,
 }
 
 function getDefaultParentCategoryValueFromLocation(location: Location): number | null | undefined {
@@ -50,39 +52,6 @@ function getDefaultParentCategoryValueFromLocation(location: Location): number |
     }
 }
 
-// export const MostRecentlySelectedItemType = (() => {
-//     const key = "EditProductItemViewHelpers MostRecentlySelectedItemType";
-
-//     const categoryString = "category";
-//     const productString = "product";
-
-//     const get = () => {
-//         const itemTypeString = localStorage.getItem(key);
-//         switch (itemTypeString){
-//             case categoryString: return ProductDataType.ProductCategory;
-//             case productString: return ProductDataType.Product;
-//             default: return null;
-//         }
-//     }
-
-//     const set = (newValue: ProductDataType) => {
-
-//         if (newValue == null){
-//             localStorage.removeItem(key);
-//             return;
-//         }
-
-//         const stringVal = (() => {
-//             switch (newValue){
-//                 case ProductDataType.Product: return productString;
-//                 case ProductDataType.ProductCategory: return categoryString;
-//             }
-//         })();
-//         localStorage.setItem(key, stringVal);
-//     }
-
-//     return {get, set};
-// })();
 
 
 export function getDefaultUpdatePropertyStates(props: EditProductItemViewProps, currentLocation: Location): StateProps {
@@ -107,6 +76,13 @@ export function getDefaultUpdatePropertyStates(props: EditProductItemViewProps, 
             }
         })(),
         imageFile: undefined,
+        imageContentFitMode: (() => {
+            if (props.itemToEdit == null){
+                return ProductItemContentFitMode_Helpers.default;
+            } else {
+                return props.itemToEdit.imageContentFitMode;
+            }
+        })(),
     }
 }
 
@@ -216,7 +192,24 @@ export function getAreThereChangesToBeSavedValue(props: EditProductItemViewProps
         return oldValue !== newValue;
     })();
 
-    const allChanges = [titleIsChanged, descriptionIsChanged, productDataTypeIsSelected, parentCategoryIDIsChanged, imageHasBeenChanged];
+    const imageContentFitModeHasBeenChanged = (() => {
+
+        const oldValue = props.itemToEdit?.imageContentFitMode ?? ProductItemContentFitMode_Helpers.default;
+        const newValue = stateProps.imageContentFitMode;
+
+        return {
+            hasTheUserMadeChanges: newValue !== oldValue,
+            areThereChangesToBeSaved: (() => {
+                if (props.itemToEdit == null){
+                    return newValue !== ProductItemContentFitMode_Helpers.default;
+                } else {
+                    return newValue !== oldValue;
+                }
+            })()
+        }
+    })();
+
+    const allChanges = [titleIsChanged, descriptionIsChanged, productDataTypeIsSelected, parentCategoryIDIsChanged, imageHasBeenChanged, imageContentFitModeHasBeenChanged];
 
     const areThereChangesToBeSaved = allChanges.some(x => {
         if (typeof x === "boolean") {
@@ -277,6 +270,17 @@ export function getAPIUpdateObjectFromState(props: EditProductItemViewProps, sta
 
         parentCategoryID: stateProps.parentCategoryID,
         image: stateProps.imageFile,
+
+        imageContentFitMode: (() => {
+            if (props.itemToEdit == null){
+                return stateProps.imageContentFitMode;
+            } else if (props.itemToEdit.imageContentFitMode !== stateProps.imageContentFitMode){
+                return stateProps.imageContentFitMode;
+            } else {
+                return undefined;
+            }
+        })(),
+
         fetchItemType: (() => {
 
             const productDataType = (() => {
@@ -302,6 +306,7 @@ export function getAPIUpdateObjectFromState(props: EditProductItemViewProps, sta
                 case ProductDataType.ProductCategory: return FetchItemType.CATEGORY;
             }
         })(),
+
     }
 }
 
