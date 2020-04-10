@@ -21,7 +21,7 @@
         border-radius: 0.5rem;
 
         $padding-centering-adjustment-factor: 0.96px;
-        padding: $side-bar-link-top-and-bottom-padding + $padding-centering-adjustment-factor 16px $side-bar-link-top-and-bottom-padding - $padding-centering-adjustment-factor;
+        padding: $side-bar-link-top-and-bottom-padding + $padding-centering-adjustment-factor 12px $side-bar-link-top-and-bottom-padding - $padding-centering-adjustment-factor;
 
         @include configureForHoverTransition(background-color);
         
