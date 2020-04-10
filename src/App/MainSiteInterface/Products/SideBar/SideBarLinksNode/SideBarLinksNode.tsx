@@ -1,6 +1,8 @@
 
-import React, {useMemo} from 'react';
-import { NavLink } from 'react-router-dom';
+import React, {useMemo, useRef, useEffect} from 'react';
+import { NavLink, LinkProps, useLocation, Link } from 'react-router-dom';
+import {Location } from 'history';
+
 import productPageScssVariables from '../../_products-variables.scss';
 import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct, ProductCategory } from '../../ProductsDataHelpers';
 import { useCurrentProductDetailsViewItem, useToURLForProductItem } from '../../ProductsUIHelpers';
@@ -105,12 +107,44 @@ function getHeightForNodeElement(nodeItem: ProductDataObject, currentlySelectedI
 }
 
 
+
+
 function SideBarLink(props: { category: ProductDataObject }) {
     const path = useToURLForProductItem(props.category)
-    return <NavLink exact strict to={path} className="SideBarLink" activeClassName="selected">
+    return <CustomNavLink to={path} className="SideBarLink" activeClassName="selected" shouldBeSelected={() => false}>
         <div className="title">{props.category.name}</div>
         <div className="chevron">›</div>
-    </NavLink>
+    </CustomNavLink>
+}
+
+
+
+function CustomNavLink(props: LinkProps & {shouldBeSelected: (currentLocation: Location) => boolean, activeClassName: string}){
+    const currentLocation = useLocation();
+
+    const shouldBeSelected = props.shouldBeSelected(currentLocation);
+
+    const linkRef = useRef<Link<any>>(null);
+    
+    useEffect(() => {
+        if (linkRef.current instanceof HTMLAnchorElement === false){return;}
+        const anchorElement = linkRef.current as unknown as HTMLAnchorElement;
+        if (shouldBeSelected){
+            anchorElement.classList.add(props.activeClassName);
+        } else {
+            anchorElement.classList.remove(props.activeClassName);
+        }
+    }, [shouldBeSelected]);
+
+    const linkProps = (() => {
+        const x = {...props};
+        // because react router automatically places all props into the anchor element itself, which causes errors from react.
+        delete x.shouldBeSelected; delete x.activeClassName; 
+        return x;
+    })()
+    
+    return<Link ref={linkRef} {...linkProps}/>
+
 }
 
 
