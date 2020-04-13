@@ -1,32 +1,50 @@
 
 import React, {useMemo, useRef, useEffect} from 'react';
-import { NavLink, LinkProps, useLocation, Link } from 'react-router-dom';
+import { LinkProps, useLocation, Link } from 'react-router-dom';
 import {Location } from 'history';
 
 import productPageScssVariables from '../../_products-variables.scss';
 import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct, ProductCategory } from '../../ProductsDataHelpers';
-import { useCurrentProductDetailsViewItem, useToURLForProductItem } from '../../ProductsUIHelpers';
+import { useToURLForProductItem, useCurrentProductsPageSubject, ProductsPageSubjectType } from '../../ProductsUIHelpers';
 import { Optional, useIsInitialRender } from 'jshelpers';
 import { useSpring, animated, useTransition } from 'react-spring';
 
 import './SideBarLinksNode.scss';
+import { DashboardProductsRouteURLs } from '../../ProductsRoutesInfo';
 
 //TODO: checking the length of the children in SideBarLinksNode.tsx might not be enough for useMemo for shouldNodeBeExpanded
 export default function SideBarLinksNode(props: { item: ProductDataObject }) {
 
-    const currentlySelectedItem = useCurrentProductDetailsViewItem();
+    const currentItemToBeSelected = (() => {
+
+        /* eslint-disable-next-line react-hooks/rules-of-hooks */
+        const currentSubject = useCurrentProductsPageSubject();
+
+        switch (currentSubject?.type){
+            case ProductsPageSubjectType.EDIT_ITEM:
+            case ProductsPageSubjectType.PRODUCT:
+            case ProductsPageSubjectType.CATEGORY:
+                if (currentSubject.associatedData instanceof ProductDataObject){
+                    return currentSubject.associatedData;
+                }
+            //eslint-disable-next-line no-fallthrough
+            default: return null;
+            }
+    })();
+    
+    
 
     const isInitialRender = useIsInitialRender();
 
     const desiredHeight = useMemo(() => {
-        return getHeightForNodeElement(props.item, currentlySelectedItem)
+        return getHeightForNodeElement(props.item, currentItemToBeSelected)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.item.id, currentlySelectedItem?.id, (props.item as ProductCategory).children?.length]); 
+    }, [props.item.id, currentItemToBeSelected?.id, (props.item as ProductCategory).children?.length]); 
 
     const _shouldNodeBeExpanded = useMemo(() => {
-        return shouldNodeBeExpanded(props.item, currentlySelectedItem)
+        return shouldNodeBeExpanded(props.item, currentItemToBeSelected)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.item.id, currentlySelectedItem?.id, (props.item as ProductCategory).children?.length]); 
+    }, [props.item.id, currentItemToBeSelected?.id, (props.item as ProductCategory).children?.length]); 
 
     const springNodeProps = useSpring({
         to: { height:  desiredHeight},
@@ -44,7 +62,7 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
     const componentProps = props;
 
     return <animated.div className="SideBarLinksNode" style={springNodeProps}>
-        <SideBarLink category={props.item} />
+        <SideBarLink item={props.item} />
 
         {transitionItems.map(({ item, key, props }) => {
             if (item === false) { return null; }
@@ -53,11 +71,13 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
                     if (isProductCategory(componentProps.item)) {
                         return componentProps.item.children.map(x => {
                             if (isProduct(x)) {
-                                return <SideBarLink category={x} key={x.id.stringVersion} />;
-                            } else {
-                                // because without this, typescript starts freaking out
+                                return <SideBarLink item={x} key={x.id.stringVersion} />;
+                            } else if (isProductCategory(x)) {
+                                // because without this, typescript thinks x is of type never... for some stuipd, idiotic reason
                                 const category = x as ProductCategory;
                                 return <SideBarLinksNode item={category} key={category.id.stringVersion} />;
+                            } else {
+                                throw new Error('this point should not be reached!! Fix it!!');
                             }
                         })
                     } else { return null; }
@@ -109,10 +129,21 @@ function getHeightForNodeElement(nodeItem: ProductDataObject, currentlySelectedI
 
 
 
-function SideBarLink(props: { category: ProductDataObject }) {
-    const path = useToURLForProductItem(props.category)
-    return <CustomNavLink to={path} className="SideBarLink" activeClassName="selected" shouldBeSelected={() => false}>
-        <div className="title">{props.category.name}</div>
+
+
+function SideBarLink(props: { item: ProductDataObject }) {
+
+    const productItemPath = useToURLForProductItem(props.item)
+    const productItemEditingPath = DashboardProductsRouteURLs.editProductItem(props.item.id);
+    
+    const currentLocation = useLocation();
+
+    function shouldBeSelected(){
+        return productItemEditingPath === currentLocation.pathname || currentLocation.pathname === productItemPath;
+    }
+
+    return <CustomNavLink to={productItemPath} className="SideBarLink" activeClassName="selected" shouldBeSelected={shouldBeSelected}>
+        <div className="title">{props.item.name}</div>
         <div className="chevron">›</div>
     </CustomNavLink>
 }
@@ -134,7 +165,7 @@ function CustomNavLink(props: LinkProps & {shouldBeSelected: (currentLocation: L
         } else {
             anchorElement.classList.remove(props.activeClassName);
         }
-    }, [shouldBeSelected]);
+    }, [shouldBeSelected, props.activeClassName]);
 
     const linkProps = (() => {
         const x = {...props};

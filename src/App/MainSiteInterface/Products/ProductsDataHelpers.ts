@@ -409,7 +409,6 @@ export class ProductsDataObjectsManager {
     }
 }
 
-
 export function isProduct(x: any): x is Product {
     if (!x || typeof x !== "object") { return false; }
     if (x.id && x.id.objectType !== undefined) {

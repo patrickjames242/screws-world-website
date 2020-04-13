@@ -26,5 +26,5 @@ $product-image-height-percentage-of-width: 57%;
     minWidthForDisplayingSideBar: $min-width-for-displaying-side-bar;
     sideBarLinkSpacing: strip-unit($side-bar-link-spacing);
     sideBarLinkHeight: strip-unit(max($side-bar-link-chevron-font-size, $side-bar-link-title-font-size) + ($side-bar-link-top-and-bottom-padding * 2));
-    
 }
+

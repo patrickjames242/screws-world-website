@@ -50,6 +50,13 @@ function useSideBarFaderFunctionality(contentHolderRef: React.RefObject<HTMLElem
 
             const isScrolledToTop = contentHolder.scrollTop <= 0;
             const isScrolledToBottom = contentHolder.scrollTop >= contentHolder.scrollHeight - contentHolder.clientHeight;
+            // if (isScrolledToBottom){
+            //     console.log("is scrolled to bottom!!");
+            // }
+
+            // if (isScrolledToTop){
+            //     console.log("is scrolled to top");
+            // }
 
             const newTopFaderOpacity = isScrolledToTop ? "0" : "1";
             const newBottomFaderOpacity = isScrolledToBottom ? "0" : "1";
