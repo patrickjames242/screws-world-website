@@ -64,7 +64,7 @@ function FeaturesBox() {
 
     return <div className="FeaturesBox">
         <h2 className="title">At Screws World we don't disappoint!</h2>
-        <p className="features">{features}</p>
+        <div className="features">{features}</div>
     </div>
 }
 
