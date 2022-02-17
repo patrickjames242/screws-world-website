@@ -1,22 +1,22 @@
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Link, NavLink, useHistory } from 'react-router-dom';
-import './NavBar.scss';
-import { animated, useSpring } from 'react-spring';
-
+import { useScreenDimmerFunctions } from 'App/ScreenDimmer';
+import aboutUsIcon from 'assets/nav-bar-icons/about-us.js';
+import contactIcon from 'assets/nav-bar-icons/contact.js';
+import menuIcon from 'assets/nav-bar-icons/menu-icon.js';
+import productsIcon from 'assets/nav-bar-icons/products.js';
 import screwLogo from 'assets/nav-bar-icons/screws-logo.js';
 import servicesIcon from 'assets/nav-bar-icons/services.js';
-import productsIcon from 'assets/nav-bar-icons/products.js';
-import contactIcon from 'assets/nav-bar-icons/contact.js';
-import aboutUsIcon from 'assets/nav-bar-icons/about-us.js';
-import menuIcon from 'assets/nav-bar-icons/menu-icon.js';
-
-import scssVariables from '_helpers.scss';
-
-import { SelectionType, getInfoForSelection } from './SelectionType';
-
 import { Optional } from 'jshelpers';
-import { useScreenDimmerFunctions } from 'App/ScreenDimmer';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, NavLink, useHistory } from 'react-router-dom';
+import { animated, useSpring } from 'react-spring';
+import scssVariables from '_helpers.module.scss';
+import './NavBar.scss';
+import { getInfoForSelection, SelectionType } from './SelectionType';
+
+
+
+
 
 
 
@@ -26,6 +26,8 @@ export default function NavBar() {
     const navBarRef = useRef<HTMLDivElement>(null);
 
     const { toggleIsExpanded, springStyle } = useExpandCollapseFunctionality(navBarRef);
+
+
 
     return <animated.nav ref={navBarRef} style={springStyle} className="NavBar">
         <div className="nav-bar-content">

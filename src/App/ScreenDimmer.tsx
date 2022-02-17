@@ -1,8 +1,6 @@
-import React, { useContext, useState, useRef } from 'react';
-import { Optional } from 'jshelpers';
-import { useTransition } from 'react-spring';
-import { animated } from 'react-spring';
-import {Notification} from 'jshelpers';
+import { Notification, Optional } from 'jshelpers';
+import React, { useContext, useRef, useState } from 'react';
+import { animated, useTransition } from 'react-spring';
 
 export interface ScreenDimmerFunctions {
     setVisibility?: (isVisible: boolean, animate: boolean) => void;
@@ -51,7 +49,7 @@ function ScreenDimmer(props: { functionsRef: ScreenDimmerFunctions }) {
         dimmerWasClickedNotification.post({});
     }
 
-    const backgroundDimmerTransition = useTransition(shouldBeVisible, null, {
+    const backgroundDimmerTransition = useTransition(shouldBeVisible, {
         from: { opacity: 0 },
         enter: { opacity: 1 },
         leave: { opacity: 0 },
@@ -60,14 +58,14 @@ function ScreenDimmer(props: { functionsRef: ScreenDimmerFunctions }) {
 
     return <>
         {
-            backgroundDimmerTransition.map(({ item, key, props }) => {
+            backgroundDimmerTransition((styles, item, _, index) => {
                 if (item === false) { return undefined; }
-                return <animated.div key={key} onClick={respondToOnClick} style={{
+                return <animated.div key={index} onClick={respondToOnClick} style={{
                     backgroundColor: "rgba(0, 0, 0, 0.6)",
                     position: "fixed",
                     top: "0", left: "0", bottom: "0", right: "0",
                     zIndex: 10,
-                    ...props,
+                    ...styles,
                 }} />
             })
         }

@@ -1,29 +1,23 @@
-@import 'helpers';
+@import "helpers.module";
 
+.ScrewsWorldLocationMap {
+	#ScrewsWorldLocationMap-inner-map-div {
+		height: 100%;
+		width: 100%;
+	}
+	position: relative;
+	> .back-to-center-button {
+		padding: 0.81rem;
 
-
-.ScrewsWorldLocationMap{
-    
-    #ScrewsWorldLocationMap-inner-map-div{
-        height: 100%;
-        width: 100%;
-    }
-    position: relative;
-    > .back-to-center-button{
-        padding: 0.81rem;
-        
-        background-color: #0470d9;
-        border-radius: 1000000rem;
-        position: absolute;
-        @include setProps(right top, 1.5rem);
-        @include bounceOnHover($bounce-scale: 1.2);
-        > svg{
-            @include setProps(width height, 1.8rem);    
-            display: block;
-            fill: white;
-        }
-    }
+		background-color: #0470d9;
+		border-radius: 1000000rem;
+		position: absolute;
+		@include setProps(right top, 1.5rem);
+		@include bounceOnHover($bounce-scale: 1.2);
+		> svg {
+			@include setProps(width height, 1.8rem);
+			display: block;
+			fill: white;
+		}
+	}
 }
-
-
-

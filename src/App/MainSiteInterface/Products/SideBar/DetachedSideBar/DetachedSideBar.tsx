@@ -1,20 +1,20 @@
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import xIcon from '../../icons/xIcon';
-
-
-import { useTransition, animated } from 'react-spring';
-import { useLocation } from 'react-router-dom';
-import {Location} from 'history';
-
-import { useAllTopLevelProductItems, useCurrentProductDetailsViewItem, useProductsInfoContextValue } from '../../ProductsUIHelpers';
-import SideBarLinksNode from '../SideBarLinksNode/SideBarLinksNode';
-import { isProduct } from '../../ProductsDataHelpers';
-import productsScssVariables from '../../_products-variables.scss';
-
-import './DetachedSideBar.scss';
 import { useScreenDimmerFunctions } from 'App/ScreenDimmer';
+import { Location } from 'history';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { animated, useTransition } from 'react-spring';
+import xIcon from '../../icons/xIcon';
+import { isProduct } from '../../ProductsDataHelpers';
+import { useAllTopLevelProductItems, useCurrentProductDetailsViewItem, useProductsInfoContextValue } from '../../ProductsUIHelpers';
+import productsScssVariables from '../../_products-variables.module.scss';
+import SideBarLinksNode from '../SideBarLinksNode/SideBarLinksNode';
 import SideBarLoadingIndicator from '../SideBarLoadingIndicator/SideBarLoadingIndicator';
+import './DetachedSideBar.scss';
+
+
+
+
 
 
 export interface DetatchedSideBarFunctionsRef {
@@ -77,7 +77,7 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
         _setIsPresented(false, true);
     }
 
-    const transitionProps = useTransition(isPresented, null, {
+    const transitionProps = useTransition(isPresented, {
         from: { transform: "translateX(-15rem)", opacity: 0 },
         enter: { transform: "translateX(0rem)", opacity: 1 },
         leave: { transform: "translateX(-15rem)", opacity: 0 },
@@ -89,9 +89,9 @@ export default function DetatchedSideBar(props: { functionsRef: DetatchedSideBar
     const productInfo = useProductsInfoContextValue();
 
     return <>
-        {transitionProps.map(({ item, key, props }) => {
+        {transitionProps((style, item, _,index) => {
             if (item === false) { return null; }
-            return <animated.div key={key} className="DetatchedSideBar SideBar" style={props}>
+            return <animated.div key={index} className="DetatchedSideBar SideBar" style={style}>
                 <div className="content">
                     <div className="links-container-holder">
                         {(() => {

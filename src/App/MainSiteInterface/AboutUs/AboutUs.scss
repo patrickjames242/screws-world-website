@@ -1,229 +1,217 @@
-@import 'helpers';
+@import "helpers.module";
 
+.AboutUs {
+	.content {
+		$max-content-width-in-points: 1120px;
 
-.AboutUs{
-    .content{
+		--max-content-width: var(--HeadedUpPageContainer-max-content-width);
+		--content-padding: var(--HeadedUpPageContainer-side-padding);
 
-        $max-content-width-in-points: 1120px;
+		> *:not(:last-child) {
+			margin-bottom: 8rem;
+		}
 
-        --max-content-width: var(--HeadedUpPageContainer-max-content-width);
-        --content-padding: var(--HeadedUpPageContainer-side-padding);
+		.ScreenWidthStretchingBox {
+			width: 100vw;
+			margin-left: calc(-50vw + 50%);
+			> .inner-content {
+				max-width: var(--max-content-width);
+				margin: auto;
+			}
+		}
 
-        > *:not(:last-child){
-            margin-bottom: 8rem;
-        }
+		.HeadingSeparatorLine {
+			background-color: colors(dark-light-blue);
+			height: 0.4rem;
+			width: 4rem;
+			border-radius: 10000000rem;
+		}
 
-        .ScreenWidthStretchingBox{
-            width: 100vw;
-            margin-left: calc(-50vw + 50%);
-            > .inner-content{
-                max-width: var(--max-content-width);
-                margin: auto;
-            }
-        }
+		> .IntroBox > .inner-content > div {
+			display: grid;
+			gap: 4.5rem;
+			grid-template-columns: 1fr 25rem;
 
-        .HeadingSeparatorLine{
-            background-color: colors(dark-light-blue);
-            height: 0.4rem;
-            width: 4rem;
-            border-radius: 10000000rem;
-        }
+			> .image-section {
+				--intro-box-image-insets: 1.5rem;
+				position: relative;
+				> div {
+					position: absolute;
+					@include setProps(left right top bottom, 0);
+					> .background-outline {
+						position: absolute;
+						border-radius: 2rem;
+						border: 3px solid colors(dark-light-blue);
+						top: var(--intro-box-image-insets);
+						left: var(--intro-box-image-insets);
+						bottom: 0;
+						right: 0;
+					}
 
-        
+					> .image-holder {
+						position: absolute;
+						@include setProps(bottom right, var(--intro-box-image-insets));
+						@include setProps(top left, 0);
+						border-radius: 1.1rem;
+						overflow: hidden;
+						> img {
+							position: absolute;
+							@include setProps(left top, 0);
+							@include setProps(width height, 100%);
+							object-fit: cover;
+						}
+					}
+				}
+			}
 
-        > .IntroBox > .inner-content > div{
-            display: grid;
-            gap: 4.5rem;
-            grid-template-columns: 1fr 25rem;
-            
-            
-            > .image-section{
+			> .text-section {
+				display: grid;
+				align-content: start;
+				gap: 4rem;
+				padding-bottom: 3rem;
+				padding-top: 3rem;
+				padding-right: var(--content-padding);
 
-                --intro-box-image-insets: 1.5rem;
-                position: relative;
-                > div{
-                    position: absolute;
-                    @include setProps(left right top bottom, 0);
-                    > .background-outline{
-                        position: absolute;
-                        border-radius: 2rem;
-                        border: 3px solid colors(dark-light-blue);
-                        top: var(--intro-box-image-insets); left: var(--intro-box-image-insets);
-                        bottom: 0; right: 0;
-                    }
+				> .IntroBoxRightListItem {
+					display: grid;
+					gap: 1.3rem;
 
-                    > .image-holder{
-                        position: absolute;
-                        @include setProps(bottom right, var(--intro-box-image-insets));
-                        @include setProps(top left, 0);
-                        border-radius: 1.1rem;
-                        overflow: hidden;
-                        > img{
-                            position: absolute;    
-                            @include setProps(left top, 0);
-                            @include setProps(width height, 100%);
-                            object-fit: cover;
-                        }    
-                    }
-                }
-            }
+					> .title {
+						font-size: 1.6rem;
+						font-weight: bold;
+					}
 
-            > .text-section{
-                display: grid;
-                align-content: start;
-                gap: 4rem;
-                padding-bottom: 3rem;
-                padding-top: 3rem;
-                padding-right: var(--content-padding);
+					> .description {
+						font-size: 1.2rem;
+						color: colors(grayish-blue-text);
+						line-height: 1.4;
+					}
+				}
+			}
 
+			&.stick-to-sides {
+				> .image-section > div {
+					> .background-outline,
+					.image-holder {
+						border-bottom-left-radius: initial;
+						border-top-left-radius: initial;
+					}
 
-                > .IntroBoxRightListItem{
+					> .background-outline {
+						border-left: initial;
+						left: 0;
+					}
+				}
+			}
 
-                    display: grid;
-                    gap: 1.3rem;
+			@media (max-width: 900px) {
+				grid-template-columns: initial;
+				gap: 3rem;
 
-                    > .title{
-                        font-size: 1.6rem;
-                        font-weight: bold;
-                    }
+				> .image-section {
+					padding-top: 56.25%;
+					--intro-box-image-insets: 0;
 
-                    > .description{
-                        font-size: 1.2rem;
-                        color: colors(grayish-blue-text);
-                        line-height: 1.4;
-                    }
-                }
-            }
+					> div {
+						> .background-outline {
+							display: none;
+						}
+						> .image-holder {
+							border-radius: 0;
+						}
+					}
+				}
 
-            &.stick-to-sides{
-                
-                > .image-section > div{
-                    
-                    > .background-outline, .image-holder{
-                        border-bottom-left-radius: initial;
-                        border-top-left-radius: initial;
-                    }
+				> .text-section {
+					@include setProps(padding-top padding-bottom, 0);
+					@include setProps(padding-left padding-right, var(--content-padding));
+					grid-auto-flow: column;
+					grid-template-columns: 1fr 1fr 1fr;
+					gap: 2.5rem;
+				}
+			}
 
-                    > .background-outline{
-                        border-left: initial;
-                        left: 0;
-                    }
-                }
-                
-            }
+			@media (max-width: 600px) {
+				> .text-section {
+					grid-auto-flow: initial;
+					grid-template-columns: initial;
+					gap: 3rem;
+					> .IntroBoxRightListItem {
+						justify-items: center;
+						text-align: center;
+					}
+				}
+			}
+		}
 
-            @media(max-width: 900px){
-                grid-template-columns: initial;
-                gap: 3rem;
-                
-                > .image-section{
-                    
-                   padding-top: 56.25%;
-                   --intro-box-image-insets: 0;
+		.history-title-and-description {
+			> .CenteredTitleAndDescription {
+				@include setProps(margin-left margin-right, auto);
+			}
+		}
 
-                   > div{
-                       > .background-outline{
-                           display: none;
-                       }
-                       > .image-holder{
-                           border-radius: 0;
-                       }
-                    }    
-                }
+		.CenteredTitleAndDescription {
+			max-width: 50rem;
 
-                > .text-section{
-                    @include setProps(padding-top padding-bottom, 0);
-                    @include setProps(padding-left padding-right, var(--content-padding));
-                    grid-auto-flow: column;
-                    grid-template-columns: 1fr 1fr 1fr;
-                    gap: 2.5rem;
-                   
-                }
-            }
+			display: grid;
+			gap: 2rem;
+			justify-items: center;
+			text-align: center;
 
-            @media(max-width: 600px){
-                > .text-section{
-                    grid-auto-flow: initial;
-                    grid-template-columns: initial;
-                    gap: 3rem;
-                    > .IntroBoxRightListItem{
-                        justify-items: center;
-                        text-align: center;
-                    }
-                }
-            }
-        }
+			> .title {
+				font-size: 2.7rem;
+			}
 
-        .history-title-and-description{
-            > .CenteredTitleAndDescription{
-                @include setProps(margin-left margin-right, auto);
-            }
-        }
+			> .description {
+				color: colors(grayish-blue-text);
+				font-size: 1.2rem;
+				line-height: 1.4;
+				white-space: pre-wrap;
+			}
+		}
 
-        .CenteredTitleAndDescription{
-            max-width: 50rem;
-            
-            display: grid;
-            gap: 2rem;
-            justify-items: center;
-            text-align: center;
-          
-            > .title{
-                font-size: 2.7rem;
-            }
+		.CenteredTitleAndDescriptionWithBottomBox > .inner-content {
+			display: grid;
+			gap: 3rem;
 
-            > .description{
-                color: colors(grayish-blue-text);
-                font-size: 1.2rem;
-                line-height: 1.4;
-                white-space: pre-wrap;
-            }
-        }
+			> .title-and-description-holder {
+				@include setProps(margin-left margin-right, auto);
+				@include setProps(padding-left padding-right, var(--content-padding));
+			}
+			> .bottom-box {
+				> div {
+					max-width: 900px;
+					@include setProps(margin-left margin-right, auto);
+					> div {
+						padding-top: 56.25%;
+						position: relative;
+						border-radius: 2rem;
+						overflow: hidden;
 
-        .CenteredTitleAndDescriptionWithBottomBox > .inner-content{
-            display: grid;
-            gap: 3rem;
+						// because of border radius issues in safari
+						will-change: transform;
 
-            > .title-and-description-holder{
-                @include setProps(margin-left margin-right, auto);
-                @include setProps(padding-left padding-right, var(--content-padding));
+						border: 1rem solid colors(light-gray-bg);
+						background-color: colors(light-gray-bg);
+						> div {
+							position: absolute;
+							@include setProps(left right top bottom, 0);
+						}
 
-            }
-            > .bottom-box{
-                > div{
-                    max-width: 900px;
-                    @include setProps(margin-left margin-right, auto);
-                    > div{
-                        padding-top: 56.25%;
-                        position: relative;
-                        border-radius: 2rem;
-                        overflow: hidden;
-                        
-                        // because of border radius issues in safari
-                        will-change: transform;
-                        
-                        border: 1rem solid colors(light-gray-bg);
-                        background-color: colors(light-gray-bg);
-                        > div{
-                            position: absolute;
-                            @include setProps(left right top bottom, 0);
-                        }
+						&.stick-to-sides {
+							@include setProps(border-left border-right, initial);
+							border-radius: 0;
+						}
+					}
+				}
+			}
+		}
 
-                        &.stick-to-sides{
-                            @include setProps(border-left border-right, initial);
-                            border-radius: 0;
-                        }
-                    }
-                }
-            }
-        }
-
-        > .map-section > .inner-content{
-            .ScrewsWorldLocationMap{
-                height: 100%;
-                width: 100%;
-            }
-        }
-    }
+		> .map-section > .inner-content {
+			.ScrewsWorldLocationMap {
+				height: 100%;
+				width: 100%;
+			}
+		}
+	}
 }
-

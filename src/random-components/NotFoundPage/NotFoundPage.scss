@@ -1,27 +1,23 @@
-@import 'helpers';
+@import "helpers.module";
 
-.NotFoundPage{
-    
-    text-align: center;
-    height: calc(100vh - #{$nav-bar-height-from-top});
-    
-    
-    .text-box{
-        margin-top: calc((100vh - #{$nav-bar-height-from-top}) * 0.26);
-        display: grid;
-        gap: 2rem;
-        @include setProps(padding-left padding-right, 4rem);
+.NotFoundPage {
+	text-align: center;
+	height: calc(100vh - #{$nav-bar-height-from-top});
 
-        > .title{
-            font-weight: bold;
-            font-size: 3.8rem;
-        }
+	.text-box {
+		margin-top: calc((100vh - #{$nav-bar-height-from-top}) * 0.26);
+		display: grid;
+		gap: 2rem;
+		@include setProps(padding-left padding-right, 4rem);
 
-        > .description{
-            font-size: 1.5rem;
-            color: colors(grayish-blue-text);
-        }
-    }
+		> .title {
+			font-weight: bold;
+			font-size: 3.8rem;
+		}
 
-    
+		> .description {
+			font-size: 1.5rem;
+			color: colors(grayish-blue-text);
+		}
+	}
 }

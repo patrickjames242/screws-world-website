@@ -1,14 +1,14 @@
-@import 'helpers';
+@import "helpers.module";
 
-.CustomTextField{
-    
-    > input, textarea{
-        &::placeholder{
-            color: var(--input-placeholder-color);
-        }
-    }
+.CustomTextField {
+	> input,
+	textarea {
+		&::placeholder {
+			color: var(--input-placeholder-color);
+		}
+	}
 
-    > textarea{
-        height: 9rem;
-    }
+	> textarea {
+		height: 9rem;
+	}
 }

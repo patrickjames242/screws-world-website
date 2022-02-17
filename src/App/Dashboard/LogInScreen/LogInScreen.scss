@@ -1,83 +1,78 @@
-@import 'helpers';
+@import "helpers.module";
 
-.Dashboard .LogInScreen{
-    
-    position: fixed;
-    @include setProps(left right bottom top, 0);
-    display: grid;
-    overflow: scroll;
-    align-content: center;
-    background-color: colors(dark-blue);
-    z-index: 2;
+.Dashboard .LogInScreen {
+	position: fixed;
+	@include setProps(left right bottom top, 0);
+	display: grid;
+	overflow: scroll;
+	align-content: center;
+	background-color: colors(dark-blue);
+	z-index: 2;
 
-    
+	> .vertically-centered-content {
+		@include setProps(
+			padding-left padding-right padding-top padding-bottom,
+			1.7rem
+		);
 
-    > .vertically-centered-content{
-        @include setProps(padding-left padding-right padding-top padding-bottom, 1.7rem);
-        
-        > .horizontally-centered-content{
-            padding: 3rem;
-            max-width: 23rem;
-            @include setProps(margin-left margin-right, auto);
-            border-radius: 1.25rem;
-            background-color: colors(light-dark-blue);
-            display: grid;
-            
+		> .horizontally-centered-content {
+			padding: 3rem;
+			max-width: 23rem;
+			@include setProps(margin-left margin-right, auto);
+			border-radius: 1.25rem;
+			background-color: colors(light-dark-blue);
+			display: grid;
 
-            @media(max-width: 400px){
-                padding: 2.2rem;
-            }
-    
-            > .title{
-                font-size: 2rem;
-                font-weight: bold;
-                text-align: center;
-                
-            }
+			@media (max-width: 400px) {
+				padding: 2.2rem;
+			}
 
-            $text-field-side-padding: 1.1rem;
+			> .title {
+				font-size: 2rem;
+				font-weight: bold;
+				text-align: center;
+			}
 
-            display: grid;
-            
+			$text-field-side-padding: 1.1rem;
 
+			display: grid;
 
-            > .CustomTextField{
-                .input-box{
-                    padding: 0.8rem $text-field-side-padding;
-                }
-            }
+			> .CustomTextField {
+				.input-box {
+					padding: 0.8rem $text-field-side-padding;
+				}
+			}
 
-            > .username-text-field{
-                margin-top: 2rem;
-            }
+			> .username-text-field {
+				margin-top: 2rem;
+			}
 
-            > .password-text-field{
-                margin-top: 1.3rem;
-            }
+			> .password-text-field {
+				margin-top: 1.3rem;
+			}
 
-            $login-button-top-margin: 1.75rem;
+			$login-button-top-margin: 1.75rem;
 
-            > .ErrorMessageBox{
-                $error-message-top-and-bottom-margin: 1.2rem;
-                margin-top: $error-message-top-and-bottom-margin;
-                margin-bottom: -($login-button-top-margin - $error-message-top-and-bottom-margin);
-                @include setProps(padding-left padding-right, 0.5rem);
-            }
-    
-            > .login-button{
-                margin-top: 1.75rem;
-                font-weight: bold;
-                font-size: 16px;
-                line-height: 1;
-                @include setProps(padding-bottom padding-top, 11.2px);
-                background-color: colors(dark-light-blue);
-                border-radius: 1000rem;
-                @include dimOnHover;
+			> .ErrorMessageBox {
+				$error-message-top-and-bottom-margin: 1.2rem;
+				margin-top: $error-message-top-and-bottom-margin;
+				margin-bottom: -($login-button-top-margin -
+							$error-message-top-and-bottom-margin);
+				@include setProps(padding-left padding-right, 0.5rem);
+			}
 
-                position: relative;
-            }
-        }
-    }
+			> .login-button {
+				margin-top: 1.75rem;
+				font-weight: bold;
+				font-size: 16px;
+				line-height: 1;
+				@include setProps(padding-bottom padding-top, 11.2px);
+				background-color: colors(dark-light-blue);
+				border-radius: 1000rem;
+				@include dimOnHover;
+
+				position: relative;
+			}
+		}
+	}
 }
-
-

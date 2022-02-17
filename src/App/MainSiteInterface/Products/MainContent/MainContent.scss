@@ -1,92 +1,82 @@
+@import "helpers.module";
+@import "../products-variables.module";
 
+.Products > .content {
+	> .MainContent {
+		--main-content-padding: 3rem;
 
-@import 'helpers';
-@import '../products-variables';
+		background-color: rgb(27, 42, 56);
 
+		border-radius: $main-content-border-radius;
+		padding: var(--main-content-padding);
 
-.Products > .content{
+		@media (max-width: 400px) {
+			--main-content-padding: 2rem;
+		}
 
-    
-    > .MainContent{
+		> .TitleBox {
+			display: grid;
+			gap: 2rem;
 
-        --main-content-padding: 3rem;
-        
-        background-color: rgb(27, 42, 56);
-        
-        border-radius: $main-content-border-radius;
-        padding: var(--main-content-padding);
-        
-        @media(max-width: 400px){
-            --main-content-padding: 2rem;
-        }
+			> .text-box {
+				display: grid;
+				gap: 1rem;
+				justify-items: start;
 
-        > .TitleBox{
+				> .title {
+					font-size: 3rem;
+					font-weight: bold;
+					word-break: break-word;
 
-            display: grid;
-            gap: 2rem;
+					// for microsoft edge on windows
+					word-wrap: break-word;
 
-            > .text-box{
-                display: grid;
-                gap: 1rem;
-                justify-items: start;
+					@media (max-width: 400px) {
+						font-size: 2.5rem;
+					}
+				}
 
-                > .title{
-                    font-size: 3rem;
-                    font-weight: bold;
-                    word-break: break-word;
-                    
-                    // for microsoft edge on windows
-                    word-wrap: break-word;
+				> .description {
+					color: colors(grayish-blue-text);
+					font-size: 1.3rem;
+					line-height: 1.3;
+					max-width: 45rem;
+					font-weight: normal;
+					word-break: break-word;
 
-                    @media(max-width: 400px){
-                        font-size: 2.5rem;
-                    }
-                }
+					// for microsoft edge on windows
+					word-wrap: break-word;
+				}
+			}
 
-                > .description{
-                    color: colors(grayish-blue-text);
-                    font-size: 1.3rem;
-                    line-height: 1.3;
-                    max-width: 45rem;
-                    font-weight: normal;
-                    word-break: break-word;
+			> .bottom-line {
+				$height: 0.5rem;
+				height: $height;
+				border-radius: $height / 2;
+				background: blueThemeGradient(horizontal);
+			}
+		}
 
-                    // for microsoft edge on windows
-                    word-wrap: break-word;
-                }
-            }
+		> .LoadingIndicatorBox {
+			$top-and-bottom-margin: 5rem;
+			margin-top: $top-and-bottom-margin;
+			margin-bottom: calc(
+				#{$top-and-bottom-margin} - var(--main-content-padding)
+			);
 
-            > .bottom-line{
-                $height: 0.5rem;
-                height: $height;
-                border-radius: $height / 2;
-                background: blueThemeGradient(horizontal);
-            }
-        
-        }
-
-        > .LoadingIndicatorBox{
-            $top-and-bottom-margin: 5rem;
-            margin-top: $top-and-bottom-margin;
-            margin-bottom: calc(#{$top-and-bottom-margin} - var(--main-content-padding));
-
-            > .LoadingIndicator{
-                @include setProps(width height, 4rem);
-                @include setProps(margin-right margin-left, auto);
-
-            }
-        }
-
-    }
+			> .LoadingIndicator {
+				@include setProps(width height, 4rem);
+				@include setProps(margin-right margin-left, auto);
+			}
+		}
+	}
 }
 
-
-.Dashboard{
-    > .Products > .content > .MainContent{
-        margin-bottom: 0;
-        @media(min-width: $min-width-for-displaying-side-bar){
-            margin-bottom: $page-content-left-and-right-insets;
-        }
-    }
+.Dashboard {
+	> .Products > .content > .MainContent {
+		margin-bottom: 0;
+		@media (min-width: $min-width-for-displaying-side-bar) {
+			margin-bottom: $page-content-left-and-right-insets;
+		}
+	}
 }
-

@@ -1,53 +1,51 @@
+@import "helpers.module";
 
-@import 'helpers';
+.PageHeader {
+	--line-width: 0.5rem;
+	--line-text-spacing: 2.5rem;
 
-.PageHeader{
+	@mixin respondToSmallSnapPoint {
+		@media (max-width: 520px) {
+			@content;
+		}
+	}
 
-    --line-width: 0.5rem;
-    --line-text-spacing: 2.5rem;
+	@include respondToSmallSnapPoint {
+		--line-text-spacing: 1.8rem;
+	}
 
-    @mixin respondToSmallSnapPoint{
-        @media (max-width: 520px){
-            @content;
-        }
-    }
+	.text-content {
+		display: grid;
+		gap: 1.2rem;
+		max-width: 50rem;
+		margin-left: calc(var(--line-width) + var(--line-text-spacing));
+		> .title {
+			font-weight: bold;
+			font-size: 4rem;
 
-    @include respondToSmallSnapPoint{
-        --line-text-spacing: 1.8rem;
-    }
+			@include respondToSmallSnapPoint {
+				font-size: 3rem;
+			}
+		}
 
-    .text-content{
-        display: grid;
-        gap: 1.2rem;        
-        max-width: 50rem;
-        margin-left: calc(var(--line-width) + var(--line-text-spacing));
-        > .title{
-            font-weight: bold;
-            font-size: 4rem;
-            
-            @include respondToSmallSnapPoint{
-                font-size: 3rem;
-            }
-        }
+		> .subtitle {
+			font-size: 1.5rem;
+			font-weight: normal;
+			color: colors(grayish-blue-text);
+			@include respondToSmallSnapPoint {
+				font-size: 1.3rem;
+			}
+		}
 
-        > .subtitle{
-            font-size: 1.5rem;
-            font-weight: normal;
-            color: colors(grayish-blue-text);
-            @include respondToSmallSnapPoint{
-                font-size: 1.3rem;
-            }
-        }
-
-        position: relative;
-        &::before{
-            content: '';
-            position: absolute;
-            background: blueThemeGradient(vertical);
-            width: var(--line-width);
-            border-radius: calc(var(--line-width) / 2);
-            @include setProps(top bottom, -1rem);
-            left: calc(-1 * (var(--line-width) + var(--line-text-spacing)));
-        }
-    }
+		position: relative;
+		&::before {
+			content: "";
+			position: absolute;
+			background: blueThemeGradient(vertical);
+			width: var(--line-width);
+			border-radius: calc(var(--line-width) / 2);
+			@include setProps(top bottom, -1rem);
+			left: calc(-1 * (var(--line-width) + var(--line-text-spacing)));
+		}
+	}
 }

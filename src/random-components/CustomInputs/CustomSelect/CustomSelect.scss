@@ -1,28 +1,25 @@
-@import 'helpers';
+@import "helpers.module";
 
-.CustomInput{
+.CustomInput {
+	> select {
+		word-break: break-word;
+		// for microsoft edge on windows
+		word-wrap: break-word;
 
-    > select{
-        word-break: break-word;
-        // for microsoft edge on windows
-        word-wrap: break-word;
+		line-height: 1.5;
+		width: 100%;
+		white-space: pre-wrap;
 
-        line-height: 1.5;
-        width: 100%;
-        white-space: pre-wrap;
-        
-        &:invalid {
-            color: var(--input-placeholder-color);
-        }
+		&:invalid {
+			color: var(--input-placeholder-color);
+		}
 
-        > option{
-            color: initial;
-        }
-    }
+		> option {
+			color: initial;
+		}
+	}
 
-    > textarea{
-        height: 9rem;
-    }
+	> textarea {
+		height: 9rem;
+	}
 }
-
-

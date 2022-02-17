@@ -1,10 +1,8 @@
-
-@import 'helpers';
+@import "helpers.module";
 $page-content-inset-from-nav-bar: 1.2rem;
 $page-content-left-and-right-insets: $nav-bar-insets;
-$page-content-inset-from-screen-top: $nav-bar-height-from-top + $page-content-inset-from-nav-bar;
-
-
+$page-content-inset-from-screen-top: $nav-bar-height-from-top +
+	$page-content-inset-from-nav-bar;
 
 $min-width-for-displaying-side-bar: 1100px;
 
@@ -13,18 +11,17 @@ $side-bar-link-top-and-bottom-padding: 8px;
 $side-bar-link-title-font-size: 15px;
 $side-bar-link-chevron-font-size: 18px;
 
-
 $main-content-border-radius: 1.4rem;
 
 $product-grid-insets: 1rem;
 $product-item-info-background-color: rgb(40, 56, 71);
 $product-image-height-percentage-of-width: 57%;
 
-
-
-:export{
-    minWidthForDisplayingSideBar: $min-width-for-displaying-side-bar;
-    sideBarLinkSpacing: strip-unit($side-bar-link-spacing);
-    sideBarLinkHeight: strip-unit(max($side-bar-link-chevron-font-size, $side-bar-link-title-font-size) + ($side-bar-link-top-and-bottom-padding * 2));
+:export {
+	minWidthForDisplayingSideBar: $min-width-for-displaying-side-bar;
+	sideBarLinkSpacing: strip-unit($side-bar-link-spacing);
+	sideBarLinkHeight: strip-unit(
+		max($side-bar-link-chevron-font-size, $side-bar-link-title-font-size) +
+			($side-bar-link-top-and-bottom-padding * 2)
+	);
 }
-

@@ -1,16 +1,16 @@
 
-import React, {useMemo, useRef, useEffect} from 'react';
-import { LinkProps, useLocation, Link } from 'react-router-dom';
-import {Location } from 'history';
-
-import productPageScssVariables from '../../_products-variables.scss';
-import { ProductDataObject, isProductCategory, doesProductCategoryRecursivelyContainItem, isProduct, ProductCategory } from '../../ProductsDataHelpers';
-import { useToURLForProductItem, useCurrentProductsPageSubject, ProductsPageSubjectType } from '../../ProductsUIHelpers';
+import { Location } from 'history';
 import { Optional, useIsInitialRender } from 'jshelpers';
-import { useSpring, animated, useTransition } from 'react-spring';
-
-import './SideBarLinksNode.scss';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { Link, LinkProps, useLocation } from 'react-router-dom';
+import { animated, useSpring, useTransition } from 'react-spring';
+import { doesProductCategoryRecursivelyContainItem, isProduct, isProductCategory, ProductCategory, ProductDataObject } from '../../ProductsDataHelpers';
 import { DashboardProductsRouteURLs } from '../../ProductsRoutesInfo';
+import { ProductsPageSubjectType, useCurrentProductsPageSubject, useToURLForProductItem } from '../../ProductsUIHelpers';
+import productPageScssVariables from '../../_products-variables.module.scss';
+import './SideBarLinksNode.scss';
+
+
 
 //TODO: checking the length of the children in SideBarLinksNode.tsx might not be enough for useMemo for shouldNodeBeExpanded
 export default function SideBarLinksNode(props: { item: ProductDataObject }) {
@@ -52,7 +52,7 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
     });
 
 
-    const transitionItems = useTransition(_shouldNodeBeExpanded, null, {
+    const transitionItems = useTransition(_shouldNodeBeExpanded, {
         from: { opacity: 0, transform: "translateX(75px)", },
         enter: { opacity: 1, transform: "translateX(0px)" },
         leave: { opacity: 0, transform: "translateX(75px)" },
@@ -64,9 +64,9 @@ export default function SideBarLinksNode(props: { item: ProductDataObject }) {
     return <animated.div className="SideBarLinksNode" style={springNodeProps}>
         <SideBarLink item={props.item} />
 
-        {transitionItems.map(({ item, key, props }) => {
+        {transitionItems((styles, item, _, index) => {
             if (item === false) { return null; }
-            return <animated.div style={props} key={key} className="children-holder">
+            return <animated.div style={styles} key={index} className="children-holder">
                 {(() => {
                     if (isProductCategory(componentProps.item)) {
                         return componentProps.item.children.map(x => {
@@ -150,31 +150,25 @@ function SideBarLink(props: { item: ProductDataObject }) {
 
 
 
-function CustomNavLink(props: LinkProps & {shouldBeSelected: (currentLocation: Location) => boolean, activeClassName: string}){
+function CustomNavLink({shouldBeSelected, activeClassName, ...linkProps}: LinkProps & {shouldBeSelected: (currentLocation: Location) => boolean, activeClassName: string}){
     const currentLocation = useLocation();
 
-    const shouldBeSelected = props.shouldBeSelected(currentLocation);
+    const _shouldBeSelected = shouldBeSelected(currentLocation);
 
     const linkRef = useRef<Link<any>>(null);
     
     useEffect(() => {
         if (linkRef.current instanceof HTMLAnchorElement === false){return;}
         const anchorElement = linkRef.current as unknown as HTMLAnchorElement;
-        if (shouldBeSelected){
-            anchorElement.classList.add(props.activeClassName);
-        } else {
-            anchorElement.classList.remove(props.activeClassName);
-        }
-    }, [shouldBeSelected, props.activeClassName]);
+        if (_shouldBeSelected) {
+					anchorElement.classList.add(activeClassName);
+				} else {
+					anchorElement.classList.remove(activeClassName);
+				}
+    }, [shouldBeSelected, activeClassName, _shouldBeSelected]);
 
-    const linkProps = (() => {
-        const x = {...props};
-        // because react router automatically places all props into the anchor element itself, which causes errors from react.
-        delete x.shouldBeSelected; delete x.activeClassName; 
-        return x;
-    })()
     
-    return<Link ref={linkRef} {...linkProps}/>
+    return<Link ref={linkRef as any} {...linkProps}/>
 
 }
 

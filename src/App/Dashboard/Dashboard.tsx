@@ -1,14 +1,14 @@
 
-import React, { useRef, useState } from "react";
-import './Dashboard.scss';
-import { useSetTitleFunctionality, Optional, allHistoryBlocksShouldBeRemoved } from "jshelpers";
+import { RequestsRequiringAuthentication } from "API";
 import Products from "App/MainSiteInterface/Products/Products";
-import { useHistory, Switch, Route, useRouteMatch } from "react-router-dom";
+import { allHistoryBlocksShouldBeRemoved, Optional, useSetTitleFunctionality } from "jshelpers";
+import React, { useRef, useState } from "react";
+import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import * as RoutePaths from 'topLevelRoutePaths';
-import LogInScreen from "./LogInScreen/LogInScreen";
+import './Dashboard.scss';
 import { DashboardRouteURLs } from './DashboardRoutesInfo';
 import { DashboardInfo, DashboardInfoContext } from "./DashboardUIHelpers";
-import { RequestsRequiringAuthentication } from "API";
+import LogInScreen from "./LogInScreen/LogInScreen";
 
 
 
@@ -35,7 +35,7 @@ export default function Dashboard() {
 
     useSetTitleFunctionality("Dashboard");
 
-    const history = useHistory();
+    const history = useHistory<any>();
 
     const [isUserLoggedIn, setUserLoggedInState] = useState(!!UserPersistedAuthToken.get());
 

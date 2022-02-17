@@ -1,79 +1,68 @@
+@import "helpers.module";
+@import "../../products-variables.module";
 
+.Products > .content {
+	> .MainContent {
+		> .ProductDetailsView {
+			$max-width-for-vertical-layout: 750px;
 
-@import 'helpers';
-@import '../../products-variables';
+			display: grid;
+			grid-template-columns: 1fr;
+			grid-auto-flow: column;
+			grid-auto-columns: 1fr;
 
+			margin-top: 2.5rem;
+			align-items: start;
+			gap: 3rem;
 
-.Products > .content{
-  
-    > .MainContent{
+			@media (max-width: $max-width-for-vertical-layout) {
+				grid-template-columns: initial;
+				max-width: 425px;
+				grid-auto-flow: row;
+				@include setProps(margin-left margin-right, auto);
+				> .image-section-holder {
+					grid-row: 1;
+				}
+			}
 
-        > .ProductDetailsView{
+			> .description-section {
+				font-size: 17px;
+				line-height: 1.6;
+				white-space: pre-wrap;
+			}
 
-            $max-width-for-vertical-layout: 750px;
-            
+			> .image-section-holder {
+				> .image-section {
+					--image-section-insets: 1.05rem;
+					max-width: 500px;
+					@include setProps(margin-left margin-right, auto);
 
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-auto-flow: column;
-            grid-auto-columns: 1fr;
-            
-            margin-top: 2.5rem;
-            align-items: start;
-            gap: 3rem;
-        
+					@media (max-width: $max-width-for-vertical-layout) {
+						max-width: initial;
+					}
 
-            @media(max-width: $max-width-for-vertical-layout){
-                grid-template-columns: initial;
-                max-width: 425px;
-                grid-auto-flow: row;
-                @include setProps(margin-left margin-right, auto);
-                > .image-section-holder{
-                    grid-row: 1;
-                }
-            }
+					> .content {
+						position: relative;
 
-            > .description-section{
-                font-size: 17px;
-                line-height: 1.6;
-                white-space: pre-wrap;
-            }
+						> .background-view {
+							background-color: $product-item-info-background-color;
+							box-shadow: 0 0 3.3rem 1rem rgba(colors(dark-blue), 0.9);
+							border-radius: 1rem;
+							position: absolute;
+							@include setProps(top left, var(--image-section-insets));
+							@include setProps(right bottom, 0);
+						}
 
-            > .image-section-holder{
-
-                > .image-section{
-                    
-                    --image-section-insets: 1.05rem;
-                    max-width: 500px;
-                    @include setProps(margin-left margin-right, auto);
-
-
-                    @media(max-width: $max-width-for-vertical-layout){
-                        max-width: initial;
-                    }
-
-                    
-                    > .content{
-                        
-                        position: relative;
-                        
-                        > .background-view{
-                            background-color: $product-item-info-background-color;
-                            box-shadow:0 0 3.3rem 1rem rgba(colors(dark-blue), 0.9);
-                            border-radius: 1rem;
-                            position: absolute;
-                            @include setProps(top left, var(--image-section-insets));
-                            @include setProps(right bottom, 0);
-                        }
-                        
-                        > .ProductItemImageView{
-                            @include setProps(margin-right margin-bottom, var(--image-section-insets));
-                            border-radius: 0.7rem;
-                        }
-                    }
-                }
-            }
-        }
-    }
+						> .ProductItemImageView {
+							@include setProps(
+								margin-right margin-bottom,
+								var(--image-section-insets)
+							);
+							border-radius: 0.7rem;
+						}
+					}
+				}
+			}
+		}
+	}
 }
-

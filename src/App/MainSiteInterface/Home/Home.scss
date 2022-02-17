@@ -1,444 +1,434 @@
+@import "helpers.module";
+.Home {
+	> .ShowCase {
+		$inset: 0.4375rem;
 
+		margin-top: $inset;
+		@include setProps(margin-left margin-right, $inset);
 
+		@include centerContentInGrid;
 
+		position: relative;
 
-@import 'helpers';
-.Home{
-    > .ShowCase{
+		> .background-view {
+			position: absolute;
+			@include setProps(left right bottom, 0);
+			top: -(($inset * 2) + $nav-bar-height);
+			z-index: -1;
+			background: linear-gradient(
+				310deg,
+				rgba(20, 37, 94, 1) 0%,
+				rgba(29, 161, 242, 1) 100%
+			);
+			border-radius: $nav-bar-border-radius + ($nav-bar-insets - $inset);
+		}
 
-        $inset: 0.4375rem;
+		> .center-content {
+			max-width: 51rem;
+			@include respondToNarrowWidth {
+				max-width: 40rem;
+			}
+			text-align: center;
+			display: grid;
+			gap: 30px;
 
-        margin-top: $inset;
-        @include setProps(margin-left margin-right, $inset);
-        
-        @include centerContentInGrid;
+			// Top and bottom margin code
+			--top-and-bottom-margins: 7.8rem;
+			@include setProps(
+				margin-top margin-bottom,
+				var(--top-and-bottom-margins)
+			);
+			@media (max-width: 500px) {
+				--top-and-bottom-margins: 4rem;
+			}
 
-        position: relative;
+			//padding code
+			--center-content-side-padding: 80px;
+			@include setProps(
+				padding-left padding-right,
+				var(--center-content-side-padding)
+			);
+			@include respondToNarrowWidth {
+				--center-content-side-padding: 20px;
+			}
 
-        > .background-view{
-            position: absolute;
-            @include setProps(left right bottom, 0);
-            top: -(($inset * 2) + $nav-bar-height);
-            z-index: -1;
-            background: linear-gradient(310deg, rgba(20,37,94,1) 0%, rgba(29,161,242,1) 100%);
-            border-radius: $nav-bar-border-radius + ($nav-bar-insets - $inset);
-        }
+			// background-color: green;
+			> .motto-title {
+				// background-color: orange;
+				font-size: 5.5rem;
 
-        > .center-content{
-            max-width: 51rem;
-            @include respondToNarrowWidth{
-                max-width: 40rem;
-            }
-            text-align: center;
-            display: grid;
-            gap: 30px;
+				@include respondToNarrowWidth {
+					font-size: 3.5rem;
+				}
+			}
+			> .description-text {
+				justify-self: center;
+				// max-width: 40rem;
+				font-size: 1.7rem;
+				color: colors(white-dimmed-blue);
+				@include respondToNarrowWidth {
+					font-size: 1.5rem;
+				}
+				// background-color: blue;
+			}
+			> .buttons-box {
+				display: grid;
+				grid-auto-flow: column;
+				justify-content: center;
+				font-size: 1.25rem;
+				font-weight: bold;
+				align-items: center;
+				gap: 30px;
 
-            // Top and bottom margin code
-            --top-and-bottom-margins: 7.8rem;
-            @include setProps(margin-top margin-bottom, var(--top-and-bottom-margins));
-            @media(max-width: 500px){
-                --top-and-bottom-margins: 4rem;
-            }
+				@media (max-width: 400px) {
+					grid-auto-flow: initial;
+					gap: 25px;
+				}
 
-            //padding code
-            --center-content-side-padding: 80px;
-            @include setProps(padding-left padding-right, var(--center-content-side-padding));
-            @include respondToNarrowWidth{  
-                --center-content-side-padding: 20px;
-            }
-            
-            // background-color: green;
-            > .motto-title{
-                
-                // background-color: orange;
-                font-size: 5.5rem;
-                
-                @include respondToNarrowWidth{
-                    font-size: 3.5rem;
-                }
-            }
-            > .description-text{
-                justify-self: center;
-                // max-width: 40rem;
-                font-size: 1.7rem;
-                color: colors(white-dimmed-blue);
-                @include respondToNarrowWidth{
-                    font-size: 1.5rem;
-                }
-                // background-color: blue;
-            }
-            > .buttons-box{
-                display: grid;
-                grid-auto-flow: column;
-                justify-content: center;
-                font-size: 1.25rem;
-                font-weight: bold;
-                align-items: center;
-                gap: 30px;
+				$extremely-light-blue: rgb(227, 242, 250);
 
-                @media(max-width: 400px){
-                    grid-auto-flow: initial;
-                    gap: 25px;
-                }
+				color: $extremely-light-blue;
 
-                $extremely-light-blue: rgb(227, 242, 250);
+				> .browse-products-button {
+					$height: 3.125rem;
+					@include centerContentInGrid;
+					height: $height;
+					@include setProps(padding-left padding-right, 19px);
+					border-radius: $height / 2;
+					box-sizing: border-box;
+					background-color: $extremely-light-blue;
+					color: rgb(25, 98, 167);
+					@include bounceOnHover;
+				}
 
-                color: $extremely-light-blue;
+				> .about-us-button {
+					@include roundedBGOnHover(rgba(white, 0.2), white);
 
-                > .browse-products-button{
-                    $height: 3.125rem;
-                    @include centerContentInGrid;
-                    height: $height;
-                    @include setProps(padding-left padding-right, 19px);
-                    border-radius: $height / 2;
-                    box-sizing: border-box;
-                    background-color: $extremely-light-blue;
-                    color: rgb(25, 98, 167);
-                    @include bounceOnHover;
-                }
+					display: grid;
+					grid-auto-flow: column;
+					align-items: center;
 
-                > .about-us-button{
-                    @include roundedBGOnHover(rgba(white, 0.2), white);
-                    
-                    display: grid;
-                    grid-auto-flow: column;
-                    align-items: center;
-                    
-                    padding: 0.5rem 1rem;
-                    > .chevron{
-                        font-size: 1.56rem;
-                        padding-left: 10px;
-                    }
-                }
-            }
+					padding: 0.5rem 1rem;
+					> .chevron {
+						font-size: 1.56rem;
+						padding-left: 10px;
+					}
+				}
+			}
+		}
+	}
 
-        }
+	> .FeaturesBox {
+		@include setProps(margin-left margin-right, auto);
+		max-width: 1100px;
+		display: grid;
+		justify-items: center;
 
-    }
+		@include setProps(padding-left padding-right, 2.5rem);
 
-    > .FeaturesBox{
-        
-        @include setProps(margin-left margin-right, auto);
-        max-width: 1100px;
-        display: grid;
-        justify-items: center;
-        
-        @include setProps(padding-left padding-right, 2.5rem);
+		> .title {
+			font-size: 2.8rem;
+			max-width: 10em;
+			text-align: center;
+			margin-top: 2em;
+			margin-bottom: 1.5em;
+		}
 
-        > .title{
-            font-size: 2.8rem;
-            max-width: 10em;
-            text-align: center;
-            margin-top: 2em;
-            margin-bottom: 1.5em;
-        }
+		> .features {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			gap: 40px;
+			align-items: start;
+			margin-bottom: 7rem;
+			@include respondToNarrowWidth {
+				grid-template-columns: initial;
+			}
+			> .IndividualFeatureBox {
+				display: grid;
+				gap: 1.25rem;
+				> .image-holder {
+					> img {
+						height: 3.75rem;
+					}
+				}
+				> .title {
+					font: {
+						weight: bold;
+						size: 1.7rem;
+					}
+				}
+				> .description {
+					color: colors(grayish-blue-text);
+					line-height: 1.4;
+					font-size: 1.25rem;
+				}
+			}
+		}
+	}
 
-        > .features{
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 40px;
-            align-items: start;
-            margin-bottom: 7rem;
-            @include respondToNarrowWidth{
-                grid-template-columns: initial;
-            }
-            > .IndividualFeatureBox{
-                display: grid;
-                gap: 1.25rem;
-                > .image-holder{
-                    > img{
-                        height: 3.75rem;
-                    }
-                }
-                > .title{
-                    font: {
-                        weight: bold;
-                        size: 1.7rem;
-                    }
-                }
-                > .description{
-                    color: colors(grayish-blue-text);
-                    line-height: 1.4;
-                    font-size: 1.25rem;
-                }
-            }
-        }
-    }
+	> .AdditionalInfoBox {
+		background-color: colors(light-dark-blue);
+		display: grid;
+		justify-content: center;
+		@include setProps(padding-left padding-right, 2.5rem);
+		> .content {
+			@include setProps(margin-top margin-bottom, 6rem);
 
-    > .AdditionalInfoBox{
-        background-color: colors(light-dark-blue);
-        display: grid;
-        justify-content: center;
-        @include setProps(padding-left padding-right, 2.5rem);
-        > .content{
-            
-            @include setProps(margin-top margin-bottom, 6rem);
-            
-            
-            display: grid;
-            grid-auto-flow: column;
-            gap: 6.25rem;
-            align-items: center;
-            
+			display: grid;
+			grid-auto-flow: column;
+			gap: 6.25rem;
+			align-items: center;
 
-            $start-decreasing-gap-width: 1150px;
+			$start-decreasing-gap-width: 1150px;
 
-            @media (min-height: $max-narrow-width) and (max-width: $start-decreasing-gap-width){
-                gap: 3rem;
-            }
-            
-            @include respondToNarrowWidth{
-                @include setProps(margin-top margin-bottom, 5rem);
-                grid-auto-flow: initial;                
-                gap: 2rem;
-                max-width: 29rem;
-            }
+			@media (min-height: $max-narrow-width) and (max-width: $start-decreasing-gap-width) {
+				gap: 3rem;
+			}
 
-            > .left-info-box{
-                
+			@include respondToNarrowWidth {
+				@include setProps(margin-top margin-bottom, 5rem);
+				grid-auto-flow: initial;
+				gap: 2rem;
+				max-width: 29rem;
+			}
 
-                display: grid;
-                gap: 2rem;
-                max-width: 26em;
-                @include respondToNarrowWidth{
-                    max-width: initial;
-                }
+			> .left-info-box {
+				display: grid;
+				gap: 2rem;
+				max-width: 26em;
+				@include respondToNarrowWidth {
+					max-width: initial;
+				}
 
-                > .title{
-                    font-size: 2.5rem;
-                    font-weight: bold;
-                    
-                    @include applyBlueThemeTextGradient;
-                }
+				> .title {
+					font-size: 2.5rem;
+					font-weight: bold;
 
-                > .description{
-                    font-size: 1.25rem;
-                    line-height: 1.5;
-                }
-            }
+					@include applyBlueThemeTextGradient;
+				}
 
-            > .right-info-box{
-                display: grid;
-                grid-auto-flow: column;
-                justify-content: start;
-                gap: 6.25rem;
-                align-items: start;
+				> .description {
+					font-size: 1.25rem;
+					line-height: 1.5;
+				}
+			}
 
-                @media (max-width: $start-decreasing-gap-width){
-                    gap: 2.3rem;
-                }
+			> .right-info-box {
+				display: grid;
+				grid-auto-flow: column;
+				justify-content: start;
+				gap: 6.25rem;
+				align-items: start;
 
-                > .List{
+				@media (max-width: $start-decreasing-gap-width) {
+					gap: 2.3rem;
+				}
 
-                    display: grid;
-                    gap: 1rem;
-                    font-size: 1.15rem;
+				> .List {
+					display: grid;
+					gap: 1rem;
+					font-size: 1.15rem;
 
-                    > .item{        
-                        margin-left: 1.1em;
-                        list-style-type: none;
-                        position: relative;
-                        &::before{
-                            content: '>';
-                            position: absolute;
-                            top: -0.02em;
-                            left: -1.1em;
-                            font-size: 1em;
-                            font-weight: bold;
-                        }
-                    }
-                }
-            }
-        }
-    }
+					> .item {
+						margin-left: 1.1em;
+						list-style-type: none;
+						position: relative;
+						&::before {
+							content: ">";
+							position: absolute;
+							top: -0.02em;
+							left: -1.1em;
+							font-size: 1em;
+							font-weight: bold;
+						}
+					}
+				}
+			}
+		}
+	}
 
+	> .ReviewsSection {
+		$compress-width: 600px;
 
+		margin-top: 6rem;
+		margin-bottom: 8rem;
+		display: grid;
 
-    > .ReviewsSection{
-        $compress-width: 600px;
-        
-        margin-top: 6rem;
-        margin-bottom: 8rem;
-        display: grid;
-        
-        justify-content: center;
-        justify-items: center;
-        gap: 5rem;
-        .quotes-icon-holder{
-            svg{
-                fill: colors(light-blue);
-                $size: 5rem;
-                height: $size;
-                width: $size * 1.5;
-            }
-        }
+		justify-content: center;
+		justify-items: center;
+		gap: 5rem;
+		.quotes-icon-holder {
+			svg {
+				fill: colors(light-blue);
+				$size: 5rem;
+				height: $size;
+				width: $size * 1.5;
+			}
+		}
 
-        @media(max-width: $compress-width){
-            margin-bottom: 6rem; 
-        }
+		@media (max-width: $compress-width) {
+			margin-bottom: 6rem;
+		}
 
-        $reviews-grid-side-padding: 2rem;
+		$reviews-grid-side-padding: 2rem;
 
-        > .reviews-grid-container{
-            
-            max-width: 100%;
-        
-            @include setProps(padding-left padding-right, $reviews-grid-side-padding);
-            @include setCustomScrollBarStyle;
-            @media(max-width: $compress-width){
-                overflow-x: scroll;
-                padding: 0.2px;
-                padding-bottom: 2rem;
-            }
-        }   
+		> .reviews-grid-container {
+			max-width: 100%;
 
-        > .reviews-grid-container > .reviews-grid{
-            
-            display: inline-grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            
-            @media(max-width: $compress-width){
-                @include setProps(margin-left margin-right, $reviews-grid-side-padding);
-                grid-template-columns: auto;
-                grid-auto-rows: auto;
-                grid-auto-flow: column;
-            }
+			@include setProps(padding-left padding-right, $reviews-grid-side-padding);
+			@include setCustomScrollBarStyle;
+			@media (max-width: $compress-width) {
+				overflow-x: scroll;
+				padding: 0.2px;
+				padding-bottom: 2rem;
+			}
+		}
 
-            > .Review {
-                $max-width: 22rem;
-                max-width: $max-width;
-                
-                padding: 1.7rem;
-                background-color: colors(light-dark-blue);
-                border-radius: 1rem;
-                display: grid;
-                grid-template-rows: 1fr auto;
-                gap: 1.5rem;
-                
-                font-size: 1.2rem;
+		> .reviews-grid-container > .reviews-grid {
+			display: inline-grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 2rem;
 
-                @media(max-width: $compress-width){
-                    width: calc(70vw - 1rem);
-                }
+			@media (max-width: $compress-width) {
+				@include setProps(margin-left margin-right, $reviews-grid-side-padding);
+				grid-template-columns: auto;
+				grid-auto-rows: auto;
+				grid-auto-flow: column;
+			}
 
-                > .review-text{
-                    line-height: 1.5;
-                    font-size: 1.2rem;
-                    color: colors(grayish-blue-text);
-                    font-style: italic;
-                }
-                
-                > .author-box{
-                    text-align: right;
-                    display: grid;
-                    gap: 0.4rem;
-                    
-                    > .title{
-                        font-size: 1.1rem;
-                        font-weight: bold;
-                    }
-                    
-                    > .date{
-                        text-transform: uppercase;
-                        font-size: 0.8rem;
-                        font-weight: bold;
-                        color: colors(light-blue);
-                    } 
-                }
-            }
-        }
+			> .Review {
+				$max-width: 22rem;
+				max-width: $max-width;
 
-        
-    }
+				padding: 1.7rem;
+				background-color: colors(light-dark-blue);
+				border-radius: 1rem;
+				display: grid;
+				grid-template-rows: 1fr auto;
+				gap: 1.5rem;
 
+				font-size: 1.2rem;
 
-    > .MapSection{
-        margin-bottom: 9rem;
-        > .content{
+				@media (max-width: $compress-width) {
+					width: calc(70vw - 1rem);
+				}
 
-            display: grid;
-            
-            grid-template-columns: 1.5fr 1fr;
-            margin: auto;
-            $map-section-max-width: 1200px;
-            max-width: $map-section-max-width;
+				> .review-text {
+					line-height: 1.5;
+					font-size: 1.2rem;
+					color: colors(grayish-blue-text);
+					font-style: italic;
+				}
 
-            @include respondToNarrowWidth{
-                grid-template-columns: 1fr;
-                display: flex;
-                flex-direction: column-reverse;
-            }
-            
-            > .map-holder{
+				> .author-box {
+					text-align: right;
+					display: grid;
+					gap: 0.4rem;
 
-                height: 500px;
-                overflow:hidden;
-                --border-radius: 40px;
-                
-                $border-config: 0.625rem solid colors(light-gray-bg);
-                @include setProps(border-bottom-right-radius border-top-right-radius, var(--border-radius));
-                @include setProps(border-right border-top border-bottom, $border-config);
-                z-index: 1;
-                
-                @media(min-width: $map-section-max-width + 1){
-                    @include setProps(border-bottom-left-radius border-top-left-radius, var(--border-radius));
-                    @include setProps(border-left, $border-config);
-                }
+					> .title {
+						font-size: 1.1rem;
+						font-weight: bold;
+					}
 
-                @include respondToNarrowWidth{
-                    border-right: initial;
-                    --border-radius: 0;
-                    height: 60vw;
-                }
+					> .date {
+						text-transform: uppercase;
+						font-size: 0.8rem;
+						font-weight: bold;
+						color: colors(light-blue);
+					}
+				}
+			}
+		}
+	}
 
-                > .ScrewsWorldLocationMap{
-                    width: 100%;
-                    height: 100%;
-                }
-            }      
-            > .text-content{
-                $padding: 3.125rem;
-                @include setProps(padding-left padding-right, $padding);
-                
-                @include centerContentInGrid;
-                @include respondToNarrowWidth{
-                    text-align: center;
-                    max-width: 400px;
-                    margin: auto;
-                    padding-bottom: $padding;
-                }
-                
-                gap: 1.7rem;
+	> .MapSection {
+		margin-bottom: 9rem;
+		> .content {
+			display: grid;
 
-                > .title{
-                    font-size: 2.5rem;
-                    font-weight: bold;  
-                    @include applyBlueThemeTextGradient;   
-                }
+			grid-template-columns: 1.5fr 1fr;
+			margin: auto;
+			$map-section-max-width: 1200px;
+			max-width: $map-section-max-width;
 
-                > .line-separator{
-                    $height: 0.4rem;
-                    border-radius: $height / 2;
-                    background-color: colors(light-blue);
-                    width: 5rem;
-                    height: $height;
-                }
+			@include respondToNarrowWidth {
+				grid-template-columns: 1fr;
+				display: flex;
+				flex-direction: column-reverse;
+			}
 
-                > .description{
-                    font-size: 1.25rem;
-                    line-height: 1.5;
-                }
-            }
+			> .map-holder {
+				height: 500px;
+				overflow: hidden;
+				--border-radius: 40px;
 
-        }
-        
-    }
+				$border-config: 0.625rem solid colors(light-gray-bg);
+				@include setProps(
+					border-bottom-right-radius border-top-right-radius,
+					var(--border-radius)
+				);
+				@include setProps(
+					border-right border-top border-bottom,
+					$border-config
+				);
+				z-index: 1;
 
+				@media (min-width: $map-section-max-width + 1) {
+					@include setProps(
+						border-bottom-left-radius border-top-left-radius,
+						var(--border-radius)
+					);
+					@include setProps(border-left, $border-config);
+				}
+
+				@include respondToNarrowWidth {
+					border-right: initial;
+					--border-radius: 0;
+					height: 60vw;
+				}
+
+				> .ScrewsWorldLocationMap {
+					width: 100%;
+					height: 100%;
+				}
+			}
+			> .text-content {
+				$padding: 3.125rem;
+				@include setProps(padding-left padding-right, $padding);
+
+				@include centerContentInGrid;
+				@include respondToNarrowWidth {
+					text-align: center;
+					max-width: 400px;
+					margin: auto;
+					padding-bottom: $padding;
+				}
+
+				gap: 1.7rem;
+
+				> .title {
+					font-size: 2.5rem;
+					font-weight: bold;
+					@include applyBlueThemeTextGradient;
+				}
+
+				> .line-separator {
+					$height: 0.4rem;
+					border-radius: $height / 2;
+					background-color: colors(light-blue);
+					width: 5rem;
+					height: $height;
+				}
+
+				> .description {
+					font-size: 1.25rem;
+					line-height: 1.5;
+				}
+			}
+		}
+	}
 }
 
-
-.FeaturesBox .Feature:last-child .image-holder img{
-    height: 3.125rem !important;
+.FeaturesBox .Feature:last-child .image-holder img {
+	height: 3.125rem !important;
 }
-

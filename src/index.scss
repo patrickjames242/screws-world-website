@@ -1,95 +1,79 @@
+@import "helpers.module";
+@import url("https://fonts.googleapis.com/css?family=Rubik:400,700&display=swap");
 
-@import 'helpers';
-@import url('https://fonts.googleapis.com/css?family=Rubik:400,700&display=swap');
-
-:root{
-    font-size: 14px;
-    @include respondToNarrowWidth{
-        font-size: 12px;
-    }
+:root {
+	font-size: 14px;
+	@include respondToNarrowWidth {
+		font-size: 12px;
+	}
 }
 
-*{
-    padding: 0.02px;
-    margin: 0;
-    -webkit-text-size-adjust: none;
+* {
+	padding: 0.02px;
+	margin: 0;
+	-webkit-text-size-adjust: none;
 }
 
-body{
-    background-color: colors(dark-blue);
-    color: white;
-    font-family: Rubik;
+body {
+	background-color: colors(dark-blue);
+	color: white;
+	font-family: Rubik;
 }
 
-a{
-    color: inherit;
-    text-decoration: none;
+a {
+	color: inherit;
+	text-decoration: none;
 }
 
-button{
-    background-color: transparent;
-    border: none;
-    color: inherit;
-    font-size: inherit;
-    cursor: pointer;
+button {
+	background-color: transparent;
+	border: none;
+	color: inherit;
+	font-size: inherit;
+	cursor: pointer;
 }
 
-
-button:focus, input:focus, textarea:focus, select:focus{
-    outline: none;
-}   
-
-textarea, input, select{
-    border: none;
-    font-family: inherit;
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+	outline: none;
 }
 
-textarea{
-    resize: none;
+textarea,
+input,
+select {
+	border: none;
+	font-family: inherit;
 }
 
-select{
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: transparent;
+textarea {
+	resize: none;
 }
 
+select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	background-color: transparent;
+}
 
-
-
-
-.page-comming-soon{
-    margin: {
-        left: auto;
-        right: auto;
-        top: 15rem;
-        bottom: 70rem;
-    }
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bold;
-    max-width: 15rem;
+.page-comming-soon {
+	margin: {
+		left: auto;
+		right: auto;
+		top: 15rem;
+		bottom: 70rem;
+	}
+	text-align: center;
+	font-size: 2rem;
+	font-weight: bold;
+	max-width: 15rem;
 }
 
 ::selection {
-    background: colors(light-blue); /* WebKit/Blink Browsers */
+	background: colors(light-blue); /* WebKit/Blink Browsers */
 }
 ::-moz-selection {
-    background: colors(light-blue); /* Gecko Browsers */
+	background: colors(light-blue); /* Gecko Browsers */
 }
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-
-
-
