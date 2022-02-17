@@ -1,6 +1,6 @@
+import { SCREWS_WORLD_EMAIL, SCREWS_WORLD_NUMBER } from "jshelpers";
 import React from "react";
 import "./Footer.scss";
-import { SCREWS_WORLD_NUMBER, SCREWS_WORLD_EMAIL } from "jshelpers";
 
 export default function Footer() {
   function ContactMethod(props: {
@@ -45,6 +45,12 @@ export default function Footer() {
           );
         })}
       </div>
+		  <div className="made-by-patrick">
+			  Made with ♥ by{" "}
+			  <a href="https://patrickhanna.dev" target="_blank" rel="noreferrer">
+         	 Patrick Hanna
+			  </a>.
+        </div>
     </footer>
   );
 }

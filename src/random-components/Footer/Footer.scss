@@ -58,10 +58,20 @@
         @include applyBlueThemeTextGradient;
       }
 
-      > .info {
-        font-size: 1.1rem;
-        color: colors(grayish-blue-text);
-      }
-    }
-  }
+			> .info {
+				font-size: 1.1rem;
+				color: colors(grayish-blue-text);
+			}
+		}
+	}
+
+	> .made-by-patrick{
+		margin-bottom: 1.5rem;
+		text-align: center;
+		color: colors(grayish-blue-text);
+		font-size: 1.1rem;
+		> a{
+			text-decoration: underline;
+		}
+	}
 }
