@@ -1,40 +1,40 @@
 @import "helpers.module";
 
 .CustomInput {
-	--input-placeholder-color: rgb(136, 153, 166);
+  --input-placeholder-color: rgb(136, 153, 166);
 
-	display: grid;
-	gap: 1rem;
-	$text-input-padding: 1.2rem;
+  display: grid;
+  gap: 1rem;
+  $text-input-padding: 1.2rem;
 
-	@mixin configureTransition($transition-properties) {
-		transition-property: $transition-properties;
-		transition-duration: 0.3s;
-	}
+  @mixin configureTransition($transition-properties) {
+    transition-property: $transition-properties;
+    transition-duration: 0.3s;
+  }
 
-	> .top-text {
-		margin-left: $text-input-padding;
-		font-size: 1rem;
-		font-weight: bold;
-		@include configureTransition(color);
-	}
+  > .top-text {
+    margin-left: $text-input-padding;
+    font-size: 1rem;
+    font-weight: bold;
+    @include configureTransition(color);
+  }
 
-	&.active > .top-text {
-		color: colors(light-blue);
-	}
+  &.active > .top-text {
+    color: colors(light-blue);
+  }
 
-	> .input-box {
-		background-color: colors(light-gray-bg);
-		border: 2px solid transparent;
-		border-radius: 0.7rem;
-		padding: $text-input-padding;
-		color: white;
-		@include configureTransition(border background-color);
-		font-size: 16px;
-	}
+  > .input-box {
+    background-color: colors(light-gray-bg);
+    border: 2px solid transparent;
+    border-radius: 0.7rem;
+    padding: $text-input-padding;
+    color: white;
+    @include configureTransition(border background-color);
+    font-size: 16px;
+  }
 
-	&.active > .input-box {
-		border: 2px solid colors(light-blue);
-		background-color: transparent;
-	}
+  &.active > .input-box {
+    border: 2px solid colors(light-blue);
+    background-color: transparent;
+  }
 }

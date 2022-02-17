@@ -1,90 +1,93 @@
+import React, { useRef, useEffect } from "react";
 
-import React, { useRef, useEffect } from 'react';
+import SideBarLinksNode from "../SideBarLinksNode/SideBarLinksNode";
 
-import SideBarLinksNode from '../SideBarLinksNode/SideBarLinksNode';
-
-import './AttachedSideBar.scss';
-import { useAllTopLevelProductItems, useProductsInfoContextValue } from '../../ProductsUIHelpers';
-import SideBarLoadingIndicator from '../SideBarLoadingIndicator/SideBarLoadingIndicator';
-
-
+import "./AttachedSideBar.scss";
+import {
+  useAllTopLevelProductItems,
+  useProductsInfoContextValue,
+} from "../../ProductsUIHelpers";
+import SideBarLoadingIndicator from "../SideBarLoadingIndicator/SideBarLoadingIndicator";
 
 export default function AttachedSideBar() {
-    const allTopLevelProductItems = useAllTopLevelProductItems();
+  const allTopLevelProductItems = useAllTopLevelProductItems();
 
-    const productInfo = useProductsInfoContextValue();
+  const productInfo = useProductsInfoContextValue();
 
-    const contentHolderRef = useRef<HTMLDivElement>(null);
+  const contentHolderRef = useRef<HTMLDivElement>(null);
 
-    const faderElements = useSideBarFaderFunctionality(contentHolderRef);
+  const faderElements = useSideBarFaderFunctionality(contentHolderRef);
 
-    return <div className="AttachedSideBar SideBar">
-        <div className="content-holder" ref={contentHolderRef}>
-            {(() => {
-                if (productInfo.loadingIsFinished === false) {
-                    return <SideBarLoadingIndicator />
-                }
-            })()}
-            <div className="content">
-                {allTopLevelProductItems.map(x => {
-                    return <SideBarLinksNode item={x} key={x.id.stringVersion} />
-                })}
-            </div>
+  return (
+    <div className="AttachedSideBar SideBar">
+      <div className="content-holder" ref={contentHolderRef}>
+        {(() => {
+          if (productInfo.loadingIsFinished === false) {
+            return <SideBarLoadingIndicator />;
+          }
+        })()}
+        <div className="content">
+          {allTopLevelProductItems.map((x) => {
+            return <SideBarLinksNode item={x} key={x.id.stringVersion} />;
+          })}
         </div>
-        {faderElements}
+      </div>
+      {faderElements}
     </div>
+  );
 }
 
+function useSideBarFaderFunctionality(
+  contentHolderRef: React.RefObject<HTMLElement>
+): React.ReactElement {
+  const topFaderRef = useRef<HTMLDivElement>(null);
+  const bottomFaderRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const contentHolder = contentHolderRef.current;
 
-function useSideBarFaderFunctionality(contentHolderRef: React.RefObject<HTMLElement>): React.ReactElement {
+    function respondToOnScroll() {
+      if (contentHolder === null) {
+        return;
+      }
 
-    const topFaderRef = useRef<HTMLDivElement>(null);
-    const bottomFaderRef = useRef<HTMLDivElement>(null);
+      const isScrolledToTop = contentHolder.scrollTop <= 0;
+      const isScrolledToBottom =
+        contentHolder.scrollTop >=
+        contentHolder.scrollHeight - contentHolder.clientHeight;
+      // if (isScrolledToBottom){
+      //     console.log("is scrolled to bottom!!");
+      // }
 
-    useEffect(() => {
-        const contentHolder = contentHolderRef.current;
+      // if (isScrolledToTop){
+      //     console.log("is scrolled to top");
+      // }
 
-        function respondToOnScroll() {
-            if (contentHolder === null) { return; }
+      const newTopFaderOpacity = isScrolledToTop ? "0" : "1";
+      const newBottomFaderOpacity = isScrolledToBottom ? "0" : "1";
 
-            const isScrolledToTop = contentHolder.scrollTop <= 0;
-            const isScrolledToBottom = contentHolder.scrollTop >= contentHolder.scrollHeight - contentHolder.clientHeight;
-            // if (isScrolledToBottom){
-            //     console.log("is scrolled to bottom!!");
-            // }
+      topFaderRef.current!.style.opacity = newTopFaderOpacity;
+      bottomFaderRef.current!.style.opacity = newBottomFaderOpacity;
+    }
 
-            // if (isScrolledToTop){
-            //     console.log("is scrolled to top");
-            // }
+    respondToOnScroll();
 
-            const newTopFaderOpacity = isScrolledToTop ? "0" : "1";
-            const newBottomFaderOpacity = isScrolledToBottom ? "0" : "1";
+    const resizeEvent = "resize";
+    const scrollEvent = "scroll";
+    contentHolder?.addEventListener(scrollEvent, respondToOnScroll);
+    window.addEventListener(resizeEvent, respondToOnScroll);
 
-            topFaderRef.current!.style.opacity = newTopFaderOpacity;
-            bottomFaderRef.current!.style.opacity = newBottomFaderOpacity
-        }
+    return () => {
+      contentHolder?.removeEventListener(scrollEvent, respondToOnScroll);
+      window.removeEventListener(resizeEvent, respondToOnScroll);
+    };
+    // eslint-disable-next-line
+  }, []);
 
-        respondToOnScroll();
-
-        const resizeEvent = 'resize';
-        const scrollEvent = 'scroll';
-        contentHolder?.addEventListener(scrollEvent, respondToOnScroll);
-        window.addEventListener(resizeEvent, respondToOnScroll);
-
-        return () => {
-            contentHolder?.removeEventListener(scrollEvent, respondToOnScroll);
-            window.removeEventListener(resizeEvent, respondToOnScroll);
-        }
-        // eslint-disable-next-line
-    }, []);
-
-    return <>
-        <div className="top-fader" ref={topFaderRef}></div>
-        <div className="bottom-fader" ref={bottomFaderRef}></div>
+  return (
+    <>
+      <div className="top-fader" ref={topFaderRef}></div>
+      <div className="bottom-fader" ref={bottomFaderRef}></div>
     </>
+  );
 }
-
-
-
-

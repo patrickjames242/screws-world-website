@@ -3,174 +3,174 @@
 $narrow-nav-drop-down-bar-background-color: colors(light-dark-blue);
 
 .NavBar {
-	position: fixed;
-	top: 0;
-	z-index: 5;
+  position: fixed;
+  top: 0;
+  z-index: 5;
 
-	border-radius: $nav-bar-border-radius;
-	background-color: $narrow-nav-drop-down-bar-background-color;
-	box-shadow: 0 0 3.3rem 1rem rgba(colors(dark-blue), 0.9);
-	overflow: hidden;
+  border-radius: $nav-bar-border-radius;
+  background-color: $narrow-nav-drop-down-bar-background-color;
+  box-shadow: 0 0 3.3rem 1rem rgba(colors(dark-blue), 0.9);
+  overflow: hidden;
 
-	@include setProps(left right top, $nav-bar-insets);
+  @include setProps(left right top, $nav-bar-insets);
 
-	.nav-bar-content {
-		box-shadow: 0 0 3.3rem 0.7rem rgba(colors(dark-blue), 0.6);
-		background-color: colors(light-gray-bg);
+  .nav-bar-content {
+    box-shadow: 0 0 3.3rem 0.7rem rgba(colors(dark-blue), 0.6);
+    background-color: colors(light-gray-bg);
 
-		height: $nav-bar-height;
+    height: $nav-bar-height;
 
-		@include setProps(padding-left padding-right, 1.5625rem);
+    @include setProps(padding-left padding-right, 1.5625rem);
 
-		display: grid;
-		justify-content: space-between;
-		grid-auto-flow: column;
+    display: grid;
+    justify-content: space-between;
+    grid-auto-flow: column;
 
-		align-items: center;
+    align-items: center;
 
-		> .title-box {
-			display: grid;
-			gap: 1.125rem;
-			grid-auto-flow: column;
-			align-items: center;
+    > .title-box {
+      display: grid;
+      gap: 1.125rem;
+      grid-auto-flow: column;
+      align-items: center;
 
-			> .screw-logo-holder {
-				@include setProps(height width, 2.5rem);
-				position: relative;
-				top: -2px;
-				> svg {
-					fill: colors(light-blue);
-				}
-			}
+      > .screw-logo-holder {
+        @include setProps(height width, 2.5rem);
+        position: relative;
+        top: -2px;
+        > svg {
+          fill: colors(light-blue);
+        }
+      }
 
-			> .text {
-				display: grid;
-				text-transform: uppercase;
-				letter-spacing: 0.05em;
-				line-height: 1;
-				font-weight: bold;
+      > .text {
+        display: grid;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        line-height: 1;
+        font-weight: bold;
 
-				& > :first-child {
-					font-size: 1.75rem;
-				}
+        & > :first-child {
+          font-size: 1.75rem;
+        }
 
-				& > :last-child {
-					color: colors(light-blue);
-					font-size: 1.25rem;
-				}
-			}
-		}
+        & > :last-child {
+          color: colors(light-blue);
+          font-size: 1.25rem;
+        }
+      }
+    }
 
-		> .links-box {
-			@media (max-width: $wide-nav-bar-links-cut-off-point) {
-				display: none;
-			}
+    > .links-box {
+      @media (max-width: $wide-nav-bar-links-cut-off-point) {
+        display: none;
+      }
 
-			display: grid;
-			grid-auto-flow: column;
-			gap: 30px;
-			> .NavBarLink {
-				@include blueBGOnHover;
-				padding: 0.4rem 1rem;
-			}
-		}
+      display: grid;
+      grid-auto-flow: column;
+      gap: 30px;
+      > .NavBarLink {
+        @include blueBGOnHover;
+        padding: 0.4rem 1rem;
+      }
+    }
 
-		.menu-icon-holder {
-			$size: 2.8rem;
-			height: $size;
-			width: $size;
-			display: none;
+    .menu-icon-holder {
+      $size: 2.8rem;
+      height: $size;
+      width: $size;
+      display: none;
 
-			@include bounceOnHover(1.2);
-			@media (max-width: $wide-nav-bar-links-cut-off-point) {
-				display: initial;
-			}
+      @include bounceOnHover(1.2);
+      @media (max-width: $wide-nav-bar-links-cut-off-point) {
+        display: initial;
+      }
 
-			> svg {
-				fill: white;
-			}
-		}
-	}
+      > svg {
+        fill: white;
+      }
+    }
+  }
 
-	.narrow-links {
-		background-color: $narrow-nav-drop-down-bar-background-color;
-		display: grid;
-		position: absolute;
-		z-index: -1;
-		@include setProps(left bottom right, 0);
+  .narrow-links {
+    background-color: $narrow-nav-drop-down-bar-background-color;
+    display: grid;
+    position: absolute;
+    z-index: -1;
+    @include setProps(left bottom right, 0);
 
-		> .NavBarLink {
-			$side-padding: 1.875rem;
-			padding-left: $side-padding;
-			height: $narrow-nav-cell-height;
-			transition-property: background-color;
-			transition-duration: 0.3s;
-			gap: 1.5rem;
-			@media (hover: hover) {
-				&:hover {
-					background-color: rgba(colors(light-blue), 0.2);
-				}
-			}
+    > .NavBarLink {
+      $side-padding: 1.875rem;
+      padding-left: $side-padding;
+      height: $narrow-nav-cell-height;
+      transition-property: background-color;
+      transition-duration: 0.3s;
+      gap: 1.5rem;
+      @media (hover: hover) {
+        &:hover {
+          background-color: rgba(colors(light-blue), 0.2);
+        }
+      }
 
-			position: relative;
+      position: relative;
 
-			&::after {
-				$height: 0.07rem;
-				content: "";
-				bottom: -$height;
-				left: 0;
-				height: $height;
-				right: 0;
-				position: absolute;
-				background-color: colors(light-gray-bg);
-			}
+      &::after {
+        $height: 0.07rem;
+        content: "";
+        bottom: -$height;
+        left: 0;
+        height: $height;
+        right: 0;
+        position: absolute;
+        background-color: colors(light-gray-bg);
+      }
 
-			&::before {
-				content: "›";
-				position: absolute;
-				font-weight: bold;
-				font-size: 1.5625rem;
-				right: $side-padding;
-				top: 50%;
-				transform: translateY(-50%);
-			}
-		}
-	}
+      &::before {
+        content: "›";
+        position: absolute;
+        font-weight: bold;
+        font-size: 1.5625rem;
+        right: $side-padding;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+  }
 
-	.NavBarLink {
-		display: grid;
-		align-items: center;
-		justify-content: start;
-		grid-auto-flow: column;
-		gap: 10px;
+  .NavBarLink {
+    display: grid;
+    align-items: center;
+    justify-content: start;
+    grid-auto-flow: column;
+    gap: 10px;
 
-		> .icon-container > svg {
-			@include setProps(height width, 1.4375rem);
-			fill: white;
-		}
+    > .icon-container > svg {
+      @include setProps(height width, 1.4375rem);
+      fill: white;
+    }
 
-		> .icon-container {
-			height: 1.44rem;
-			width: 1.44rem;
+    > .icon-container {
+      height: 1.44rem;
+      width: 1.44rem;
 
-			> svg {
-				fill: white;
-				@include setProps(width height, 100%);
-			}
-		}
+      > svg {
+        fill: white;
+        @include setProps(width height, 100%);
+      }
+    }
 
-		> .text-box {
-			text-transform: capitalize;
-			font: {
-				size: 1.125rem;
-				weight: bold;
-			}
-		}
-		&.selected {
-			color: colors(light-blue);
-			svg {
-				fill: colors(light-blue);
-			}
-		}
-	}
+    > .text-box {
+      text-transform: capitalize;
+      font: {
+        size: 1.125rem;
+        weight: bold;
+      }
+    }
+    &.selected {
+      color: colors(light-blue);
+      svg {
+        fill: colors(light-blue);
+      }
+    }
+  }
 }

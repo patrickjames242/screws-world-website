@@ -1,4 +1,3 @@
-
 $nav-bar-height: 5rem;
 
 // the amount of space between the nav bar and the top and sides of the screen
@@ -18,220 +17,206 @@ $wide-nav-bar-links-cut-off-point: 885px;
 // the maximum view port width at which the font-size property of the root element will be reduced from the default.
 $max-narrow-width: 775px;
 
-
-
 // direction accepts either "horizontal" or "vertical"
-@function blueThemeGradient($direction){
-    $deg: 0;
-    @if $direction == "horizontal"{
-        $deg: 90deg;
-    } @else if $direction == "vertical"{
-        $deg: 180deg;
-    } @else {
-        @error "invalid direction string sent to blueThemeGradient function";
-    }
-    @return linear-gradient($deg, rgba(28,214,242,1) 0%, rgba(0,76,199,1) 100%);
-    
+@function blueThemeGradient($direction) {
+  $deg: 0;
+  @if $direction == "horizontal" {
+    $deg: 90deg;
+  } @else if $direction == "vertical" {
+    $deg: 180deg;
+  } @else {
+    @error "invalid direction string sent to blueThemeGradient function";
+  }
+  @return linear-gradient(
+    $deg,
+    rgba(28, 214, 242, 1) 0%,
+    rgba(0, 76, 199, 1) 100%
+  );
 }
 
-
-:export{
-    navBarHeight: $nav-bar-height;
-    totalNavBarHeightWhenExpanded: ($narrow-nav-cell-height * 4) + $nav-bar-height ;
-    maxNarrowWidth: $max-narrow-width;
-    wideNavBarLinksCutOffPoint: $wide-nav-bar-links-cut-off-point;
-    navBarHeightFromScreenTop: $nav-bar-height-from-top;
+:export {
+  navBarHeight: $nav-bar-height;
+  totalNavBarHeightWhenExpanded: ($narrow-nav-cell-height * 4) + $nav-bar-height;
+  maxNarrowWidth: $max-narrow-width;
+  wideNavBarLinksCutOffPoint: $wide-nav-bar-links-cut-off-point;
+  navBarHeightFromScreenTop: $nav-bar-height-from-top;
 }
 
 $theme-colors: (
-    dark-blue: rgb(22, 33, 44),
-    light-dark-blue: rgb(25, 39, 52),
-    light-gray-bg: rgb(37, 51, 65),
-    light-blue: #1da1f2,
-    dark-light-blue: rgb(13, 137, 218),
-    white-dimmed-blue: rgb(207, 235, 252),
-    grayish-blue-text: rgb(153, 168, 182),
-    destructive-red: rgb(204, 29, 29),
+  dark-blue: rgb(22, 33, 44),
+  light-dark-blue: rgb(25, 39, 52),
+  light-gray-bg: rgb(37, 51, 65),
+  light-blue: #1da1f2,
+  dark-light-blue: rgb(13, 137, 218),
+  white-dimmed-blue: rgb(207, 235, 252),
+  grayish-blue-text: rgb(153, 168, 182),
+  destructive-red: rgb(204, 29, 29),
 );
 
-@function colors($colorName){    
-    @return map-get($map: $theme-colors, $key:$colorName);
+@function colors($colorName) {
+  @return map-get($map: $theme-colors, $key: $colorName);
 }
 
-
-@mixin applyTextGradient($linear-gradient){
-    background: $linear-gradient;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+@mixin applyTextGradient($linear-gradient) {
+  background: $linear-gradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-@mixin applyBlueThemeTextGradient($gradient-direction: horizontal){
-    @include applyTextGradient(blueThemeGradient($gradient-direction));
+@mixin applyBlueThemeTextGradient($gradient-direction: horizontal) {
+  @include applyTextGradient(blueThemeGradient($gradient-direction));
 }
 
 /// returns a gray color according to the value given. EXPECTS A DECIMAL!!!
-@function gray($levelOfGrayness){
-    $v: $levelOfGrayness * 255;
-    @return rgb($v, $v, $v);
+@function gray($levelOfGrayness) {
+  $v: $levelOfGrayness * 255;
+  @return rgb($v, $v, $v);
 }
 
-@mixin respondToNarrowWidth{
-    @media(max-width: $max-narrow-width){
-        @content;
-    }
+@mixin respondToNarrowWidth {
+  @media (max-width: $max-narrow-width) {
+    @content;
+  }
 }
 
-@mixin setProps($properties, $value){
-    @each $property in $properties{
-        #{$property}: $value;
-    }
+@mixin setProps($properties, $value) {
+  @each $property in $properties {
+    #{$property}: $value;
+  }
 }
 
-@mixin centerContentInGrid{
-    display: grid;
-    justify-content: center;
-    align-content: center;
+@mixin centerContentInGrid {
+  display: grid;
+  justify-content: center;
+  align-content: center;
 }
 
 @mixin bounceOnHover($bounce-scale: 1.1) {
-    
-    @media (hover: hover){
-        transition-duration: 0.2s;
-        transition-property: transform;
-        &:hover{
-            transform: scale($bounce-scale);
-            @content;
-        }
+  @media (hover: hover) {
+    transition-duration: 0.2s;
+    transition-property: transform;
+    &:hover {
+      transform: scale($bounce-scale);
+      @content;
     }
-    
-    cursor: pointer;
+  }
+
+  cursor: pointer;
 }
 
-@mixin roundedBGOnHoverAnimConfig($properties){
-    transition: {
-        duration: 0.2s;
-        property: $properties;
-    }    
+@mixin roundedBGOnHoverAnimConfig($properties) {
+  transition: {
+    duration: 0.2s;
+    property: $properties;
+  }
 }
 
-@mixin roundedBGOnHover($rounded-BG-color, $hover-text-color: null){
-    
-    @include roundedBGOnHoverAnimConfig(color);
+@mixin roundedBGOnHover($rounded-BG-color, $hover-text-color: null) {
+  @include roundedBGOnHoverAnimConfig(color);
 
+  position: relative;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    position: absolute;
+    background-color: $rounded-BG-color;
+    @include setProps(left right, 0);
+    height: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 1000rem;
+    opacity: 0;
+    @include roundedBGOnHoverAnimConfig(opacity);
+  }
+
+  svg {
+    @include roundedBGOnHoverAnimConfig(fill);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: $hover-text-color;
+      svg {
+        fill: $hover-text-color;
+      }
+    }
+    &:hover::before {
+      opacity: 1;
+    }
+  }
+}
+
+@mixin blueBGOnHover() {
+  @include roundedBGOnHover(rgba(colors(light-blue), 0.2), colors(light-blue));
+}
+
+@mixin setCustomScrollBarStyle {
+  $scroll-bar-size: 0.8rem;
+  &::-webkit-scrollbar {
+    @include setProps(width height, $scroll-bar-size);
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: $scroll-bar-size / 2;
+    background-color: colors(light-gray-bg);
+  }
+}
+
+@mixin setMaximumLines($max-lines) {
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $max-lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin dimOnHover($setPosition: true) {
+  cursor: pointer;
+  @if $setPosition {
     position: relative;
-    cursor: pointer;
+  }
+  overflow: hidden;
 
-    &::before{
-        content: '';
-        position: absolute;
-        background-color: $rounded-BG-color;
-        @include setProps(left right, 0);
-        height: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-        border-radius: 1000rem;
-        opacity: 0;
-        @include roundedBGOnHoverAnimConfig(opacity);
+  &::after {
+    content: "";
+    position: absolute;
+    @include setProps(left right top bottom, 0);
+    background-color: rgba(black, 0.2);
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 0.2s;
+    z-index: 100;
+  }
+
+  @media (hover: hover) {
+    &:hover::after {
+      opacity: 1;
     }
-
-    svg{
-        @include roundedBGOnHoverAnimConfig(fill);
-    }
-
-    @media(hover: hover){
-        &:hover{
-            color: $hover-text-color;
-            svg{
-                fill: $hover-text-color;
-            }
-        }
-        &:hover::before{
-            opacity: 1;
-        }
-    }
-
+  }
 }
 
-@mixin blueBGOnHover(){
-    @include roundedBGOnHover(rgba(colors(light-blue), 0.2), colors(light-blue)); 
+@mixin break-long-words {
+  // I got this from here: https://stackoverflow.com/questions/36418352/css-word-wrap-break-word-wont-work
+  // this works but it breaks words at all characters, even when it isn't necessary to break them. Find a better way!!!!
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
-
-
-
-@mixin setCustomScrollBarStyle{
-    $scroll-bar-size: 0.8rem;
-    &::-webkit-scrollbar {
-        @include setProps(width height, $scroll-bar-size);
-    }
-    &::-webkit-scrollbar-thumb {
-        border-radius: $scroll-bar-size / 2;
-        background-color: colors(light-gray-bg);
-    }
-}
-
-
-
-@mixin setMaximumLines($max-lines){
-    display: -webkit-box;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: $max-lines;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-@mixin dimOnHover($setPosition: true){
-    cursor: pointer;
-    @if $setPosition{
-        position: relative;
-    }
-    overflow: hidden;   
-    
-    &::after{
-        content: '';
-        position: absolute;
-        @include setProps(left right top bottom, 0);
-        background-color: rgba(black, 0.2);
-        opacity: 0;
-        transition-property: opacity;
-        transition-duration: 0.2s;
-        z-index: 100;
-    }
-
-    @media(hover: hover){
-        &:hover::after{
-            opacity: 1;
-        }
-    }
-}
-
-
-@mixin break-long-words{    
-    // I got this from here: https://stackoverflow.com/questions/36418352/css-word-wrap-break-word-wont-work
-    // this works but it breaks words at all characters, even when it isn't necessary to break them. Find a better way!!!!
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    -ms-word-break: break-all;
-    word-break: break-all;
-    word-break: break-word;
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
-}
-
-
-
-
-
 
 /// Remove the unit of a length
 /// @param {Number} $number - Number to remove unit from
 /// @return {Number} - Unitless number
 @function strip-unit($number) {
-    @if type-of($number) == 'number' and not unitless($number) {
-      @return $number / ($number * 0 + 1);
-    }
-  
-    @return $number;
+  @if type-of($number) == "number" and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+
+  @return $number;
 }

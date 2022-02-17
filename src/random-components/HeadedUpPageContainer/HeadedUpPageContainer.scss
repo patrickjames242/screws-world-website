@@ -1,35 +1,35 @@
 @import "helpers.module";
 
 .HeadedUpPageContainer {
-	--HeadedUpPageContainer-bottom-margin: 7.1rem;
-	margin-bottom: var(--HeadedUpPageContainer-bottom-margin);
+  --HeadedUpPageContainer-bottom-margin: 7.1rem;
+  margin-bottom: var(--HeadedUpPageContainer-bottom-margin);
 
-	> .content {
-		--HeadedUpPageContainer-max-content-width: 60rem;
-		max-width: var(--HeadedUpPageContainer-max-content-width);
+  > .content {
+    --HeadedUpPageContainer-max-content-width: 60rem;
+    max-width: var(--HeadedUpPageContainer-max-content-width);
 
-		--HeadedUpPageContainer-side-padding: 3rem;
-		@include setProps(margin-left margin-right, auto);
-		@include setProps(
-			padding-left padding-right,
-			var(--HeadedUpPageContainer-side-padding)
-		);
+    --HeadedUpPageContainer-side-padding: 3rem;
+    @include setProps(margin-left margin-right, auto);
+    @include setProps(
+      padding-left padding-right,
+      var(--HeadedUpPageContainer-side-padding)
+    );
 
-		> .PageHeader {
-			--PageHeader-top-and-bottom-margins: 8rem;
-			@include setProps(
-				margin-top margin-bottom,
-				var(--PageHeader-top-and-bottom-margins)
-			);
-		}
-	}
+    > .PageHeader {
+      --PageHeader-top-and-bottom-margins: 8rem;
+      @include setProps(
+        margin-top margin-bottom,
+        var(--PageHeader-top-and-bottom-margins)
+      );
+    }
+  }
 
-	@media (max-width: 520px) {
-		> .content {
-			--HeadedUpPageContainer-side-padding: 1.8rem;
-			> .PageHeader {
-				--PageHeader-top-and-bottom-margins: 6rem;
-			}
-		}
-	}
+  @media (max-width: 520px) {
+    > .content {
+      --HeadedUpPageContainer-side-padding: 1.8rem;
+      > .PageHeader {
+        --PageHeader-top-and-bottom-margins: 6rem;
+      }
+    }
+  }
 }

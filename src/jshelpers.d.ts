@@ -1,38 +1,38 @@
+import React from "react";
 
-import React from 'react';
+declare module jshelpers {
+  export type Optional<Wrapped> = Wrapped | null;
 
+  export function useSetTitleFunctionality(titleString: Optional<string>): void;
 
-declare module jshelpers{
-    
-    export type Optional<Wrapped> = Wrapped | null;
+  export function useIsInitialRender(): boolean;
 
-    export function useSetTitleFunctionality(titleString: Optional<string>): void;
+  export const SCREWS_WORLD_EMAIL: string;
+  export const SCREWS_WORLD_NUMBER: string;
 
-    export function useIsInitialRender(): boolean;
+  export function isValidEmail(email: string): boolean;
 
-    export const SCREWS_WORLD_EMAIL: string;
-    export const SCREWS_WORLD_NUMBER: string;
+  export function useUpdateEffect(
+    effect: React.EffectCallback,
+    dependencies?: React.DependencyList
+  ): void;
 
-    export function isValidEmail(email: string): boolean;
+  export function useBlockHistoryWhileMounted(
+    message: string,
+    shouldBlock: boolean = true
+  );
 
-    export function useUpdateEffect(effect: React.EffectCallback, dependencies?: React.DependencyList): void;
+  export function getIntegerArray(upper: number, lower: number): number[];
 
-    export function useBlockHistoryWhileMounted(message: string, shouldBlock: boolean = true);
-    
-    export function getIntegerArray(upper: number, lower: number): number[];
+  export type NotificationListener<InfoType> = (info: InfoType) => void;
 
-    export type NotificationListener<InfoType> = (info: InfoType) => void;
+  export class Notification<InfoType = {}> {
+    post(info: InfoType): void;
+    addListener(listener: NotificationListener<InfoType>): () => void;
+    removeListener(listener: NotificationListener<InfoType>): void;
+  }
 
-
-    export class Notification<InfoType = {}>{
-        post(info: InfoType): void;
-        addListener(listener: NotificationListener<InfoType>): () => void;
-        removeListener(listener: NotificationListener<InfoType>): void;
-    }
-
-    export const allHistoryBlocksShouldBeRemoved: Notification<{}>;
-    
+  export const allHistoryBlocksShouldBeRemoved: Notification<{}>;
 }
-
 
 export = jshelpers;

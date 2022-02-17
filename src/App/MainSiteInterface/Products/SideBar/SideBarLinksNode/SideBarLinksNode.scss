@@ -2,73 +2,73 @@
 @import "../../products-variables.module";
 
 .Products {
-	.SideBarLink {
-		@mixin configureForHoverTransition($properties) {
-			transition-property: $properties;
-			transition-duration: 0.2s;
-		}
+  .SideBarLink {
+    @mixin configureForHoverTransition($properties) {
+      transition-property: $properties;
+      transition-duration: 0.2s;
+    }
 
-		cursor: pointer;
-		display: grid;
-		grid-auto-flow: column;
-		justify-content: space-between;
-		gap: 0.6rem;
-		align-content: center;
-		align-items: center;
-		border-radius: 0.5rem;
+    cursor: pointer;
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: space-between;
+    gap: 0.6rem;
+    align-content: center;
+    align-items: center;
+    border-radius: 0.5rem;
 
-		$padding-centering-adjustment-factor: 0.96px;
-		padding: $side-bar-link-top-and-bottom-padding +
-			$padding-centering-adjustment-factor 12px
-			$side-bar-link-top-and-bottom-padding -
-			$padding-centering-adjustment-factor;
+    $padding-centering-adjustment-factor: 0.96px;
+    padding: $side-bar-link-top-and-bottom-padding +
+      $padding-centering-adjustment-factor 12px
+      $side-bar-link-top-and-bottom-padding -
+      $padding-centering-adjustment-factor;
 
-		@include configureForHoverTransition(background-color);
+    @include configureForHoverTransition(background-color);
 
-		&.selected {
-			// background-color: colors(light-blue);
-			background-color: colors(dark-light-blue);
-		}
+    &.selected {
+      // background-color: colors(light-blue);
+      background-color: colors(dark-light-blue);
+    }
 
-		@media (hover: hover) {
-			&:not(.selected):hover {
-				background-color: rgba(colors(light-blue), 0.2);
-				> * {
-					color: colors(light-blue);
-				}
-			}
-		}
+    @media (hover: hover) {
+      &:not(.selected):hover {
+        background-color: rgba(colors(light-blue), 0.2);
+        > * {
+          color: colors(light-blue);
+        }
+      }
+    }
 
-		> * {
-			@include configureForHoverTransition(color);
-		}
+    > * {
+      @include configureForHoverTransition(color);
+    }
 
-		// must be set because the computed height of each nav bar link in the code relies on the font  inside the link to be exactly what they are in this code.
-		line-height: 1;
+    // must be set because the computed height of each nav bar link in the code relies on the font  inside the link to be exactly what they are in this code.
+    line-height: 1;
 
-		> .title {
-			font-size: $side-bar-link-title-font-size;
-			word-break: break-all;
+    > .title {
+      font-size: $side-bar-link-title-font-size;
+      word-break: break-all;
 
-			// for microsoft edge on windows
-			word-wrap: break-word;
-			@include setMaximumLines(1);
-		}
+      // for microsoft edge on windows
+      word-wrap: break-word;
+      @include setMaximumLines(1);
+    }
 
-		> .chevron {
-			font-size: $side-bar-link-chevron-font-size;
-			font-weight: bold;
-		}
-	}
+    > .chevron {
+      font-size: $side-bar-link-chevron-font-size;
+      font-weight: bold;
+    }
+  }
 
-	.SideBarLinksNode {
-		overflow: hidden;
+  .SideBarLinksNode {
+    overflow: hidden;
 
-		> .children-holder {
-			margin-top: $side-bar-link-spacing;
-			margin-left: 1.5rem;
-			display: grid;
-			gap: $side-bar-link-spacing;
-		}
-	}
+    > .children-holder {
+      margin-top: $side-bar-link-spacing;
+      margin-left: 1.5rem;
+      display: grid;
+      gap: $side-bar-link-spacing;
+    }
+  }
 }

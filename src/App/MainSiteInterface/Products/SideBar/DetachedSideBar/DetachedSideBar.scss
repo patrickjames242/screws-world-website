@@ -2,59 +2,59 @@
 @import "../../products-variables.module";
 
 .Products > .content {
-	.DetatchedSideBar {
-		$dismiss-button-left-inset: 0.7rem;
-		$dismiss-button-size: 3.85rem;
-		$detatched-side-bar-insets: $nav-bar-insets;
+  .DetatchedSideBar {
+    $dismiss-button-left-inset: 0.7rem;
+    $dismiss-button-size: 3.85rem;
+    $detatched-side-bar-insets: $nav-bar-insets;
 
-		position: fixed;
-		@include setProps(left top bottom, $detatched-side-bar-insets);
-		z-index: 100;
+    position: fixed;
+    @include setProps(left top bottom, $detatched-side-bar-insets);
+    z-index: 100;
 
-		pointer-events: none;
+    pointer-events: none;
 
-		> .content {
-			--max-detatched-side-bar-width: 330px;
-			display: grid;
-			grid-template-columns: minmax(0rem, var(--max-detatched-side-bar-width)) auto;
-			gap: $dismiss-button-left-inset;
-			max-width: calc(100vw - #{$detatched-side-bar-insets * 2});
-			height: 100%;
+    > .content {
+      --max-detatched-side-bar-width: 330px;
+      display: grid;
+      grid-template-columns: minmax(0rem, var(--max-detatched-side-bar-width)) auto;
+      gap: $dismiss-button-left-inset;
+      max-width: calc(100vw - #{$detatched-side-bar-insets * 2});
+      height: 100%;
 
-			@include respondToNarrowWidth {
-				--max-detatched-side-bar-width: 280px;
-			}
+      @include respondToNarrowWidth {
+        --max-detatched-side-bar-width: 280px;
+      }
 
-			.links-container-holder {
-				pointer-events: auto;
+      .links-container-holder {
+        pointer-events: auto;
 
-				background-color: colors(light-gray-bg);
-				overflow-y: auto;
-				border-radius: $nav-bar-border-radius;
+        background-color: colors(light-gray-bg);
+        overflow-y: auto;
+        border-radius: $nav-bar-border-radius;
 
-				position: relative;
+        position: relative;
 
-				> .links-container {
-					display: grid;
-					gap: $side-bar-link-spacing;
-					padding: 1rem;
-				}
-			}
+        > .links-container {
+          display: grid;
+          gap: $side-bar-link-spacing;
+          padding: 1rem;
+        }
+      }
 
-			.dismiss-button {
-				@include bounceOnHover(1.15);
-				pointer-events: auto;
+      .dismiss-button {
+        @include bounceOnHover(1.15);
+        pointer-events: auto;
 
-				background-color: colors(dark-light-blue);
-				@include setProps(width height, $dismiss-button-size);
-				border-radius: 1rem;
-				@include centerContentInGrid;
+        background-color: colors(dark-light-blue);
+        @include setProps(width height, $dismiss-button-size);
+        border-radius: 1rem;
+        @include centerContentInGrid;
 
-				> svg {
-					@include setProps(width height, 1.6rem);
-					fill: white;
-				}
-			}
-		}
-	}
+        > svg {
+          @include setProps(width height, 1.6rem);
+          fill: white;
+        }
+      }
+    }
+  }
 }

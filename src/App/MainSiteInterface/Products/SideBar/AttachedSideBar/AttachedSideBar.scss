@@ -2,83 +2,83 @@
 @import "../../products-variables.module";
 
 .Products > .content {
-	.AttachedSideBar {
-		box-sizing: border-box;
-		height: calc(
-			100vh - #{$page-content-inset-from-screen-top +
-				$main-content-border-radius}
-		);
-		width: 18.75rem;
-		position: sticky;
-		top: $page-content-inset-from-screen-top + $main-content-border-radius;
+  .AttachedSideBar {
+    box-sizing: border-box;
+    height: calc(
+      100vh - #{$page-content-inset-from-screen-top +
+        $main-content-border-radius}
+    );
+    width: 18.75rem;
+    position: sticky;
+    top: $page-content-inset-from-screen-top + $main-content-border-radius;
 
-		@include setProps(margin-top margin-bottom, $main-content-border-radius);
-		display: none;
-		@media (min-width: $min-width-for-displaying-side-bar) {
-			display: initial;
-		}
+    @include setProps(margin-top margin-bottom, $main-content-border-radius);
+    display: none;
+    @media (min-width: $min-width-for-displaying-side-bar) {
+      display: initial;
+    }
 
-		// ------ to achieve equal spacing between the right and left side of the vertical scroll bar
-		margin-right: $nav-bar-insets / 2;
-		> .content-holder > .content {
-			padding-right: $nav-bar-insets/2;
-		}
-		// ^^^^^^^^^^^^^
+    // ------ to achieve equal spacing between the right and left side of the vertical scroll bar
+    margin-right: $nav-bar-insets / 2;
+    > .content-holder > .content {
+      padding-right: $nav-bar-insets/2;
+    }
+    // ^^^^^^^^^^^^^
 
-		> .content-holder {
-			@include setProps(width height, 100%);
-			overflow-y: auto;
-			position: relative;
+    > .content-holder {
+      @include setProps(width height, 100%);
+      overflow-y: auto;
+      position: relative;
 
-			> .content {
-				display: grid;
-				gap: $side-bar-link-spacing;
-				padding-bottom: $side-bar-link-spacing;
-			}
-		}
+      > .content {
+        display: grid;
+        gap: $side-bar-link-spacing;
+        padding-bottom: $side-bar-link-spacing;
+      }
+    }
 
-		> .top-fader,
-		> .bottom-fader {
-			position: absolute;
-			@include setProps(left right, 0);
-			height: 5em;
-			pointer-events: none;
-			opacity: 0;
-			transition-property: opacity;
-			transition-duration: 0.25s;
-		}
+    > .top-fader,
+    > .bottom-fader {
+      position: absolute;
+      @include setProps(left right, 0);
+      height: 5em;
+      pointer-events: none;
+      opacity: 0;
+      transition-property: opacity;
+      transition-duration: 0.25s;
+    }
 
-		> .top-fader {
-			top: 0;
-			background: linear-gradient(
-				180deg,
-				colors(dark-blue) 0%,
-				rgba(colors(dark-blue), 0) 100%
-			);
-		}
+    > .top-fader {
+      top: 0;
+      background: linear-gradient(
+        180deg,
+        colors(dark-blue) 0%,
+        rgba(colors(dark-blue), 0) 100%
+      );
+    }
 
-		> .bottom-fader {
-			bottom: 0;
-			background: linear-gradient(
-				180deg,
-				rgba(colors(dark-blue), 0) 0%,
-				colors(dark-blue) 100%
-			);
-			height: 8em;
-		}
-	}
+    > .bottom-fader {
+      bottom: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(colors(dark-blue), 0) 0%,
+        colors(dark-blue) 100%
+      );
+      height: 8em;
+    }
+  }
 }
 
 .Dashboard > .Products {
-	.AttachedSideBar {
-		height: 100vh;
-		top: 0;
-		@include setProps(margin-top margin-bottom, 0);
-		> .content-holder > .content {
-			@include setProps(
-				padding-top padding-bottom,
-				$page-content-left-and-right-insets
-			);
-		}
-	}
+  .AttachedSideBar {
+    height: 100vh;
+    top: 0;
+    @include setProps(margin-top margin-bottom, 0);
+    > .content-holder > .content {
+      @include setProps(
+        padding-top padding-bottom,
+        $page-content-left-and-right-insets
+      );
+    }
+  }
 }

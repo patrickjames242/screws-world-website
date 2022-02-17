@@ -2,81 +2,81 @@
 @import "products-variables.module";
 
 .Products {
-	@include setProps(margin-left margin-right, auto);
-	max-width: 1850px;
-	display: grid;
+  @include setProps(margin-left margin-right, auto);
+  max-width: 1850px;
+  display: grid;
 
-	@media (min-width: $min-width-for-displaying-side-bar) {
-		margin-bottom: 5rem;
-	}
+  @media (min-width: $min-width-for-displaying-side-bar) {
+    margin-bottom: 5rem;
+  }
 
-	> .side-bar-button {
-		$side-bar-button-insets: 2.5rem;
+  > .side-bar-button {
+    $side-bar-button-insets: 2.5rem;
 
-		background-color: colors(dark-light-blue);
-		@include setProps(height width, 2rem);
-		z-index: 1;
-		padding: 0.7rem 1.4rem;
-		border-radius: 1rem;
-		position: sticky;
-		bottom: $side-bar-button-insets;
-		justify-self: end;
-		box-shadow: 0px 0px 1.5rem 0.5rem rgba(colors(dark-blue), 0.4);
+    background-color: colors(dark-light-blue);
+    @include setProps(height width, 2rem);
+    z-index: 1;
+    padding: 0.7rem 1.4rem;
+    border-radius: 1rem;
+    position: sticky;
+    bottom: $side-bar-button-insets;
+    justify-self: end;
+    box-shadow: 0px 0px 1.5rem 0.5rem rgba(colors(dark-blue), 0.4);
 
-		@include setProps(
-			margin-top margin-bottom margin-right,
-			$side-bar-button-insets
-		);
+    @include setProps(
+      margin-top margin-bottom margin-right,
+      $side-bar-button-insets
+    );
 
-		@include bounceOnHover(1.2);
+    @include bounceOnHover(1.2);
 
-		> svg {
-			fill: white;
-		}
+    > svg {
+      fill: white;
+    }
 
-		@media (min-width: $min-width-for-displaying-side-bar) {
-			display: none;
-		}
-	}
+    @media (min-width: $min-width-for-displaying-side-bar) {
+      display: none;
+    }
+  }
 
-	> .content {
-		margin-top: $page-content-inset-from-nav-bar;
-		display: grid;
-		grid-auto-flow: column;
-		grid-template-columns: auto;
-		align-items: start;
-		@include setProps(
-			padding-left padding-right,
-			$page-content-left-and-right-insets
-		);
+  > .content {
+    margin-top: $page-content-inset-from-nav-bar;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: auto;
+    align-items: start;
+    @include setProps(
+      padding-left padding-right,
+      $page-content-left-and-right-insets
+    );
 
-		@media (min-width: $min-width-for-displaying-side-bar) {
-			grid-template-columns: auto 1fr;
-		}
-	}
+    @media (min-width: $min-width-for-displaying-side-bar) {
+      grid-template-columns: auto 1fr;
+    }
+  }
 }
 
 .Dashboard {
-	> .Products {
-		margin-bottom: initial;
-		> .content {
-			margin-top: initial;
-			grid-template-rows: auto 1fr;
+  > .Products {
+    margin-bottom: initial;
+    > .content {
+      margin-top: initial;
+      grid-template-rows: auto 1fr;
 
-			> .TopActionButtonsView {
-				grid-column: -1 / -2;
-				grid-row: 1 / 2;
-			}
+      > .TopActionButtonsView {
+        grid-column: -1 / -2;
+        grid-row: 1 / 2;
+      }
 
-			> .MainContent {
-				grid-column: -1 / -2;
-				grid-row: 2 / 3;
-			}
+      > .MainContent {
+        grid-column: -1 / -2;
+        grid-row: 2 / 3;
+      }
 
-			> .AttachedSideBar {
-				grid-column: 1 / 2;
-				grid-row: 1 / -1;
-			}
-		}
-	}
+      > .AttachedSideBar {
+        grid-column: 1 / 2;
+        grid-row: 1 / -1;
+      }
+    }
+  }
 }

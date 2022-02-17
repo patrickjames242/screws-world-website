@@ -1,90 +1,90 @@
 @import "helpers.module";
 
 .CustomAlert {
-	position: fixed;
-	z-index: 100000;
-	@include setProps(left top bottom right, 0);
-	display: grid;
+  position: fixed;
+  z-index: 100000;
+  @include setProps(left top bottom right, 0);
+  display: grid;
 
-	align-content: center;
+  align-content: center;
 
-	.background-view {
-		position: absolute;
-		@include setProps(left right top bottom, 0);
-		background-color: rgba(black, 0.6);
-	}
+  .background-view {
+    position: absolute;
+    @include setProps(left right top bottom, 0);
+    background-color: rgba(black, 0.6);
+  }
 
-	> .vertically-centered-box {
-		pointer-events: none;
-		padding: 2rem;
-		> .horizontally-centered-box {
-			pointer-events: initial;
-			@include setProps(margin-right margin-left, auto);
-			max-width: 25rem;
-		}
-	}
+  > .vertically-centered-box {
+    pointer-events: none;
+    padding: 2rem;
+    > .horizontally-centered-box {
+      pointer-events: initial;
+      @include setProps(margin-right margin-left, auto);
+      max-width: 25rem;
+    }
+  }
 
-	> .vertically-centered-box > .horizontally-centered-box {
-		z-index: 1;
-		background-color: colors(light-dark-blue);
-		padding: 2.4rem;
-		border-radius: 1.5rem;
+  > .vertically-centered-box > .horizontally-centered-box {
+    z-index: 1;
+    background-color: colors(light-dark-blue);
+    padding: 2.4rem;
+    border-radius: 1.5rem;
 
-		display: grid;
-		gap: 16px;
+    display: grid;
+    gap: 16px;
 
-		> .title {
-			font-size: 2rem;
-			font-weight: bold;
-		}
+    > .title {
+      font-size: 2rem;
+      font-weight: bold;
+    }
 
-		> .description {
-			color: rgb(185, 195, 206);
-			font-size: 16px;
-			line-height: 1.3;
-			white-space: pre-wrap;
-		}
+    > .description {
+      color: rgb(185, 195, 206);
+      font-size: 16px;
+      line-height: 1.3;
+      white-space: pre-wrap;
+    }
 
-		> .CustomTextField {
-			> .input-box {
-				padding: 13px;
-				font-size: 16px;
-			}
-		}
+    > .CustomTextField {
+      > .input-box {
+        padding: 13px;
+        font-size: 16px;
+      }
+    }
 
-		> .ErrorMessageBox {
-			@include setProps(padding-left padding-right, 0.5rem);
-		}
+    > .ErrorMessageBox {
+      @include setProps(padding-left padding-right, 0.5rem);
+    }
 
-		> .button-box {
-			margin-top: 10px;
-			display: grid;
-			gap: 1rem;
-			grid-auto-flow: column;
-			justify-self: end;
+    > .button-box {
+      margin-top: 10px;
+      display: grid;
+      gap: 1rem;
+      grid-auto-flow: column;
+      justify-self: end;
 
-			> .CustomAlertButton {
-				font-size: 16px;
-				border-radius: 1000rem;
-				padding: 8px 16px;
-				font-weight: bold;
+      > .CustomAlertButton {
+        font-size: 16px;
+        border-radius: 1000rem;
+        padding: 8px 16px;
+        font-weight: bold;
 
-				&.primary {
-					background-color: colors(light-blue);
-				}
-				&.primary-destructive {
-					background-color: colors(destructive-red);
-				}
-				&.primary,
-				&.primary-destructive {
-					@include bounceOnHover;
-				}
-				&.secondary {
-					$color: rgb(207, 215, 223);
-					color: $color;
-					@include roundedBGOnHover(rgba($color, 0.3));
-				}
-			}
-		}
-	}
+        &.primary {
+          background-color: colors(light-blue);
+        }
+        &.primary-destructive {
+          background-color: colors(destructive-red);
+        }
+        &.primary,
+        &.primary-destructive {
+          @include bounceOnHover;
+        }
+        &.secondary {
+          $color: rgb(207, 215, 223);
+          color: $color;
+          @include roundedBGOnHover(rgba($color, 0.3));
+        }
+      }
+    }
+  }
 }

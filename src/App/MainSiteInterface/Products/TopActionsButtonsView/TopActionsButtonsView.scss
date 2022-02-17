@@ -2,75 +2,75 @@
 @import "../products-variables.module";
 
 .Dashboard > .Products > .content {
-	> .TopActionButtonsView {
-		--left-and-right-padding: 1.5rem;
-		@include setProps(padding-top padding-bottom, 1.2rem);
-		@include setProps(
-			padding-left padding-right,
-			var(--left-and-right-padding)
-		);
+  > .TopActionButtonsView {
+    --left-and-right-padding: 1.5rem;
+    @include setProps(padding-top padding-bottom, 1.2rem);
+    @include setProps(
+      padding-left padding-right,
+      var(--left-and-right-padding)
+    );
 
-		z-index: 2;
+    z-index: 2;
 
-		display: grid;
-		grid-auto-flow: column;
-		justify-content: space-between;
-		position: sticky;
-		top: 0;
-		gap: 1.7rem;
-		grid-template-columns: auto auto 1fr;
-		grid-auto-flow: column;
-		grid-auto-columns: auto;
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    gap: 1.7rem;
+    grid-template-columns: auto auto 1fr;
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
 
-		.TopActionButton {
-			--button-size: 3.8rem;
-			border-radius: calc(var(--button-size) / 2);
-			@include setProps(height width, var(--button-size));
-			background-color: colors(dark-light-blue);
-			@include bounceOnHover(1.2);
+    .TopActionButton {
+      --button-size: 3.8rem;
+      border-radius: calc(var(--button-size) / 2);
+      @include setProps(height width, var(--button-size));
+      background-color: colors(dark-light-blue);
+      @include bounceOnHover(1.2);
 
-			&.destructive {
-				background-color: colors(destructive-red);
-			}
+      &.destructive {
+        background-color: colors(destructive-red);
+      }
 
-			position: relative;
-			box-shadow: 0 0 2rem 0.8rem rgba(colors(dark-blue), 0.6);
+      position: relative;
+      box-shadow: 0 0 2rem 0.8rem rgba(colors(dark-blue), 0.6);
 
-			> svg {
-				@include setProps(height width, calc(var(--button-size) / 2));
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				fill: white;
-			}
+      > svg {
+        @include setProps(height width, calc(var(--button-size) / 2));
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        fill: white;
+      }
 
-			&.log-out-button {
-				> svg {
-					left: 56%;
-					top: 52.5%;
-				}
-			}
-		}
+      &.log-out-button {
+        > svg {
+          left: 56%;
+          top: 52.5%;
+        }
+      }
+    }
 
-		@media (max-width: 500px) {
-			--left-and-right-padding: 0.5rem;
-			gap: 1.4rem;
-			.TopActionButton {
-				--button-size: 3.5rem;
-			}
-		}
+    @media (max-width: 500px) {
+      --left-and-right-padding: 0.5rem;
+      gap: 1.4rem;
+      .TopActionButton {
+        --button-size: 3.5rem;
+      }
+    }
 
-		@media (max-width: 360px) {
-			&.should-be-spread-out-on-narrow-screen {
-				.spacer-div {
-					display: none;
-				}
-				gap: initial;
-				grid-template-columns: initial;
-				grid-auto-flow: column;
-				justify-content: space-between;
-			}
-		}
-	}
+    @media (max-width: 360px) {
+      &.should-be-spread-out-on-narrow-screen {
+        .spacer-div {
+          display: none;
+        }
+        gap: initial;
+        grid-template-columns: initial;
+        grid-auto-flow: column;
+        justify-content: space-between;
+      }
+    }
+  }
 }
