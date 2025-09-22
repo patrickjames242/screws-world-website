@@ -48,14 +48,14 @@ export default function ContactUs() {
         links: emailLinks,
       },
       {
-        title: "Phone",
+        title: "Phone / WhatsApp",
         description:
-          "Give us a call during business hours to speak directly with our staff.",
+          "Call or message us on WhatsApp during business hours to speak directly with our staff.",
         links: [
           {
             text: SCREWS_WORLD_NUMBER,
             href: "tel:" + SCREWS_WORLD_NUMBER,
-            ariaLabel: `Call Screws World at ${SCREWS_WORLD_NUMBER}`,
+            ariaLabel: `Call or WhatsApp Screws World at ${SCREWS_WORLD_NUMBER}`,
           },
         ],
       },

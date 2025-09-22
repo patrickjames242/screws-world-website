@@ -79,7 +79,7 @@ const contactMethods: ContactMethodInfo[] = [
     })),
   },
   {
-    platform: "Phone",
+    platform: "Phone / WhatsApp",
     links: [
       {
         text: SCREWS_WORLD_NUMBER,
