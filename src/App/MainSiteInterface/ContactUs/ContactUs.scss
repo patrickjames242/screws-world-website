@@ -5,82 +5,78 @@
     --HeadedUpPageContainer-bottom-margin: 6rem;
   }
   > .content {
+    > .PageHeader {
+      --PageHeader-top-and-bottom-margins: 4.5rem;
+    }
     > .body-content-holder {
       display: grid;
-      grid-template-columns: 2fr 1fr;
-      align-items: start;
-      gap: 4rem;
-
-      @mixin respondToNarrowDesktopSnapPoint {
-        @media (max-width: 920px) {
-          @content;
-        }
-      }
-
-      @include respondToNarrowDesktopSnapPoint {
-        grid-template-columns: 3fr 1fr;
-        gap: 2.5rem;
-      }
-
-      @include respondToNarrowWidth {
-        grid-template-columns: initial;
-      }
-
-      > .text-fields {
-        display: grid;
-        gap: 2rem;
-
-        > .ErrorMessageBox {
-          margin-left: 1rem;
-          &.positive {
-            --highlight-color: #{colors(grayish-blue-text)};
-          }
-        }
-
-        > .submit-button {
-          $font-size: 1rem;
-          $top-and-bottom-padding: 1rem;
-          $height: ($top-and-bottom-padding * 2) + $font-size;
-
-          background-color: colors(dark-light-blue);
-          text-transform: uppercase;
-          font-weight: bold;
-
-          font-size: $font-size;
-          justify-self: end;
-          height: $height;
-          @include setProps(padding-left padding-right, 1.6rem);
-          border-radius: $height / 2;
-
-          @include bounceOnHover;
-        }
-      }
+      gap: 2.4rem;
 
       > .contact-methods-holder {
-        margin-top: 2rem;
         display: grid;
-        justify-items: start;
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+        gap: 2.5rem;
 
-        @include respondToNarrowWidth {
-          display: none;
-        }
         > .contact-method {
+          position: relative;
           display: grid;
-          gap: 0.8rem;
-          justify-items: start;
+          gap: 0.9rem;
+          text-decoration: none;
+          color: inherit;
+          background-color: colors(light-dark-blue);
+          padding: 2.3rem 2rem 2.1rem;
+          border-radius: 1.5rem;
+          box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+          border: 1px solid transparent;
+          transition: transform 0.2s ease, box-shadow 0.2s ease,
+            border 0.2s ease;
+          cursor: pointer;
 
-          > .title {
-            @include applyBlueThemeTextGradient;
-            font-weight: bold;
-            font-size: 1.7rem;
-            @include respondToNarrowDesktopSnapPoint {
-              font-size: 1.4rem;
+          &::before {
+            content: "";
+            position: absolute;
+            left: 2rem;
+            top: 1.4rem;
+            width: 4.25rem;
+            height: 0.25rem;
+            border-radius: 1rem;
+            background: blueThemeGradient(horizontal);
+          }
+
+          @media (hover: hover) {
+            &:hover {
+              transform: translateY(-6px);
+              box-shadow: 0 25px 55px rgba(0, 0, 0, 0.35);
+              border: 1px solid rgba(28, 214, 242, 0.35);
             }
           }
 
+          &:focus-visible {
+            outline: none;
+            border: 1px solid rgba(28, 214, 242, 0.45);
+            transform: translateY(-4px);
+          }
+
+          > .title {
+            margin-top: 0.45rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: colors(grayish-blue-text);
+          }
+
           > .info {
-            font-size: 1.2rem;
+            font-size: 1.45rem;
+            font-weight: 700;
+            @include applyBlueThemeTextGradient;
+            display: inline-block;
+            @include break-long-words;
+          }
+
+          > .description {
+            font-size: 1rem;
+            line-height: 1.5;
             color: colors(grayish-blue-text);
           }
         }

@@ -24,7 +24,7 @@ export function useIsInitialRender() {
   return isInitialRenderRef.current;
 }
 
-export const SCREWS_WORLD_EMAIL = "info@screwsworldbahamas.com";
+export const SCREWS_WORLD_EMAIL = "screwsworld@gmail.com";
 export const SCREWS_WORLD_NUMBER = "(242) 326-1976";
 
 export function isValidEmail(email) {
