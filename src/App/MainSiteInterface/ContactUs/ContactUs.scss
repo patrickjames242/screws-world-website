@@ -14,9 +14,20 @@
 
       > .contact-methods-holder {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
         gap: 2.5rem;
-        align-items: start;
+        grid-template-columns: repeat(2, minmax(16rem, 1fr));
+        grid-template-areas:
+          "email email"
+          "phone facebook";
+        align-items: stretch;
+
+        @include respondToNarrowWidth {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas:
+            "email"
+            "phone"
+            "facebook";
+        }
 
         > .contact-method {
           position: relative;
@@ -94,7 +105,14 @@
             }
             &.multiple-links {
               > .contact-link {
-                font-size: 1.2rem;
+                font-size: 1.45rem;
+                white-space: nowrap;
+              }
+
+              @include respondToNarrowWidth {
+                > .contact-link {
+                  white-space: normal;
+                }
               }
             }
           }
@@ -104,6 +122,18 @@
             line-height: 1.5;
             color: colors(grayish-blue-text);
           }
+        }
+
+        > .contact-method:nth-of-type(1) {
+          grid-area: email;
+        }
+
+        > .contact-method:nth-of-type(2) {
+          grid-area: phone;
+        }
+
+        > .contact-method:nth-of-type(3) {
+          grid-area: facebook;
         }
       }
     }
