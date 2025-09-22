@@ -48,7 +48,7 @@
 
     > .ContactMethod {
       display: grid;
-      gap: 0.4rem;
+      gap: 0.6rem;
       justify-items: center;
       text-align: center;
       line-height: 1.5;
@@ -58,9 +58,23 @@
         @include applyBlueThemeTextGradient;
       }
 
-			> .info {
-				font-size: 1.1rem;
-				color: colors(grayish-blue-text);
+			> .info-list {
+				display: grid;
+				gap: 0.35rem;
+			
+				> .info-link {
+					font-size: 1.1rem;
+					color: colors(grayish-blue-text);
+					text-decoration: none;
+					&:focus-visible {
+						text-decoration: underline;
+					}
+					@media (hover: hover) {
+						&:hover {
+							text-decoration: underline;
+						}
+					}
+				}
 			}
 		}
 	}

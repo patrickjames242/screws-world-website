@@ -1,24 +1,37 @@
-import { SCREWS_WORLD_EMAIL, SCREWS_WORLD_NUMBER } from "jshelpers";
+import { SCREWS_WORLD_EMAILS, SCREWS_WORLD_NUMBER } from "jshelpers";
 import React from "react";
 import "./Footer.scss";
 
+interface ContactMethodLink {
+  text: string;
+  href: string;
+  openInNewWindow?: boolean;
+}
+
+interface ContactMethodInfo {
+  platform: string;
+  links: ContactMethodLink[];
+}
+
 export default function Footer() {
-  function ContactMethod(props: {
-    platform: string;
-    info: string;
-    link: string;
-    shouldOpenInNewWindow?: boolean;
-  }) {
+  function ContactMethod(props: ContactMethodInfo) {
     return (
-      <a
-        href={props.link}
-        target={props.shouldOpenInNewWindow ?? false ? "_blank" : ""}
-        rel="noopener noreferrer"
-        className="ContactMethod"
-      >
+      <div className="ContactMethod">
         <div className="platform">{props.platform}</div>
-        <div className="info">{props.info}</div>
-      </a>
+        <div className="info-list">
+          {props.links.map((link) => (
+            <a
+              key={link.href}
+              className="info-link"
+              href={link.href}
+              target={link.openInNewWindow ? "_blank" : undefined}
+              rel={link.openInNewWindow ? "noopener noreferrer" : undefined}
+            >
+              {link.text}
+            </a>
+          ))}
+        </div>
+      </div>
     );
   }
 
@@ -33,17 +46,9 @@ export default function Footer() {
         </div>
       </div>
       <div className="contact-method-boxes">
-        {contactMethods.map((x, i) => {
-          return (
-            <ContactMethod
-              key={i}
-              platform={x.platform}
-              info={x.info}
-              link={x.link}
-              shouldOpenInNewWindow={x.shouldOpenInNewWindow}
-            />
-          );
-        })}
+        {contactMethods.map((method) => (
+          <ContactMethod key={method.platform} {...method} />
+        ))}
       </div>
 		  <div className="made-by-patrick">
 			  Made with ♥ by{" "}
@@ -55,21 +60,31 @@ export default function Footer() {
   );
 }
 
-const contactMethods = [
+const contactMethods: ContactMethodInfo[] = [
   {
     platform: "Facebook",
-    info: "@Screws & Fasteners World",
-    link: "https://www.facebook.com/Screws-Fasteners-World-1472896606259468/",
-    shouldOpenInNewWindow: true,
+    links: [
+      {
+        text: "@Screws & Fasteners World",
+        href: "https://www.facebook.com/Screws-Fasteners-World-1472896606259468/",
+        openInNewWindow: true,
+      },
+    ],
   },
   {
     platform: "Email",
-    info: SCREWS_WORLD_EMAIL,
-    link: "mailto:" + SCREWS_WORLD_EMAIL,
+    links: SCREWS_WORLD_EMAILS.map((email) => ({
+      text: email,
+      href: "mailto:" + email,
+    })),
   },
   {
     platform: "Phone",
-    info: SCREWS_WORLD_NUMBER,
-    link: "tel:" + SCREWS_WORLD_NUMBER,
+    links: [
+      {
+        text: SCREWS_WORLD_NUMBER,
+        href: "tel:" + SCREWS_WORLD_NUMBER,
+      },
+    ],
   },
 ];

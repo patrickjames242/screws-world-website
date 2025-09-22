@@ -1,19 +1,24 @@
 import React, { useMemo } from "react";
 import "./ContactUs.scss";
 import {
-  SCREWS_WORLD_EMAIL,
+  SCREWS_WORLD_EMAILS,
   SCREWS_WORLD_NUMBER,
   useSetTitleFunctionality,
 } from "jshelpers";
 import { PageHeaderProps } from "random-components/PageHeader/PageHeader";
 import HeadedUpPageContainer from "random-components/HeadedUpPageContainer/HeadedUpPageContainer";
 
+interface ContactMethodLink {
+  text: string;
+  href: string;
+  openInNewTab?: boolean;
+  ariaLabel: string;
+}
+
 interface ContactMethod {
   title: string;
-  info: string;
   description: string;
-  link: string;
-  shouldOpenInNewTab?: boolean;
+  links: ContactMethodLink[];
 }
 
 const FACEBOOK_URL =
@@ -28,30 +33,47 @@ export default function ContactUs() {
       "Connect with our team using the option that works best for you and we'll get back to you quickly.",
   }), []);
 
-  const contactMethods: ContactMethod[] = useMemo(
-    () => [
+  const contactMethods: ContactMethod[] = useMemo(() => {
+    const emailLinks: ContactMethodLink[] = SCREWS_WORLD_EMAILS.map((address) => ({
+      text: address,
+      href: "mailto:" + address,
+      ariaLabel: `Email Screws World at ${address}`,
+    }));
+
+    return [
       {
         title: "Email",
-        info: SCREWS_WORLD_EMAIL,
-        description: "Send us a note any time and we'll respond within one business day.",
-        link: "mailto:" + SCREWS_WORLD_EMAIL,
+        description:
+          "Send us a note any time and we'll respond within one business day.",
+        links: emailLinks,
       },
       {
         title: "Phone",
-        info: SCREWS_WORLD_NUMBER,
-        description: "Give us a call during business hours to speak directly with our staff.",
-        link: "tel:" + SCREWS_WORLD_NUMBER,
+        description:
+          "Give us a call during business hours to speak directly with our staff.",
+        links: [
+          {
+            text: SCREWS_WORLD_NUMBER,
+            href: "tel:" + SCREWS_WORLD_NUMBER,
+            ariaLabel: `Call Screws World at ${SCREWS_WORLD_NUMBER}`,
+          },
+        ],
       },
       {
         title: "Facebook",
-        info: "Screws & Fasteners World",
-        description: "Message us on Facebook to follow updates and get quick answers.",
-        link: FACEBOOK_URL,
-        shouldOpenInNewTab: true,
+        description:
+          "Message us on Facebook to follow updates and get quick answers.",
+        links: [
+          {
+            text: "Screws & Fasteners World",
+            href: FACEBOOK_URL,
+            openInNewTab: true,
+            ariaLabel: "Open Screws & Fasteners World on Facebook",
+          },
+        ],
       },
-    ],
-    []
-  );
+    ];
+  }, []);
 
   return (
     <HeadedUpPageContainer
@@ -61,26 +83,34 @@ export default function ContactUs() {
     >
       <div className="body-content-holder">
         <div className="contact-methods-holder">
-          {contactMethods.map((method) => {
-            const { shouldOpenInNewTab = false } = method;
-            const extraProps = shouldOpenInNewTab
-              ? { target: "_blank", rel: "noopener noreferrer" }
-              : {};
-            return (
-              <a
-                key={method.title}
-                className="contact-method"
-                href={method.link}
-                aria-label={`Contact Screws World via ${method.title}`}
-                title={`Contact Screws World via ${method.title}`}
-                {...extraProps}
+          {contactMethods.map((method) => (
+            <div className="contact-method" key={method.title}>
+              <div className="title">{method.title}</div>
+              <div
+                className={
+                  "links" + (method.links.length > 1 ? " multiple-links" : "")
+                }
               >
-                <div className="title">{method.title}</div>
-                <div className="info">{method.info}</div>
-                <div className="description">{method.description}</div>
-              </a>
-            );
-          })}
+                {method.links.map((link) => {
+                  const extraProps = link.openInNewTab
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {};
+                  return (
+                    <a
+                      key={link.href}
+                      className="contact-link"
+                      href={link.href}
+                      aria-label={link.ariaLabel}
+                      {...extraProps}
+                    >
+                      {link.text}
+                    </a>
+                  );
+                })}
+              </div>
+              <div className="description">{method.description}</div>
+            </div>
+          ))}
         </div>
       </div>
     </HeadedUpPageContainer>

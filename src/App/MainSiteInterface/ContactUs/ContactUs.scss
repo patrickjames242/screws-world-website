@@ -16,12 +16,12 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
         gap: 2.5rem;
+        align-items: start;
 
         > .contact-method {
           position: relative;
           display: grid;
           gap: 0.9rem;
-          text-decoration: none;
           color: inherit;
           background-color: colors(light-dark-blue);
           padding: 2.3rem 2rem 2.1rem;
@@ -30,7 +30,6 @@
           box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
           transition: transform 0.2s ease, box-shadow 0.2s ease,
             border 0.2s ease;
-          cursor: pointer;
 
           &::before {
             content: "";
@@ -51,7 +50,7 @@
             }
           }
 
-          &:focus-visible {
+          &:focus-within {
             outline: none;
             border: 1px solid rgba(28, 214, 242, 0.45);
             transform: translateY(-4px);
@@ -66,12 +65,38 @@
             color: colors(grayish-blue-text);
           }
 
-          > .info {
-            font-size: 1.45rem;
-            font-weight: 700;
-            @include applyBlueThemeTextGradient;
-            display: inline-block;
-            @include break-long-words;
+
+          > .links {
+            display: grid;
+            gap: 0.55rem;
+
+            > .contact-link {
+              font-size: 1.45rem;
+              font-weight: 700;
+              display: inline-block;
+              text-decoration: none;
+              @include applyBlueThemeTextGradient;
+              @include break-long-words;
+
+              &:focus-visible {
+                text-decoration: underline;
+                text-decoration-thickness: 0.12em;
+                text-decoration-color: rgba(colors(light-blue), 0.75);
+              }
+
+              @media (hover: hover) {
+                &:hover {
+                  text-decoration: underline;
+                  text-decoration-thickness: 0.12em;
+                  text-decoration-color: rgba(colors(light-blue), 0.75);
+                }
+              }
+            }
+            &.multiple-links {
+              > .contact-link {
+                font-size: 1.2rem;
+              }
+            }
           }
 
           > .description {

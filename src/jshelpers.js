@@ -25,6 +25,12 @@ export function useIsInitialRender() {
 }
 
 export const SCREWS_WORLD_EMAIL = "screwsworld@gmail.com";
+export const SCREWS_WORLD_SECONDARY_EMAIL =
+  "screwsandfastenersworld@gmail.com";
+export const SCREWS_WORLD_EMAILS = Object.freeze([
+  SCREWS_WORLD_EMAIL,
+  SCREWS_WORLD_SECONDARY_EMAIL,
+]);
 export const SCREWS_WORLD_NUMBER = "(242) 326-1976";
 
 export function isValidEmail(email) {

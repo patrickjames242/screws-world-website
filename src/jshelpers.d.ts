@@ -8,6 +8,8 @@ declare module jshelpers {
   export function useIsInitialRender(): boolean;
 
   export const SCREWS_WORLD_EMAIL: string;
+  export const SCREWS_WORLD_SECONDARY_EMAIL: string;
+  export const SCREWS_WORLD_EMAILS: ReadonlyArray<string>;
   export const SCREWS_WORLD_NUMBER: string;
 
   export function isValidEmail(email: string): boolean;
