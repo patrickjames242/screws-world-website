@@ -26,8 +26,8 @@
           background-color: colors(light-dark-blue);
           padding: 2.3rem 2rem 2.1rem;
           border-radius: 1.5rem;
-          box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
           border: 1px solid transparent;
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
           transition: transform 0.2s ease, box-shadow 0.2s ease,
             border 0.2s ease;
           cursor: pointer;
@@ -46,7 +46,7 @@
           @media (hover: hover) {
             &:hover {
               transform: translateY(-6px);
-              box-shadow: 0 25px 55px rgba(0, 0, 0, 0.35);
+              box-shadow: 0 22px 50px rgba(0, 0, 0, 0.28);
               border: 1px solid rgba(28, 214, 242, 0.35);
             }
           }
